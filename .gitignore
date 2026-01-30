@@ -1,0 +1,19 @@
+# Carpeta de configuración de IDEs
+.vscode/
+.idea/
+
+# Archivos de sistema
+Thumbs.db
+Desktop.ini
+
+# Archivos de log
+*.log
+
+# XAMPP / Temp
+temp/
+
+# Dependencias (si usaras Composer en el futuro)
+vendor/
+
+# Archivos de base de datos (si hubiera dumps locales)
+*.sql.gz
