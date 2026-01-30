@@ -49,10 +49,15 @@
                             <?= $t['telefono'] ?>
                         </td>
                         <td>
-                            <button class="btn" style="background: transparent; color: var(--accent-color); padding: 5px;"><i
-                                    class="fas fa-edit"></i></button>
-                            <button class="btn" style="background: transparent; color: #ef4444; padding: 5px;"><i
-                                    class="fas fa-trash"></i></button>
+                            <button class="btn" style="background: transparent; color: var(--accent-color); padding: 5px;"
+                                data-tercero='<?= htmlspecialchars(json_encode($t), ENT_QUOTES, 'UTF-8') ?>'
+                                onclick="openModal(JSON.parse(this.dataset.tercero))">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn" style="background: transparent; color: #ef4444; padding: 5px;"
+                                onclick="confirmDelete(<?= $t['id'] ?>)">
+                                <i class="fas fa-trash"></i>
+                            </button>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -65,8 +70,9 @@
 <div id="modalTercero"
     style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(5px); z-index: 1000; justify-content: center; align-items: center;">
     <div class="card" style="width: 100%; max-width: 500px; background: white;">
-        <h3 style="margin-bottom: 20px;">Registrar Nuevo Tercero</h3>
-        <form action="index.php?controller=Terceros&action=create" method="POST">
+        <h3 id="modalTitle" style="margin-bottom: 20px;">Registrar Nuevo Tercero</h3>
+        <form id="formTercero" action="index.php?controller=Terceros&action=create" method="POST">
+            <input type="hidden" name="id" id="tercero_id">
             <div style="display: flex; flex-direction: column; gap: 15px;">
                 <div>
                     <label
@@ -121,11 +127,72 @@
     </div>
 </div>
 
+<!-- Modal Confirmar Eliminación -->
+<div id="modalDelete"
+    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(5px); z-index: 1000; justify-content: center; align-items: center;">
+    <div class="card" style="width: 100%; max-width: 400px; background: white; text-align: center;">
+        <div style="margin-bottom: 20px;">
+            <div style="background: #fee2e2; color: #ef4444; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;">
+                <i class="fas fa-exclamation-triangle" style="font-size: 24px;"></i>
+            </div>
+            <h3 style="margin-bottom: 10px;">¿Eliminar Tercero?</h3>
+            <p style="color: var(--text-secondary); font-size: 14px;">Esta acción no se puede deshacer. ¿Estás seguro de que deseas eliminar este registro?</p>
+        </div>
+        <div style="display: flex; justify-content: center; gap: 10px;">
+            <button class="btn" style="background: #f1f5f9;" onclick="closeDeleteModal()">Cancelar</button>
+            <a id="btnConfirmDelete" href="#" class="btn" style="background: #ef4444; color: white;">Eliminar</a>
+        </div>
+    </div>
+</div>
+
 <script>
-    function openModal() {
-        document.getElementById('modalTercero').style.display = 'flex';
+    function openModal(data = null) {
+        const modal = document.getElementById('modalTercero');
+        const form = document.getElementById('formTercero');
+        const title = document.getElementById('modalTitle');
+        const idInput = document.getElementById('tercero_id');
+
+        // Reset sidebar/form states
+        if (data) {
+            // Edit Mode
+            // Parse if it's a string (though PHP usually outputs object here directly in JS context if not quoted)
+            // But wait, the PHP output is inside onclick='openModal(...)'. 
+            // If I output json_encode($t), it becomes an object literal in JS.
+            // Example: openModal({"id":1, ...})
+
+            title.textContent = 'Editar Tercero';
+            form.action = 'index.php?controller=Terceros&action=update';
+            idInput.value = data.id;
+
+            form.nombre_razon_social.value = data.nombre_razon_social;
+            form.rfc.value = data.rfc;
+            form.direccion.value = data.direccion || ''; // Handle nulls safely
+            form.email.value = data.email;
+            form.telefono.value = data.telefono;
+            form.tipo.value = data.tipo;
+        } else {
+            // Create Mode
+            title.textContent = 'Registrar Nuevo Tercero';
+            form.action = 'index.php?controller=Terceros&action=create';
+            form.reset();
+            idInput.value = '';
+        }
+
+        modal.style.display = 'flex';
     }
+
     function closeModal() {
         document.getElementById('modalTercero').style.display = 'none';
+    }
+
+    function confirmDelete(id) {
+        const modal = document.getElementById('modalDelete');
+        const btnConfirm = document.getElementById('btnConfirmDelete');
+        btnConfirm.href = `index.php?controller=Terceros&action=delete&id=${id}`;
+        modal.style.display = 'flex';
+    }
+
+    function closeDeleteModal() {
+        document.getElementById('modalDelete').style.display = 'none';
     }
 </script>
