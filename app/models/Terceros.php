@@ -1,0 +1,62 @@
+<?php
+
+class Terceros
+{
+    private $db;
+
+    public function __construct()
+    {
+        $this->db = Database::getInstance();
+    }
+
+    public function getAll()
+    {
+        $stmt = $this->db->query("SELECT * FROM terceros ORDER BY created_at DESC");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function create($data)
+    {
+        $sql = "INSERT INTO terceros (nombre_razon_social, rfc, direccion, email, telefono, tipo) 
+                VALUES (:nombre_razon_social, :rfc, :direccion, :email, :telefono, :tipo)";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([
+            ':nombre_razon_social' => $data['nombre_razon_social'],
+            ':rfc' => $data['rfc'],
+            ':direccion' => $data['direccion'],
+            ':email' => $data['email'],
+            ':telefono' => $data['telefono'],
+            ':tipo' => $data['tipo']
+        ]);
+    }
+
+    public function getById($id)
+    {
+        $stmt = $this->db->prepare("SELECT * FROM terceros WHERE id = :id");
+        $stmt->execute([':id' => $id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function update($id, $data)
+    {
+        $sql = "UPDATE terceros SET nombre_razon_social = :nombre_razon_social, rfc = :rfc, 
+                direccion = :direccion, email = :email, telefono = :telefono, tipo = :tipo 
+                WHERE id = :id";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([
+            ':id' => $id,
+            ':nombre_razon_social' => $data['nombre_razon_social'],
+            ':rfc' => $data['rfc'],
+            ':direccion' => $data['direccion'],
+            ':email' => $data['email'],
+            ':telefono' => $data['telefono'],
+            ':tipo' => $data['tipo']
+        ]);
+    }
+
+    public function delete($id)
+    {
+        $stmt = $this->db->prepare("DELETE FROM terceros WHERE id = :id");
+        return $stmt->execute([':id' => $id]);
+    }
+}
