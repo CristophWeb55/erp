@@ -38,7 +38,7 @@
                 <a href="index.php?controller=Terceros&action=index"
                     class="nav-item <?= ($controller == 'Terceros') ? 'active' : '' ?>">
                     <i class="fas fa-users"></i>
-                    <span>Terceros</span>
+                    <span>Los Dioses</span>
                 </a>
                 <a href="index.php?controller=Productos&action=index"
                     class="nav-item <?= ($controller == 'Productos') ? 'active' : '' ?>">
