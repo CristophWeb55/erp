@@ -1,5 +1,5 @@
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-    <h2>Terceros</h2>
+    <h2>Proveedores</h2>
     <button class="btn btn-primary" onclick="openModal()">
         <i class="fas fa-plus"></i> Nuevo Tercero
     </button>
