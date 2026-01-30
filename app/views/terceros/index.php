@@ -1,5 +1,5 @@
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-    <h2>Listado de Clientes y Proveedores</h2>
+    <h2>Terceros</h2>
     <button class="btn btn-primary" onclick="openModal()">
         <i class="fas fa-plus"></i> Nuevo Tercero
     </button>
@@ -132,11 +132,13 @@
     style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(5px); z-index: 1000; justify-content: center; align-items: center;">
     <div class="card" style="width: 100%; max-width: 400px; background: white; text-align: center;">
         <div style="margin-bottom: 20px;">
-            <div style="background: #fee2e2; color: #ef4444; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;">
+            <div
+                style="background: #fee2e2; color: #ef4444; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;">
                 <i class="fas fa-exclamation-triangle" style="font-size: 24px;"></i>
             </div>
             <h3 style="margin-bottom: 10px;">¿Eliminar Tercero?</h3>
-            <p style="color: var(--text-secondary); font-size: 14px;">Esta acción no se puede deshacer. ¿Estás seguro de que deseas eliminar este registro?</p>
+            <p style="color: var(--text-secondary); font-size: 14px;">Esta acción no se puede deshacer. ¿Estás seguro de
+                que deseas eliminar este registro?</p>
         </div>
         <div style="display: flex; justify-content: center; gap: 10px;">
             <button class="btn" style="background: #f1f5f9;" onclick="closeDeleteModal()">Cancelar</button>
