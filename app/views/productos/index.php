@@ -16,13 +16,16 @@
     </div>
 </div>
 
-<h2 style="margin-bottom: 25px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.5px;">Catálogo de Productos</h2>
+<h2 style="margin-bottom: 25px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.5px;">Catálogo de
+    Productos</h2>
 
 <!-- Grid de productos -->
 <div class="products-grid" id="productsGrid">
     <?php if (empty($productos)): ?>
-        <div style="grid-column: 1 / -1; text-align: center; padding: 100px 20px; background: var(--glass-bg); border-radius: 30px; border: 1px dashed var(--glass-border);">
-            <i class="fas fa-box-open" style="font-size: 60px; margin-bottom: 20px; color: var(--accent-color); opacity: 0.2;"></i>
+        <div
+            style="grid-column: 1 / -1; text-align: center; padding: 100px 20px; background: var(--glass-bg); border-radius: 30px; border: 1px dashed var(--glass-border);">
+            <i class="fas fa-box-open"
+                style="font-size: 60px; margin-bottom: 20px; color: var(--accent-color); opacity: 0.2;"></i>
             <h3 style="color: var(--text-primary); margin-bottom: 10px;">¡Ups! No hay productos</h3>
             <p style="color: var(--text-secondary);">Comienza agregando productos a tu catálogo para verlos aquí.</p>
         </div>
@@ -30,19 +33,25 @@
         <?php foreach ($productos as $p):
             $stockActual = (int) $p['stock_actual'];
             $stockMinimo = (int) $p['stock_minimo'];
-            
+
             // Lógica de barra mejorada: Si el mínimo es 0, usamos 100 como referencia visual
             $referencia = ($stockMinimo > 0) ? ($stockMinimo * 2) : 100;
             $porcentaje = min(100, ($stockActual / $referencia) * 100);
 
             if ($stockActual <= 0) {
-                $statusColor = '#ef4444'; $statusText = 'Sin Stock'; $statusBg = 'rgba(239, 68, 68, 0.1)';
+                $statusColor = '#ef4444';
+                $statusText = 'Sin Stock';
+                $statusBg = 'rgba(239, 68, 68, 0.1)';
             } elseif ($stockActual < $stockMinimo) {
-                $statusColor = '#f59e0b'; $statusText = 'Stock Bajo'; $statusBg = 'rgba(245, 158, 11, 0.1)';
+                $statusColor = '#f59e0b';
+                $statusText = 'Stock Bajo';
+                $statusBg = 'rgba(245, 158, 11, 0.1)';
             } else {
-                $statusColor = '#10b981'; $statusText = 'En Stock'; $statusBg = 'rgba(16, 185, 129, 0.1)';
+                $statusColor = '#10b981';
+                $statusText = 'En Stock';
+                $statusBg = 'rgba(16, 185, 129, 0.1)';
             }
-        ?>
+            ?>
             <div class="product-card">
                 <?php if ($p['requiere_pedimento']): ?>
                     <div class="pedimento-badge"><i class="fas fa-shield-alt"></i> <span>Maneja Pedimento</span></div>
@@ -67,11 +76,15 @@
                         <div style="font-size: 11px; color: var(--text-secondary); line-height: 1.2;">
                             Stock: <strong><?= $stockActual ?> / <?= ($stockMinimo > 0 ? $stockMinimo : '-') ?></strong>
                         </div>
-                        <div style="font-size: 12px; font-weight: 800; color: <?= $statusColor ?>;"><?= round($porcentaje) ?>%</div>
+                        <div style="font-size: 12px; font-weight: 800; color: <?= $statusColor ?>;"><?= round($porcentaje) ?>%
+                        </div>
                     </div>
-                    <div class="stock-bar-container"><div class="stock-bar-fill" style="width: <?= $porcentaje ?>%; background: <?= $statusColor ?>;"></div></div>
+                    <div class="stock-bar-container">
+                        <div class="stock-bar-fill" style="width: <?= $porcentaje ?>%; background: <?= $statusColor ?>;"></div>
+                    </div>
                     <div style="display: flex; justify-content: flex-end; margin-top: 5px;">
-                        <span class="stock-badge" style="background: <?= $statusBg ?>; color: <?= $statusColor ?>;"><?= $statusText ?></span>
+                        <span class="stock-badge"
+                            style="background: <?= $statusBg ?>; color: <?= $statusColor ?>;"><?= $statusText ?></span>
                     </div>
                 </div>
 
@@ -79,7 +92,8 @@
                     <button onclick="openEditOverlay(<?= $p['id'] ?>)" class="btn-action btn-edit-product">
                         <i class="fas fa-edit"></i> <span>Editar</span>
                     </button>
-                    <button onclick="confirmDelete(<?= $p['id'] ?>, '<?= addslashes($p['sku']) ?>')" class="btn-action btn-delete-product">
+                    <button onclick="confirmDelete(<?= $p['id'] ?>, '<?= addslashes($p['sku']) ?>')"
+                        class="btn-action btn-delete-product">
                         <i class="fas fa-trash-alt"></i>
                     </button>
                 </div>
@@ -97,58 +111,218 @@
     </div>
 </div>
 
+<!-- ⚠️ MODAL DE CONFIRMACIÓN DE CIERRE -->
+<div id="confirmCloseOverlay" class="edit-overlay" style="z-index: 30000;">
+    <div class="edit-panel" style="max-width: 400px; padding: 30px; text-align: center; border-radius: 30px;"
+        onclick="event.stopPropagation()">
+        <div
+            style="width: 70px; height: 70px; background: rgba(227, 81, 86, 0.1); color: var(--accent-secondary); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 30px; margin: 0 auto 20px;">
+            <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <h3 style="font-weight: 800; color: var(--text-primary); margin-bottom: 10px; font-size: 20px;">¿Descartar
+            cambios?</h3>
+        <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 25px; line-height: 1.6;">Si cierras
+            ahora, se perderá cualquier información que hayas ingresado en el formulario. ¿Estás seguro que deseas
+            salir?
+        </p>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <button type="button" onclick="hideConfirmModal()" class="btn"
+                style="background: #f1f5f9; color: var(--text-primary); border: 1px solid #e2e8f0; font-weight: 700; border-radius: 12px; height: 45px; cursor: pointer;">Seguir
+                Editando</button>
+            <button type="button" onclick="confirmCloseAction()" class="btn"
+                style="background: var(--accent-secondary); color: white; border: none; font-weight: 800; border-radius: 12px; height: 45px; cursor: pointer; box-shadow: 0 8px 20px rgba(227, 81, 86, 0.2);">Sí,
+                Salir</button>
+        </div>
+    </div>
+</div>
+
 <!-- Modal para nuevo producto -->
-<div id="modalProducto" class="modal-overlay">
-    <div class="modal-content" style="max-width: 800px; padding: 0; overflow: hidden; border-radius: 30px;">
-        <div style="background: var(--accent-color); padding: 30px; color: white; display: flex; justify-content: space-between; align-items: center;">
+<div id="modalProducto" class="edit-overlay" onclick="closeModal(event)">
+    <div class="edit-panel" style="max-width: 850px; padding: 35px;" onclick="event.stopPropagation()">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px;">
             <div style="display: flex; align-items: center; gap: 15px;">
-                <div style="width: 50px; height: 50px; background: rgba(255,255,255,0.2); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 24px;"><i class="fas fa-plus-circle"></i></div>
+                <div
+                    style="width: 50px; height: 50px; background: rgba(41, 56, 135, 0.1); color: var(--accent-color); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 22px;">
+                    <i class="fas fa-plus-circle"></i>
+                </div>
                 <div>
-                    <h2 style="margin: 0; font-weight: 800; font-size: 20px;">Registrar Nuevo Producto</h2>
-                    <p style="margin: 0; font-size: 12px; opacity: 0.8;">Completa los detalles para añadirlo al catálogo.</p>
+                    <h2
+                        style="margin: 0; font-weight: 800; color: var(--text-primary); font-size: 24px; letter-spacing: -1px;">
+                        Registrar Nuevo Producto</h2>
+                    <p style="margin: 5px 0 0 0; color: var(--text-secondary); font-size: 13px;">Completa los detalles
+                        técnicos para añadirlo al catálogo oficial.</p>
                 </div>
             </div>
-            <button onclick="closeModal()" style="background: rgba(255,255,255,0.1); border: none; width: 40px; height: 40px; border-radius: 50%; color: white; cursor: pointer;"><i class="fas fa-times"></i></button>
+            <button onclick="closeModal()"
+                style="background: #f1f5f9; border: none; width: 40px; height: 40px; border-radius: 50%; color: var(--text-primary); cursor: pointer; transition: all 0.2s;"><i
+                    class="fas fa-times"></i></button>
         </div>
-        <form action="index.php?controller=Productos&action=create" method="POST" style="padding: 35px;">
-            <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 30px;">
+
+        <form action="index.php?controller=Productos&action=create" method="POST" id="productForm">
+            <div style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 30px;">
+                <!-- Columna Izquierda: Datos Técnicos -->
                 <div style="display: flex; flex-direction: column; gap: 20px;">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                        <div><label class="form-label">SKU / Código</label><input type="text" name="sku" required class="form-input"></div>
-                        <div><label class="form-label">Precio</label><input type="number" step="0.01" name="precio_venta" required class="form-input"></div>
+                    <div
+                        style="background: rgba(41, 56, 135, 0.02); padding: 20px; border-radius: 20px; border: 1px solid var(--glass-border);">
+                        <h3
+                            style="margin: 0 0 15px 0; font-size: 15px; font-weight: 800; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-info-circle" style="color: var(--accent-color);"></i> Información General
+                        </h3>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                            <div>
+                                <label class="form-label" style="font-size: 11px; letter-spacing: 0.5px;">SKU /
+                                    CÓDIGO</label>
+                                <input type="text" name="sku" required class="form-input" placeholder="Ej. SKU-001"
+                                    style="font-weight: 700;">
+                            </div>
+                            <div>
+                                <label class="form-label" style="font-size: 11px; letter-spacing: 0.5px;">PRECIO
+                                    VENTA</label>
+                                <div style="position: relative;">
+                                    <span
+                                        style="position: absolute; left: 12px; top: 10px; font-weight: 700; color: var(--text-secondary);">$</span>
+                                    <input type="number" step="0.01" name="precio_venta" required class="form-input"
+                                        style="padding-left: 25px; font-weight: 800; color: var(--accent-secondary);">
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="form-label" style="font-size: 11px; letter-spacing: 0.5px;">DESCRIPCIÓN DEL
+                                PRODUCTO</label>
+                            <textarea name="descripcion" required rows="3" class="form-input"
+                                placeholder="Nombre comercial y detalles..." style="resize: none;"></textarea>
+                        </div>
                     </div>
-                    <div><label class="form-label">Descripción</label><textarea name="descripcion" required rows="3" class="form-input"></textarea></div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                        <div><label class="form-label">Stock Mínimo</label><input type="number" name="stock_minimo" value="10" required class="form-input"></div>
-                        <div><label class="form-label">Stock Inicial</label><input type="number" name="stock_inicial" value="0" class="form-input" style="font-weight: 700; color: var(--accent-color);"></div>
-                    </div>
-                    <div>
-                        <div style="background: #f1f5f9; padding: 12px 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; width: 100%; border: 1px dashed #cbd5e1;">
-                            <span style="font-size: 12px; font-weight: 600;">¿Maneja Pedimento Aduanal?</span>
-                            <label class="switch" style="transform: scale(0.8);"><input type="checkbox" name="requiere_pedimento"><span class="slider round"></span></label>
+
+                    <div
+                        style="background: rgba(41, 56, 135, 0.02); padding: 20px; border-radius: 20px; border: 1px solid var(--glass-border);">
+                        <h3
+                            style="margin: 0 0 15px 0; font-size: 15px; font-weight: 800; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-layer-group" style="color: var(--accent-color);"></i> Control de Inventario
+                        </h3>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                            <div>
+                                <label class="form-label" style="font-size: 11px; letter-spacing: 0.5px;">STOCK
+                                    MÍNIMO</label>
+                                <input type="number" name="stock_minimo" value="10" required class="form-input"
+                                    style="font-weight: 600;">
+                            </div>
+                            <div>
+                                <label class="form-label" style="font-size: 11px; letter-spacing: 0.5px;">STOCK
+                                    INICIAL</label>
+                                <input type="number" name="stock_inicial" value="0" class="form-input"
+                                    style="font-weight: 800; color: var(--accent-color); background: white;">
+                            </div>
+                        </div>
+
+                        <div
+                            style="background: white; padding: 15px; border-radius: 15px; border: 1px dashed var(--accent-color); display: flex; justify-content: space-between; align-items: center;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <div
+                                    style="width: 35px; height: 35px; background: rgba(41, 56, 135, 0.1); color: var(--accent-color); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-shield-alt"></i>
+                                </div>
+                                <div>
+                                    <span
+                                        style="font-size: 13px; font-weight: 700; color: var(--text-primary); display: block;">Maneja
+                                        Pedimento</span>
+                                    <span style="font-size: 10px; color: var(--text-secondary);">Requiere trazabilidad
+                                        aduanal</span>
+                                </div>
+                            </div>
+                            <label class="switch" style="transform: scale(0.8);">
+                                <input type="checkbox" name="requiere_pedimento">
+                                <span class="slider round"></span>
+                            </label>
                         </div>
                     </div>
                 </div>
+
+                <!-- Columna Derecha: Multimedia -->
                 <div style="display: flex; flex-direction: column; gap: 20px;">
-                    <div><label class="form-label">URL Imagen</label><input type="text" name="imagen_url" id="modalImageUrl" class="form-input"></div>
-                    <div style="flex: 1; border-radius: 20px; border: 2px dashed #e2e8f0; background: #f8fafc; display: flex; align-items: center; justify-content: center; overflow: hidden;"><img id="modalImagePreview" style="width: 100%; height: 100%; object-fit: contain; display: none;"><div id="modalPlaceholder" style="text-align: center; color: #94a3b8;"><i class="fas fa-image" style="font-size: 40px; margin-bottom: 10px; opacity: 0.3;"></i><p style="font-size: 11px;">Vista previa</p></div></div>
+                    <div
+                        style="background: white; padding: 20px; border-radius: 24px; border: 1px solid #e2e8f0; height: 100%; display: flex; flex-direction: column; box-shadow: 0 10px 25px rgba(0,0,0,0.02);">
+                        <label class="form-label"
+                            style="font-size: 11px; letter-spacing: 0.5px; margin-bottom: 12px;">IMAGEN REFERENCIAL
+                            (URL)</label>
+                        <input type="text" name="imagen_url" id="modalImageUrl" class="form-input"
+                            placeholder="https://ejemplo.com/imagen.jpg" style="margin-bottom: 15px;">
+
+                        <div
+                            style="flex: 1; border-radius: 20px; border: 2px dashed #e2e8f0; background: #f8fafc; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative;">
+                            <img id="modalImagePreview"
+                                style="width: 100%; height: 100%; object-fit: contain; display: none;">
+                            <div id="modalPlaceholder" style="text-align: center; color: #94a3b8;">
+                                <i class="fas fa-image" style="font-size: 50px; margin-bottom: 15px; opacity: 0.2;"></i>
+                                <p style="font-size: 12px; font-weight: 600;">Vista previa de imagen</p>
+                                <p style="font-size: 10px; opacity: 0.7;">Pega una URL arriba</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div style="display: flex; justify-content: flex-end; gap: 15px; margin-top: 35px; padding-top: 25px; border-top: 1px solid #f1f5f9;"><button type="button" class="btn" onclick="closeModal()">Cancelar</button><button type="submit" class="btn btn-primary">Registrar SKU</button></div>
+
+            <!-- Footer: Acciones -->
+            <div
+                style="display: flex; justify-content: flex-end; gap: 15px; margin-top: 35px; padding-top: 25px; border-top: 1px solid #f1f5f9;">
+                <button type="button" class="btn" onclick="closeModal(null, true)"
+                    style="background: #f1f5f9; color: var(--text-primary); border: 1px solid #e2e8f0; font-weight: 700; padding: 12px 30px; border-radius: 12px;">Cancelar</button>
+                <button type="submit" class="btn btn-primary"
+                    style="background: var(--accent-secondary); color: white; border: none; font-weight: 800; padding: 12px 40px; border-radius: 12px; box-shadow: 0 10px 25px rgba(227, 81, 86, 0.25);">
+                    <i class="fas fa-save" style="margin-right: 8px;"></i> Registrar SKU
+                </button>
+            </div>
         </form>
     </div>
 </div>
 
 <script>
-    function openModal() { 
+    let activeOverlayId = null;
+
+    function openModal() {
         const modal = document.getElementById('modalProducto');
         document.body.appendChild(modal); // Portal al body
-        modal.style.display = 'flex'; 
+        modal.classList.add('active');
         document.body.classList.add('no-scroll');
     }
-    function closeModal() { 
-        document.getElementById('modalProducto').style.display = 'none'; 
+
+    function closeModal(e, force = false) {
+        if (force) {
+            execCloseModal('modalProducto');
+            return;
+        }
+
+        const isClickOutside = e && e.target.id === 'modalProducto';
+        const isXButton = !e;
+
+        if (isClickOutside || isXButton) {
+            activeOverlayId = 'modalProducto';
+            showConfirmModal();
+        }
+    }
+
+    function showConfirmModal() {
+        const overlay = document.getElementById('confirmCloseOverlay');
+        document.body.appendChild(overlay);
+        overlay.classList.add('active');
+    }
+
+    function hideConfirmModal() {
+        document.getElementById('confirmCloseOverlay').classList.remove('active');
+    }
+
+    function confirmCloseAction() {
+        hideConfirmModal();
+        if (activeOverlayId) {
+            execCloseModal(activeOverlayId);
+        }
+    }
+
+    function execCloseModal(id) {
+        document.getElementById(id).classList.remove('active');
         document.body.classList.remove('no-scroll');
+        activeOverlayId = null;
     }
 
     // Búsqueda instantánea
@@ -161,6 +335,20 @@
         });
     });
 
+    // Vista previa de imagen en modal nuevo producto
+    document.getElementById('modalImageUrl')?.addEventListener('input', function (e) {
+        const preview = document.getElementById('modalImagePreview');
+        const placeholder = document.getElementById('modalPlaceholder');
+        if (e.target.value) {
+            preview.src = e.target.value;
+            preview.style.display = 'block';
+            placeholder.style.display = 'none';
+        } else {
+            preview.style.display = 'none';
+            placeholder.style.display = 'block';
+        }
+    });
+
     function confirmDelete(id, sku) {
         if (confirm(`¿Estás seguro de eliminar el producto ${sku}?`)) {
             window.location.href = `index.php?controller=Productos&action=delete&id=${id}`;
@@ -171,11 +359,11 @@
     async function openEditOverlay(productId) {
         const overlay = document.getElementById('editOverlay');
         const content = document.getElementById('editOverlayContent');
-        
+
         document.body.appendChild(overlay); // Portal al body para el efecto Glass Lock
         overlay.classList.add('active');
-        document.body.classList.add('no-scroll'); 
-        
+        document.body.classList.add('no-scroll');
+
         content.innerHTML = '<div style="text-align: center; padding: 100px;"><i class="fas fa-circle-notch fa-spin" style="font-size: 60px; color: var(--accent-color);"></i><p style="margin-top: 20px; font-weight: 600;">Cargando información premium...</p></div>';
 
         try {
@@ -184,7 +372,7 @@
 
             const stockActual = parseInt(p.stock_actual) || 0;
             const stockMinimo = parseInt(p.stock_minimo) || 10;
-            const status = stockActual <= 0 ? {c:'#ef4444', t:'Sin Stock'} : (stockActual < stockMinimo ? {c:'#f59e0b', t:'Stock Bajo'} : {c:'#10b981', t:'En Stock'});
+            const status = stockActual <= 0 ? { c: '#ef4444', t: 'Sin Stock' } : (stockActual < stockMinimo ? { c: '#f59e0b', t: 'Stock Bajo' } : { c: '#10b981', t: 'En Stock' });
 
             content.innerHTML = `
                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 40px;">
@@ -192,7 +380,7 @@
                         <h2 style="font-weight: 800; color: var(--text-primary); margin: 0; font-size: 26px; letter-spacing: -1px;">Editar Registro: ${p.sku}</h2>
                         <p style="color: var(--text-secondary); margin: 0; font-size: 14px;">Actualiza la información técnica y comercial del producto.</p>
                     </div>
-                    <button onclick="closeEditOverlay(null, true)" style="background: #f1f5f9; border: none; width: 50px; height: 50px; border-radius: 50%; cursor: pointer;"><i class="fas fa-times"></i></button>
+                    <button onclick="closeEditOverlay()" style="background: #f1f5f9; border: none; width: 50px; height: 50px; border-radius: 50%; cursor: pointer;"><i class="fas fa-times"></i></button>
                 </div>
                 <form action="index.php?controller=Productos&action=update" method="POST">
                     <input type="hidden" name="id" value="${p.id}">
@@ -250,9 +438,17 @@
     }
 
     function closeEditOverlay(e, force = false) {
-        if (force || (e && e.target.id === 'editOverlay')) {
-            document.getElementById('editOverlay').classList.remove('active');
-            document.body.classList.remove('no-scroll'); 
+        if (force) {
+            execCloseModal('editOverlay');
+            return;
+        }
+
+        const isClickOutside = e && e.target.id === 'editOverlay';
+        const isXButton = !e;
+
+        if (isClickOutside || isXButton) {
+            activeOverlayId = 'editOverlay';
+            showConfirmModal();
         }
     }
 </script>
