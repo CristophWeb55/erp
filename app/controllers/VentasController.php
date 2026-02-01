@@ -32,12 +32,26 @@ class VentasController extends Controller
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $ventasModel = new Ventas();
+
+            // Recibir items como array (desde PHP o JSON)
+            $items = [];
+            if (isset($_POST['items_json'])) {
+                $items = json_decode($_POST['items_json'], true);
+            } else {
+                // Fallback para MVP anterior si es necesario
+                $items[] = [
+                    'producto_id' => $_POST['producto_id'],
+                    'cantidad' => $_POST['cantidad'],
+                    'precio_unitario' => $_POST['precio_unitario']
+                ];
+            }
+
             $data = [
                 'cliente_id' => $_POST['cliente_id'],
-                'fecha_emision' => $_POST['fecha_emision'],
-                'producto_id' => $_POST['producto_id'],
-                'cantidad' => $_POST['cantidad'],
-                'precio_unitario' => $_POST['precio_unitario']
+                'fecha_emision' => $_POST['fecha_emision'] ?? date('Y-m-d'),
+                'fecha_vencimiento' => $_POST['fecha_vencimiento'] ?? date('Y-m-d', strtotime('+15 days')),
+                'descuento_porcentaje' => $_POST['descuento_porcentaje'] ?? 0,
+                'items' => $items
             ];
 
             if ($ventasModel->create($data)) {
@@ -56,4 +70,32 @@ class VentasController extends Controller
             exit;
         }
     }
+
+    public function convertToPedido()
+    {
+        $id = $_GET['id'];
+        $ventasModel = new Ventas();
+        if ($ventasModel->convertToPedido($id)) {
+            header('Location: index.php?controller=Ventas&action=index&msg=converted');
+            exit;
+        } else {
+            header('Location: index.php?controller=Ventas&action=index&error=conversion_failed');
+            exit;
+        }
+    }
+
+    public function newVersion()
+    {
+        $id = $_GET['id'];
+        $ventasModel = new Ventas();
+        if ($ventasModel->duplicateAsNewVersion($id)) {
+            header('Location: index.php?controller=Ventas&action=index&msg=new_version_created');
+            exit;
+        } else {
+            header('Location: index.php?controller=Ventas&action=index&error=version_failed');
+            exit;
+        }
+    }
 }
+
+
