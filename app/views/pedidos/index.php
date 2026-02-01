@@ -174,12 +174,13 @@
                                     </button>
                                 <?php endif; ?>
 
-                                <button title="Ver Detalle" class="btn" onclick="alert('Detalle en construcción')"
-                                    style="width: 38px; height: 38px; border-radius: 12px; background: rgba(59, 130, 246, 0.1); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); font-size: 15px;"
+                                <a title="Ver Detalle" href="index.php?controller=Pedidos&action=detalle&id=<?= $p['id'] ?>"
+                                    class="btn"
+                                    style="width: 38px; height: 38px; border-radius: 12px; background: rgba(59, 130, 246, 0.1); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); font-size: 15px; text-decoration: none;"
                                     onmouseover="this.style.background='#3b82f6'; this.style.color='white'; this.style.transform='translateY(-2px)';"
                                     onmouseout="this.style.background='rgba(59, 130, 246, 0.1)'; this.style.color='#3b82f6'; this.style.transform='none';">
                                     <i class="fas fa-eye"></i>
-                                </button>
+                                </a>
 
                                 <button title="PDF / Imprimir" class="btn" onclick="alert('Generación de PDF próximamente')"
                                     style="width: 38px; height: 38px; border-radius: 12px; background: rgba(100, 116, 139, 0.1); color: #64748b; border: 1px solid rgba(100, 116, 139, 0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); font-size: 15px;"

@@ -54,4 +54,28 @@ class PedidosController extends Controller
             exit;
         }
     }
+
+    public function detalle()
+    {
+        if (isset($_GET['id'])) {
+            $id = $_GET['id'];
+            $pedidosModel = new Pedidos();
+            $pedido = $pedidosModel->getById($id);
+
+            if (!$pedido) {
+                header('Location: index.php?controller=Pedidos&action=index');
+                exit;
+            }
+
+            $data = [
+                'pageTitle' => 'Detalle de Pedido: ' . $pedido['folio'],
+                'controller' => 'Pedidos',
+                'pedido' => $pedido
+            ];
+
+            $this->view('pedidos/view', $data);
+        } else {
+            header('Location: index.php?controller=Pedidos&action=index');
+        }
+    }
 }
