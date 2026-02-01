@@ -113,7 +113,7 @@ class VentasController extends Controller
         ];
 
         // Usamos una vista especial para PDF sin el layout normal de la app
-        $this->view('ventas/export_pdf', $data);
+        $this->rawView('ventas/export_pdf', $data);
     }
 }
 
