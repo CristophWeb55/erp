@@ -500,3 +500,64 @@ td:last-child {
     background: white;
     box-shadow: 0 0 0 4px rgba(41, 56, 135, 0.1);
 }
+
+/* 🔄 Flip Card Experience System */
+.module-perspective {
+    perspective: 2000px;
+    width: 100%;
+    min-height: 80vh;
+    position: relative;
+}
+
+.module-flipper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-style: preserve-3d;
+}
+
+.module-perspective.is-flipped .module-flipper {
+    transform: rotateY(180deg);
+}
+
+.view-front,
+.view-back {
+    width: 100%;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    top: 0;
+    left: 0;
+}
+
+.view-back {
+    position: absolute;
+    transform: rotateY(180deg);
+    z-index: 2;
+}
+
+/* Animación de carga para el flip */
+.flip-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 100;
+    display: none;
+}
+
+.flip-loading i {
+    font-size: 50px;
+    color: var(--accent-color);
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}

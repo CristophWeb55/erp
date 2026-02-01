@@ -100,5 +100,19 @@ class ProductosController extends Controller
         echo json_encode($productos);
         exit;
     }
+
+    public function getOne()
+    {
+        $id = $_GET['id'] ?? null;
+        if (!$id) {
+            $this->json(['error' => 'ID missing']);
+        }
+
+        $productosModel = new Productos();
+        $producto = $productosModel->getById($id);
+
+        $this->json($producto);
+    }
 }
+
 
