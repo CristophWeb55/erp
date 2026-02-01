@@ -244,7 +244,7 @@
 </div>
 
 <!-- ⚠️ MODAL DE CONFIRMACIÓN GLASSMORPHISM -->
-<div id="confirmCloseOverlay" class="edit-overlay" style="z-index: 2000;">
+<div id="confirmCloseOverlay" class="edit-overlay" style="z-index: 30000;">
     <div class="edit-panel" style="max-width: 400px; padding: 30px; text-align: center; border-radius: 30px;" onclick="event.stopPropagation()">
         <div style="width: 70px; height: 70px; background: rgba(227, 81, 86, 0.1); color: var(--accent-secondary); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 30px; margin: 0 auto 20px;">
             <i class="fas fa-exclamation-triangle"></i>
@@ -508,14 +508,16 @@
     }
 
     function closeQuoteOverlay(e, force = false) {
+        // DETENER TODO: Si el usuario intenta cerrar (clic fuera o X)
         const isClickOutside = e && e.target.id === 'quoteOverlay';
 
         if (force || isClickOutside) {
-            // Si hay items, mostrar el modal de confirmación premium
+            // SI HAY ITEMS: Bloquear y mostrar modal premium
             if (quoteItems.length > 0) {
                 showConfirmModal();
-                return;
+                return false; // Evita el cierre
             }
+            // SI NO HAY ITEMS: Cerrar directamente
             execCloseQuote();
         }
     }
