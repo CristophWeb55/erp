@@ -159,9 +159,10 @@
                                         style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; background: #f59e0b; color: white; border-radius: 10px; text-decoration: none; box-shadow: 0 4px 10px rgba(245, 158, 11, 0.2);"><i
                                             class="fas fa-layer-group"></i></a>
                                 <?php endif; ?>
-                                <button onclick="window.print()" title="Imprimir / PDF"
-                                    style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; background: #f1f5f9; color: var(--text-primary); border: none; border-radius: 10px; cursor: pointer;"><i
-                                        class="fas fa-file-pdf"></i></button>
+                                <a href="index.php?controller=Ventas&action=exportPDF&id=<?= $c['id'] ?>" target="_blank"
+                                    title="Exportar PDF / Imprimir"
+                                    style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; background: #fff1f2; color: #e35156; border-radius: 10px; text-decoration: none;"><i
+                                        class="fas fa-file-pdf"></i></a>
                             </div>
                         </td>
                     </tr>

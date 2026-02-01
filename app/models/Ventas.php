@@ -203,6 +203,26 @@ class Ventas
             return false;
         }
     }
+    public function getOneWithDetails($id)
+    {
+        $stmt = $this->db->prepare("SELECT c.*, t.nombre_razon_social, t.rfc, t.direccion, t.email, t.telefono 
+                                     FROM cotizaciones c 
+                                     JOIN terceros t ON c.cliente_id = t.id 
+                                     WHERE c.id = ?");
+        $stmt->execute([$id]);
+        $cotizacion = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($cotizacion) {
+            $stmt = $this->db->prepare("SELECT d.*, p.sku, p.descripcion 
+                                         FROM cotizacion_detalle d 
+                                         JOIN productos p ON d.producto_id = p.id 
+                                         WHERE d.cotizacion_id = ?");
+            $stmt->execute([$id]);
+            $cotizacion['items'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        return $cotizacion;
+    }
 }
 
 

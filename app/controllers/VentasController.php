@@ -97,6 +97,24 @@ class VentasController extends Controller
             exit;
         }
     }
+
+    public function exportPDF()
+    {
+        $id = $_GET['id'];
+        $ventasModel = new Ventas();
+        $cotizacion = $ventasModel->getOneWithDetails($id);
+
+        if (!$cotizacion) {
+            die("Cotización no encontrada");
+        }
+
+        $data = [
+            'cot' => $cotizacion
+        ];
+
+        // Usamos una vista especial para PDF sin el layout normal de la app
+        $this->view('ventas/export_pdf', $data);
+    }
 }
 
 
