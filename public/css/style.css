@@ -557,11 +557,32 @@ td:last-child {
     border-radius: 10px;
 }
 
-/* Bloqueo de scroll */
-.no-scroll,
+/* 🔐 Premium Lock Experience (The Glass Lock) */
+.no-scroll .sidebar,
+.no-scroll .header,
+.no-scroll .content-area {
+    filter: blur(12px) brightness(0.85);
+    transform: scale(0.97);
+    pointer-events: none;
+    /* Bloqueo físico total */
+    user-select: none;
+}
+
 .no-scroll .main-wrapper {
     overflow: hidden !important;
 }
+
+/* Transiciones suaves */
+.sidebar,
+.header,
+.content-area {
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.edit-panel {
+    box-shadow: 0 50px 100px rgba(0, 0, 0, 0.3);
+}
+
 
 
 

@@ -138,7 +138,9 @@
 
 <script>
     function openModal() { 
-        document.getElementById('modalProducto').style.display = 'flex'; 
+        const modal = document.getElementById('modalProducto');
+        document.body.appendChild(modal); // Portal al body
+        modal.style.display = 'flex'; 
         document.body.classList.add('no-scroll');
     }
     function closeModal() { 
@@ -162,13 +164,16 @@
         }
     }
 
-    // 🎭 LÓGICA DE OVERLAY DE EDICIÓN
+    // 🎭 LÓGICA DE OVERLAY DE EDICIÓN PREMIUM
     async function openEditOverlay(productId) {
         const overlay = document.getElementById('editOverlay');
         const content = document.getElementById('editOverlayContent');
+        
+        document.body.appendChild(overlay); // Portal al body para el efecto Glass Lock
         overlay.classList.add('active');
-        document.body.classList.add('no-scroll'); // Bloquear scroll
-        content.innerHTML = '<div style="text-align: center; padding: 100px;"><i class="fas fa-circle-notch fa-spin" style="font-size: 60px; color: var(--accent-color);"></i><p style="margin-top: 20px;">Cargando producto...</p></div>';
+        document.body.classList.add('no-scroll'); 
+        
+        content.innerHTML = '<div style="text-align: center; padding: 100px;"><i class="fas fa-circle-notch fa-spin" style="font-size: 60px; color: var(--accent-color);"></i><p style="margin-top: 20px; font-weight: 600;">Cargando información premium...</p></div>';
 
         try {
             const response = await fetch(`index.php?controller=Productos&action=getOne&id=${productId}`);
@@ -176,35 +181,37 @@
 
             const stockActual = parseInt(p.stock_actual) || 0;
             const stockMinimo = parseInt(p.stock_minimo) || 10;
-            const percentage = Math.min(100, (stockActual / (stockMinimo * 2)) * 100);
             const status = stockActual <= 0 ? {c:'#ef4444', t:'Sin Stock'} : (stockActual < stockMinimo ? {c:'#f59e0b', t:'Stock Bajo'} : {c:'#10b981', t:'En Stock'});
 
             content.innerHTML = `
                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 40px;">
-                    <h2 style="font-weight: 800; color: var(--text-primary); margin: 0;">Editar Registro: ${p.sku}</h2>
-                    <button onclick="closeEditOverlay(null, true)" style="background: #f1f5f9; border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer;"><i class="fas fa-times"></i></button>
+                    <div>
+                        <h2 style="font-weight: 800; color: var(--text-primary); margin: 0; font-size: 26px; letter-spacing: -1px;">Editar Registro: ${p.sku}</h2>
+                        <p style="color: var(--text-secondary); margin: 0; font-size: 14px;">Actualiza la información técnica y comercial del producto.</p>
+                    </div>
+                    <button onclick="closeEditOverlay(null, true)" style="background: #f1f5f9; border: none; width: 50px; height: 50px; border-radius: 50%; cursor: pointer;"><i class="fas fa-times"></i></button>
                 </div>
                 <form action="index.php?controller=Productos&action=update" method="POST">
                     <input type="hidden" name="id" value="${p.id}">
                     <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 40px;">
                         <div>
                             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px;">
-                                <div><label class="form-label">SKU / CÓDIGO</label><input type="text" name="sku" value="${p.sku}" required class="form-input" style="font-weight: 700;"></div>
-                                <div><label class="form-label">PRECIO VENTA</label><input type="number" step="0.01" name="precio_venta" value="${p.precio_venta}" required class="form-input" style="font-weight: 700; color: var(--accent-color);"></div>
+                                <div><label class="form-label">SKU / CÓDIGO INTERNO</label><input type="text" name="sku" value="${p.sku}" required class="form-input" style="font-weight: 700;"></div>
+                                <div><label class="form-label">PRECIO VENTA (MXN)</label><input type="number" step="0.01" name="precio_venta" value="${p.precio_venta}" required class="form-input" style="font-weight: 800; color: var(--accent-secondary);"></div>
                             </div>
-                            <div style="margin-bottom: 25px;"><label class="form-label">DESCRIPCIÓN</label><textarea name="descripcion" required rows="4" class="form-input">${p.descripcion}</textarea></div>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; background: rgba(0,0,0,0.02); padding: 20px; border-radius: 20px; border: 1px solid rgba(0,0,0,0.05);">
+                            <div style="margin-bottom: 25px;"><label class="form-label">DESCRIPCIÓN COMERCIAL</label><textarea name="descripcion" required rows="4" class="form-input" style="line-height: 1.6;">${p.descripcion}</textarea></div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; background: #f8fafc; padding: 25px; border-radius: 25px; border: 1px solid #e2e8f0;">
                                 <div><label class="form-label">STOCK MÍNIMO</label><input type="number" name="stock_minimo" value="${stockMinimo}" required class="form-input"></div>
-                                <div><label class="form-label">ESTADO ACTUAL</label><div style="font-size: 24px; font-weight: 800; color: ${status.c}">${stockActual} <span style="font-size: 12px; color: #94a3b8;">unidades</span></div></div>
+                                <div><label class="form-label">ESTADO ACTUAL</label><div style="font-size: 24px; font-weight: 900; color: ${status.c}">${stockActual} <span style="font-size: 12px; color: #94a3b8; font-weight: 500;">unidades</span></div></div>
                             </div>
                         </div>
                         <div style="display: flex; flex-direction: column; gap: 25px;">
-                            <div style="background: white; padding: 20px; border-radius: 25px; border: 1px solid #e2e8f0;">
-                                <label class="form-label">URL IMAGEN</label><input type="text" name="imagen_url" value="${p.imagen_url || ''}" id="editImgUrl" class="form-input" style="margin-bottom: 15px;">
-                                <div style="width: 100%; aspect-ratio: 1; border-radius: 15px; border: 1px solid #f1f5f9; overflow: hidden; display: flex; align-items: center; justify-content: center;"><img id="editImgPreview" src="${p.imagen_url || ''}" style="width: 100%; height: 100%; object-fit: contain; display: ${p.imagen_url ? 'block' : 'none'}"><i id="editImgPlaceholder" class="fas fa-image" style="font-size: 50px; opacity: 0.1; display: ${p.imagen_url ? 'none' : 'block'}"></i></div>
+                            <div style="background: white; padding: 25px; border-radius: 30px; border: 1px solid #e2e8f0;">
+                                <label class="form-label">URL DE IMAGEN</label><input type="text" name="imagen_url" value="${p.imagen_url || ''}" id="editImgUrl" class="form-input" style="margin-bottom: 15px;">
+                                <div style="width: 100%; aspect-ratio: 1; border-radius: 20px; border: 1px dashed #cbd5e1; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #f8fafc;"><img id="editImgPreview" src="${p.imagen_url || ''}" style="width: 100%; height: 100%; object-fit: contain; display: ${p.imagen_url ? 'block' : 'none'}"><i id="editImgPlaceholder" class="fas fa-image" style="font-size: 50px; opacity: 0.1; display: ${p.imagen_url ? 'none' : 'block'}"></i></div>
                             </div>
-                            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 20px; border-radius: 20px; font-weight: 800; font-size: 16px;"><i class="fas fa-save"></i> GUARDAR CAMBIOS</button>
-                            <button type="button" onclick="closeEditOverlay(null, true)" class="btn" style="width: 100%; background: #f1f5f9; padding: 15px; border-radius: 15px;">CANCELAR</button>
+                            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 20px; border-radius: 20px; font-weight: 800; font-size: 16px;"><i class="fas fa-save"></i> ACTUALIZAR REGISTRO</button>
+                            <button type="button" onclick="closeEditOverlay(null, true)" class="btn" style="width: 100%; background: #f1f5f9; padding: 15px; border-radius: 15px; font-weight: 700;">CANCELAR</button>
                         </div>
                     </div>
                 </form>
@@ -222,9 +229,9 @@
     }
 
     function closeEditOverlay(e, force = false) {
-        if (force || e.target.id === 'editOverlay') {
+        if (force || (e && e.target.id === 'editOverlay')) {
             document.getElementById('editOverlay').classList.remove('active');
-            document.body.classList.remove('no-scroll'); // Restaurar scroll
+            document.body.classList.remove('no-scroll'); 
         }
     }
 </script>
