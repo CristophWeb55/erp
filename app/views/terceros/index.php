@@ -293,11 +293,11 @@
     }
 
     // Preview de imagen al seleccionar
-    document.getElementById('imagenInput')?.addEventListener('change', function  (e) {
+    document.getElementById('imagenInput')?.addEventListener('change', function (e) {
         const file = e.target.files[0];
         if (file) {
             const reader = new FileReader();
-            reader.onload = functio n (event) {
+            reader.onload = function (event) {
                 document.getElementById('imagePreviewContainer').innerHTML = `<img src="${event.target.result}" style="width: 100%; height: 100%; object-fit: cover;">`;
             }
             reader.readAsDataURL(file);
@@ -305,7 +305,7 @@
     });
 
     function closeModal(e) {
-        if (!e || e.target.id === 'modalTercero' || e.type === 'click') {
+        if (!e || e.target.id === 'modalTercero') {
             document.getElementById('modalTercero').classList.remove('active');
             document.body.classList.remove('no-scroll');
         }
