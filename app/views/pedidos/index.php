@@ -27,7 +27,8 @@
                 <div>
                     <h3 style="margin: 0; font-size: 24px; font-weight: 800; color: var(--text-primary);">
                         <?= count(array_filter($pedidos, function ($p) {
-                            return $p['estatus'] == 'Pendiente'; })) ?>
+                            return $p['estatus'] == 'Pendiente';
+                        })) ?>
                     </h3>
                     <p style="margin: 0; font-size: 12px; color: var(--text-secondary); font-weight: 600;">Por Surtir
                     </p>
@@ -45,7 +46,8 @@
                 <div>
                     <h3 style="margin: 0; font-size: 24px; font-weight: 800; color: var(--text-primary);">
                         <?= count(array_filter($pedidos, function ($p) {
-                            return $p['estatus'] == 'Surtido'; })) ?>
+                            return $p['estatus'] == 'Surtido';
+                        })) ?>
                     </h3>
                     <p style="margin: 0; font-size: 12px; color: var(--text-secondary); font-weight: 600;">Completados
                     </p>
@@ -161,18 +163,29 @@
                             </span>
                         </td>
                         <td style="padding: 20px 25px; text-align: center;">
-                            <div style="display: flex; justify-content: center; gap: 8px;">
+                            <div style="display: flex; justify-content: center; gap: 10px;">
                                 <?php if ($p['estatus'] == 'Pendiente'): ?>
-                                    <button title="Surtir Pedido (Descontar Inventario)" class="action-btn"
+                                    <button title="Surtir Pedido (Lógica FIFO)" class="btn"
                                         onclick="confirmFulfillment(<?= $p['id'] ?>, '<?= $p['folio'] ?>')"
-                                        style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
+                                        style="width: 38px; height: 38px; border-radius: 12px; background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); font-size: 15px;"
+                                        onmouseover="this.style.background='#10b981'; this.style.color='white'; this.style.transform='translateY(-2px)';"
+                                        onmouseout="this.style.background='rgba(16, 185, 129, 0.1)'; this.style.color='#10b981'; this.style.transform='none';">
                                         <i class="fas fa-box"></i>
                                     </button>
                                 <?php endif; ?>
 
-                                <button title="Ver Detalle" class="action-btn" onclick="alert('Detalle en construcción')"
-                                    style="background: rgba(59, 130, 246, 0.1); color: #3b82f6;">
+                                <button title="Ver Detalle" class="btn" onclick="alert('Detalle en construcción')"
+                                    style="width: 38px; height: 38px; border-radius: 12px; background: rgba(59, 130, 246, 0.1); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); font-size: 15px;"
+                                    onmouseover="this.style.background='#3b82f6'; this.style.color='white'; this.style.transform='translateY(-2px)';"
+                                    onmouseout="this.style.background='rgba(59, 130, 246, 0.1)'; this.style.color='#3b82f6'; this.style.transform='none';">
                                     <i class="fas fa-eye"></i>
+                                </button>
+
+                                <button title="PDF / Imprimir" class="btn" onclick="alert('Generación de PDF próximamente')"
+                                    style="width: 38px; height: 38px; border-radius: 12px; background: rgba(100, 116, 139, 0.1); color: #64748b; border: 1px solid rgba(100, 116, 139, 0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); font-size: 15px;"
+                                    onmouseover="this.style.background='#64748b'; this.style.color='white'; this.style.transform='translateY(-2px)';"
+                                    onmouseout="this.style.background='rgba(100, 116, 139, 0.1)'; this.style.color='#64748b'; this.style.transform='none';">
+                                    <i class="fas fa-file-pdf"></i>
                                 </button>
                             </div>
                         </td>
@@ -183,33 +196,59 @@
     </table>
 </div>
 
-<!-- Modal Confirmación Surtido -->
-<div id="modalFulfill"
-    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); z-index: 2000; justify-content: center; align-items: center;">
-    <div
-        style="background: white; width: 100%; max-width: 400px; padding: 30px; border-radius: 24px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.2);">
+<!-- Modal Confirmación Surtido (Premium Style) -->
+<div id="modalFulfill" class="edit-overlay" style="display: none; align-items: center; justify-content: center;">
+    <div class="edit-panel" style="max-width: 450px; text-align: center; padding: 40px; border-radius: 32px;">
         <div
-            style="width: 70px; height: 70px; background: rgba(16, 185, 129, 0.1); color: #10b981; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 30px; margin: 0 auto 20px;">
+            style="width: 80px; height: 80px; background: rgba(16, 185, 129, 0.1); color: #10b981; border-radius: 24px; display: flex; align-items: center; justify-content: center; font-size: 35px; margin: 0 auto 25px; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.1);">
             <i class="fas fa-box-open"></i>
         </div>
-        <h3 style="margin: 0 0 10px 0; color: var(--text-primary); font-weight: 800;">¿Surtir Pedido?</h3>
-        <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 25px;">
-            Se descontarán los productos del inventario usando FIFO (Primeras entradas, primeras salidas). Esta acción
-            no se puede deshacer.
+        <h2
+            style="margin: 0 0 12px 0; color: var(--text-primary); font-weight: 800; font-size: 24px; letter-spacing: -0.5px;">
+            ¿Surtir Pedido?</h2>
+        <p style="color: var(--text-secondary); font-size: 15px; line-height: 1.6; margin-bottom: 30px;">
+            Se descontarán los productos del inventario usando la lógica <strong>FIFO</strong>.
+            Esta operación generará los movimientos de almacén y no puede revertirse.
         </p>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-            <button onclick="document.getElementById('modalFulfill').style.display = 'none'" class="btn"
-                style="background: #f1f5f9; color: var(--text-secondary); font-weight: 700;">Cancelar</button>
+            <button onclick="closeFulfillModal()" class="btn"
+                style="background: #f1f5f9; color: var(--text-secondary); font-weight: 700; height: 50px; border-radius: 16px;">Cancelar</button>
             <a id="btnConfirmFulfill" href="#" class="btn btn-primary"
-                style="background: #10b981; text-decoration: none; display: flex; align-items: center; justify-content: center;">Sí,
-                Surtir</a>
+                style="background: #10b981; color: white; text-decoration: none; display: flex; align-items: center; justify-content: center; font-weight: 700; height: 50px; border-radius: 16px; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);">
+                Confirmar Surtido
+            </a>
         </div>
     </div>
 </div>
 
 <script>
+    // Mover el modal al final del body al cargar para evitar el blur del contenedor padre
+    document.addEventListener('DOMContentLoaded', function () {
+        const modal = document.getElementById('modalFulfill');
+        document.body.appendChild(modal);
+    });
+
     function confirmFulfillment(id, folio) {
         document.getElementById('btnConfirmFulfill').href = `index.php?controller=Pedidos&action=fulfill&id=${id}`;
-        document.getElementById('modalFulfill').style.display = 'flex';
+        const modal = document.getElementById('modalFulfill');
+        modal.style.display = 'flex';
+        setTimeout(() => modal.classList.add('active'), 10);
+        document.body.classList.add('no-scroll');
     }
+
+    function closeFulfillModal() {
+        const modal = document.getElementById('modalFulfill');
+        modal.classList.remove('active');
+        setTimeout(() => {
+            modal.style.display = 'none';
+            document.body.classList.remove('no-scroll');
+        }, 300);
+    }
+
+    // Cerrar si se hace click fuera del modal (overlay)
+    document.getElementById('modalFulfill').addEventListener('click', function (event) {
+        if (event.target === this) {
+            closeFulfillModal();
+        }
+    });
 </script>
