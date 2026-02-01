@@ -558,10 +558,11 @@ td:last-child {
 }
 
 /* Bloqueo de scroll */
-.no-scroll {
+.no-scroll,
+.no-scroll .main-wrapper {
     overflow: hidden !important;
-    height: 100vh;
 }
+
 
 
 @keyframes spin {
