@@ -174,18 +174,18 @@
 
 <!-- 🎭 OVERLAY DEL CREADOR DE COTIZACIONES DINÁMICO -->
 <div id="quoteOverlay" class="edit-overlay" onclick="closeQuoteOverlay(event)">
-    <div class="edit-panel" style="max-width: 1000px;" onclick="event.stopPropagation()">
+    <div class="edit-panel" style="max-width: 1000px; padding: 25px;" onclick="event.stopPropagation()">
         <div id="quoteOverlayContent">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
                 <div>
                     <h2
-                        style="font-weight: 800; color: var(--text-primary); margin: 0; font-size: 26px; letter-spacing: -1px;">
+                        style="font-weight: 800; color: var(--text-primary); margin: 0; font-size: 22px; letter-spacing: -1px;">
                         Nueva Cotización Premium</h2>
-                    <p style="color: var(--text-secondary); margin: 0; font-size: 14px;">Arma tu oferta formal agregando
+                    <p style="color: var(--text-secondary); margin: 0; font-size: 13px;">Arma tu oferta formal agregando
                         múltiples productos.</p>
                 </div>
                 <button onclick="closeQuoteOverlay(null, true)"
-                    style="background: #f1f5f9; border: none; width: 50px; height: 50px; border-radius: 50%; cursor: pointer;"><i
+                    style="background: #f1f5f9; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer;"><i
                         class="fas fa-times"></i></button>
             </div>
 
@@ -194,18 +194,18 @@
 
                 <!-- 🏗️ ESTRUCTURA DE CABECERA (Imagen 2) -->
                 <div
-                    style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px; margin-bottom: 40px; background: rgba(255,255,255,0.5); padding: 30px; border-radius: 20px; border: 1px solid var(--glass-border);">
+                    style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 20px; margin-bottom: 20px; background: rgba(255,255,255,0.5); padding: 20px; border-radius: 15px; border: 1px solid var(--glass-border);">
                     <!-- Columna Izquierda: Cliente -->
                     <div>
-                        <h3 style="margin: 0 0 20px 0; font-size: 18px; font-weight: 800; color: var(--text-primary);">
-                            <i class="fas fa-user-tie" style="margin-right: 10px; color: var(--accent-color);"></i>
+                        <h3 style="margin: 0 0 10px 0; font-size: 16px; font-weight: 800; color: var(--text-primary);">
+                            <i class="fas fa-user-tie" style="margin-right: 8px; color: var(--accent-color);"></i>
                             Cliente
                         </h3>
-                        <div style="margin-bottom: 20px;">
-                            <label class="form-label" style="font-size: 11px; letter-spacing: 0.5px;">Sleccionar
+                        <div style="margin-bottom: 12px;">
+                            <label class="form-label" style="font-size: 10px; letter-spacing: 0.5px; margin-bottom: 4px;">Seleccionar
                                 Cliente</label>
                             <select name="cliente_id" required class="form-input"
-                                style="font-weight: 700; background: white;">
+                                style="font-weight: 700; background: white; padding: 10px;">
                                 <option value="">🔍 Buscar o seleccionar cliente...</option>
                                 <?php foreach ($clientes as $cl): ?>
                                     <option value="<?= $cl['id'] ?>"><?= $cl['nombre_razon_social'] ?> (<?= $cl['rfc'] ?>)
@@ -214,42 +214,42 @@
                             </select>
                         </div>
                         <div>
-                            <label class="form-label" style="font-size: 11px; letter-spacing: 0.5px;">Contacto</label>
-                            <select name="contacto_id" class="form-input" style="background: white;">
+                            <label class="form-label" style="font-size: 10px; letter-spacing: 0.5px; margin-bottom: 4px;">Contacto</label>
+                            <select name="contacto_id" class="form-input" style="background: white; padding: 10px;">
                                 <option value="">Seleccionar contacto...</option>
                             </select>
                         </div>
                     </div>
 
                     <!-- Columna Derecha: Términos Generales -->
-                    <div style="border-left: 1px solid #e2e8f0; padding-left: 40px;">
-                        <h3 style="margin: 0 0 20px 0; font-size: 18px; font-weight: 800; color: var(--text-primary);">
-                            <i class="fas fa-file-contract" style="margin-right: 10px; color: var(--accent-color);"></i>
+                    <div style="border-left: 1px solid #e2e8f0; padding-left: 20px;">
+                        <h3 style="margin: 0 0 10px 0; font-size: 16px; font-weight: 800; color: var(--text-primary);">
+                            <i class="fas fa-file-contract" style="margin-right: 8px; color: var(--accent-color);"></i>
                             Términos Generales
                         </h3>
-                        <div style="display: grid; grid-template-columns: 1fr; gap: 15px;">
+                        <div style="display: grid; grid-template-columns: 1fr; gap: 10px;">
                             <div>
-                                <label class="form-label" style="font-size: 11px;">Moneda</label>
+                                <label class="form-label" style="font-size: 10px; margin-bottom: 4px;">Moneda</label>
                                 <select name="moneda" id="currencySelect" class="form-input"
                                     onchange="updateCurrencyUI()"
-                                    style="font-weight: 800; color: var(--accent-color); background: white;">
+                                    style="font-weight: 800; color: var(--accent-color); background: white; padding: 10px;">
                                     <option value="MXN">MXN - Peso Mexicano</option>
                                     <option value="USD">USD - Dólar Estadounidense</option>
                                 </select>
                             </div>
                             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                                 <div>
-                                    <label class="form-label" style="font-size: 11px;">Validez</label>
-                                    <select name="vigencia" class="form-input" style="background: white;">
+                                    <label class="form-label" style="font-size: 10px; margin-bottom: 4px;">Validez</label>
+                                    <select name="vigencia" class="form-input" style="background: white; padding: 10px;">
                                         <option value="15">15 Días</option>
                                         <option value="30" selected>30 Días</option>
                                         <option value="60">60 Días</option>
                                     </select>
                                 </div>
                                 <div>
-                                    <label class="form-label" style="font-size: 11px;">Fecha de Cotización</label>
+                                    <label class="form-label" style="font-size: 10px; margin-bottom: 4px;">Fecha de Cotización</label>
                                     <input type="date" name="fecha_emision" value="<?= date('Y-m-d') ?>"
-                                        class="form-input" style="background: white;">
+                                        class="form-input" style="background: white; padding: 10px;">
                                 </div>
                             </div>
                         </div>
@@ -258,16 +258,16 @@
 
                 <!-- 🛒 SELECTOR DE PRODUCTOS (Imagen 2) -->
                 <div
-                    style="background: white; padding: 25px; border-radius: 20px; border: 1px solid #e2e8f0; margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
+                    style="background: white; padding: 15px; border-radius: 15px; border: 1px solid #e2e8f0; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
                     <div
-                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                        <h3 style="margin: 0; font-size: 20px; font-weight: 800; color: var(--text-primary);">Productos
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <h3 style="margin: 0; font-size: 18px; font-weight: 800; color: var(--text-primary);">Productos
                         </h3>
-                        <div style="position: relative; width: 350px;">
+                        <div style="position: relative; width: 300px;">
                             <i class="fas fa-search"
-                                style="position: absolute; left: 15px; top: 15px; color: #94a3b8;"></i>
+                                style="position: absolute; left: 12px; top: 12px; color: #94a3b8; font-size: 12px;"></i>
                             <input type="text" id="productSearch" placeholder="Buscar producto por SKU o nombre..."
-                                class="form-input" style="padding-left: 45px; background: #f8fafc;">
+                                class="form-input" style="padding-left: 35px; background: #f8fafc; height: 35px; font-size: 12px;">
                         </div>
                     </div>
 
@@ -275,24 +275,24 @@
                         <thead>
                             <tr style="border-bottom: 1px solid #e2e8f0;">
                                 <th
-                                    style="padding: 15px; text-align: left; font-size: 12px; color: var(--text-secondary); text-transform: uppercase;">
+                                    style="padding: 10px; text-align: left; font-size: 11px; color: var(--text-secondary); text-transform: uppercase;">
                                     Producto</th>
                                 <th
-                                    style="padding: 15px; text-align: left; font-size: 12px; color: var(--text-secondary); text-transform: uppercase;">
+                                    style="padding: 10px; text-align: left; font-size: 11px; color: var(--text-secondary); text-transform: uppercase;">
                                     SKU</th>
                                 <th
-                                    style="padding: 15px; text-align: center; font-size: 12px; color: var(--text-secondary); text-transform: uppercase;">
+                                    style="padding: 10px; text-align: center; font-size: 11px; color: var(--text-secondary); text-transform: uppercase;">
                                     Cantidad</th>
                                 <th
-                                    style="padding: 15px; text-align: right; font-size: 12px; color: var(--text-secondary); text-transform: uppercase;">
+                                    style="padding: 10px; text-align: right; font-size: 11px; color: var(--text-secondary); text-transform: uppercase;">
                                     Precio Unitario</th>
                                 <th
-                                    style="padding: 15px; text-align: center; font-size: 12px; color: var(--text-secondary); text-transform: uppercase;">
+                                    style="padding: 10px; text-align: center; font-size: 11px; color: var(--text-secondary); text-transform: uppercase;">
                                     Descuento</th>
                                 <th
-                                    style="padding: 15px; text-align: right; font-size: 12px; color: var(--text-secondary); text-transform: uppercase;">
+                                    style="padding: 10px; text-align: right; font-size: 11px; color: var(--text-secondary); text-transform: uppercase;">
                                     Subtotal</th>
-                                <th style="padding: 15px;"></th>
+                                <th style="padding: 10px;"></th>
                             </tr>
                         </thead>
                         <tbody id="itemsBody">
@@ -302,11 +302,11 @@
 
                     <!-- BARRA DE AGREGAR RÁPIDA -->
                     <div
-                        style="display: grid; grid-template-columns: 2fr 0.8fr 1fr 0.5fr; gap: 15px; margin-top: 20px; align-items: flex-end; padding-top: 20px; border-top: 1px dashed #e2e8f0;">
+                        style="display: grid; grid-template-columns: 2fr 0.8fr 1fr 0.5fr; gap: 12px; margin-top: 12px; align-items: flex-end; padding-top: 12px; border-top: 1px dashed #e2e8f0;">
                         <div>
-                            <label style="font-size: 11px; font-weight: 700; color: var(--text-secondary);">PRODUCTO A
+                            <label style="font-size: 10px; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">PRODUCTO A
                                 AGREGAR</label>
-                            <select id="productSelect" class="form-input" onchange="updatePriceHint()">
+                            <select id="productSelect" class="form-input" onchange="updatePriceHint()" style="height: 38px; font-size: 12px; padding: 0 10px;">
                                 <option value="">Selecciona un item...</option>
                                 <?php foreach ($productos as $prod): ?>
                                     <option value="<?= $prod['id'] ?>" data-price="<?= $prod['precio_venta'] ?>"
@@ -318,50 +318,50 @@
                         </div>
                         <div>
                             <label
-                                style="font-size: 11px; font-weight: 700; color: var(--text-secondary);">CANT.</label>
-                            <input type="number" id="itemQty" value="1" min="1" class="form-input">
+                                style="font-size: 10px; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">CANT.</label>
+                            <input type="number" id="itemQty" value="1" min="1" class="form-input" style="height: 38px; font-size: 12px;">
                         </div>
                         <div>
-                            <label style="font-size: 11px; font-weight: 700; color: var(--text-secondary);">PRECIO UNIT.
+                            <label style="font-size: 10px; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">PRECIO UNIT.
                                 (<span class="currency-symbol">$</span>)</label>
-                            <input type="number" id="itemPrice" step="0.01" class="form-input">
+                            <input type="number" id="itemPrice" step="0.01" class="form-input" style="height: 38px; font-size: 12px;">
                         </div>
                         <button type="button" onclick="addItem()" class="btn btn-primary"
-                            style="height: 50px; width: 100%; border-radius: 12px;"><i class="fas fa-plus"></i></button>
+                            style="height: 38px; width: 100%; border-radius: 10px;"><i class="fas fa-plus"></i></button>
                     </div>
                 </div>
 
                 <!-- 💰 FOOTER: RESUMEN Y ACCIONES (Imagen 2) -->
-                <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 40px; align-items: flex-start;">
+                <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 20px; align-items: flex-start;">
                     <div>
                         <!-- Espacio para notas o comentarios adicionales si se desea -->
                     </div>
                     <div
-                        style="background: white; border-radius: 20px; border: 1px solid #e2e8f0; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.03);">
-                        <h3 style="margin: 0 0 20px 0; font-size: 18px; font-weight: 800; color: var(--text-primary);">
+                        style="background: white; border-radius: 15px; border: 1px solid #e2e8f0; padding: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.03);">
+                        <h3 style="margin: 0 0 12px 0; font-size: 16px; font-weight: 800; color: var(--text-primary);">
                             Resumen</h3>
                         <div
-                            style="display: flex; justify-content: space-between; margin-bottom: 12px; color: var(--text-secondary);">
+                            style="display: flex; justify-content: space-between; margin-bottom: 8px; color: var(--text-secondary); font-size: 13px;">
                             <span style="font-weight: 600;">Subtotal:</span>
                             <span id="lblSubtotal" style="font-weight: 700; color: var(--text-primary);">$0.00</span>
                         </div>
                         <div
-                            style="display: flex; justify-content: space-between; margin-bottom: 12px; color: var(--text-secondary);">
-                            <span style="font-weight: 600;">Impuestos (16% IVA):</span>
+                            style="display: flex; justify-content: space-between; margin-bottom: 8px; color: var(--text-secondary); font-size: 13px;">
+                            <span style="font-weight: 600;">IVA (16%):</span>
                             <span id="lblIva" style="font-weight: 700; color: var(--text-primary);">$0.00</span>
                         </div>
                         <div
-                            style="display: flex; justify-content: space-between; padding-top: 20px; border-top: 2px solid #f1f5f9; margin-top: 10px;">
-                            <span style="font-weight: 800; color: var(--text-primary); font-size: 18px;">Total:</span>
+                            style="display: flex; justify-content: space-between; padding-top: 12px; border-top: 2px solid #f1f5f9; margin-top: 10px;">
+                            <span style="font-weight: 800; color: var(--text-primary); font-size: 16px;">Total:</span>
                             <span id="lblTotal"
-                                style="font-weight: 900; color: var(--accent-color); font-size: 24px;">$0.00</span>
+                                style="font-weight: 900; color: var(--accent-color); font-size: 20px;">$0.00</span>
                         </div>
 
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 30px;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
                             <button type="button" onclick="closeQuoteOverlay(null, true)" class="btn"
-                                style="border: 1px solid #e2e8f0; background: #f8fafc; font-weight: 700;">Cancelar</button>
+                                style="border: 1px solid #e2e8f0; background: #f8fafc; font-weight: 700; height: 40px; font-size: 13px;">Cancelar</button>
                             <button type="submit" class="btn btn-primary"
-                                style="background: var(--accent-secondary); border: none; font-weight: 800; padding: 15px;">Guardar
+                                style="background: var(--accent-secondary); border: none; font-weight: 800; padding: 0; height: 40px; font-size: 13px;">Guardar
                                 y Enviar</button>
                         </div>
                     </div>
@@ -443,22 +443,22 @@
         const body = document.getElementById('itemsBody');
         body.innerHTML = "";
         const symbol = currentCurrency === 'USD' ? 'USD $' : '$';
-
+        
         quoteItems.forEach((item, index) => {
             const row = `
                 <tr style="border-bottom: 1px solid #f1f5f9;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
-                    <td style="padding: 15px;">
-                        <div style="font-weight: 700; color: var(--text-primary); text-transform: uppercase; font-size: 13px;">${item.descripcion}</div>
+                    <td style="padding: 8px 10px;">
+                        <div style="font-weight: 700; color: var(--text-primary); text-transform: uppercase; font-size: 12px;">${item.descripcion}</div>
                     </td>
-                    <td style="padding: 15px; color: var(--text-secondary); font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600;">${item.sku}</td>
-                    <td style="padding: 15px; text-align: center;">
-                        <input type="number" value="${item.cantidad}" onchange="updateItemQty(${index}, this.value)" style="width: 70px; padding: 8px; border: 1px solid #e2e8f0; border-radius: 8px; text-align: center; font-weight: 700; color: var(--accent-color);">
+                    <td style="padding: 8px 10px; color: var(--text-secondary); font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 600;">${item.sku}</td>
+                    <td style="padding: 8px 10px; text-align: center;">
+                        <input type="number" value="${item.cantidad}" onchange="updateItemQty(${index}, this.value)" style="width: 55px; padding: 4px; border: 1px solid #e2e8f0; border-radius: 6px; text-align: center; font-weight: 700; color: var(--accent-color); font-size: 12px;">
                     </td>
-                    <td style="padding: 15px; text-align: right; font-weight: 600; color: var(--text-primary);">${symbol}${item.precio_unitario.toLocaleString('es-MX', { minimumFractionDigits: 2 })}</td>
-                    <td style="padding: 15px; text-align: center;"><span style="background: #f1f5f9; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; color: #64748b;">${item.descuento}%</span></td>
-                    <td style="padding: 15px; text-align: right; font-weight: 800; color: var(--accent-secondary); font-size: 15px;">${symbol}${item.total.toLocaleString('es-MX', { minimumFractionDigits: 2 })}</td>
-                    <td style="padding: 15px; text-align: right;">
-                        <button type="button" onclick="removeItem(${index})" style="background: #fff1f2; border: none; color: #ef4444; width: 35px; height: 35px; border-radius: 10px; cursor: pointer; transition: all 0.2s;"><i class="fas fa-trash-alt"></i></button>
+                    <td style="padding: 8px 10px; text-align: right; font-weight: 600; color: var(--text-primary); font-size: 12px;">${symbol}${item.precio_unitario.toLocaleString('es-MX', {minimumFractionDigits:2})}</td>
+                    <td style="padding: 8px 10px; text-align: center;"><span style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; color: #64748b;">${item.descuento}%</span></td>
+                    <td style="padding: 8px 10px; text-align: right; font-weight: 800; color: var(--accent-secondary); font-size: 13px;">${symbol}${item.total.toLocaleString('es-MX', {minimumFractionDigits:2})}</td>
+                    <td style="padding: 8px 10px; text-align: right;">
+                        <button type="button" onclick="removeItem(${index})" style="background: #fff1f2; border: none; color: #ef4444; width: 30px; height: 30px; border-radius: 8px; cursor: pointer; transition: all 0.2s;"><i class="fas fa-trash-alt" style="font-size: 12px;"></i></button>
                     </td>
                 </tr>
             `;
