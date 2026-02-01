@@ -95,7 +95,8 @@
                         <i class="fas fa-pencil-alt"></i>
                     </button>
                     <button title="Ver Detalles" class="action-btn" style="color: #6366f1; background: rgba(99, 102, 241, 0.1);"
-                        onclick="viewTercero(<?= $t['id'] ?>)">
+                        data-tercero='<?= htmlspecialchars(json_encode($t), ENT_QUOTES, 'UTF-8') ?>'
+                        onclick="viewTercero(JSON.parse(this.dataset.tercero))">
                         <i class="fas fa-eye"></i>
                     </button>
                     <button title="Eliminar" class="action-btn" style="color: #ef4444; background: rgba(239, 68, 68, 0.1);"
@@ -215,6 +216,67 @@
                 </div>
             </div>
         </form>
+    </div>
+</div>
+
+<!-- Modal Vista Detallada (Expediente) -->
+<div id="viewOverlay" class="edit-overlay" onclick="closeViewOverlay(event)">
+    <div class="edit-panel" style="max-width: 500px; padding: 0; overflow: hidden; border-radius: 30px;"
+        onclick="event.stopPropagation()">
+        <!-- Cabecera de Color Dinámica -->
+        <div id="viewHeader" style="height: 120px; background: var(--accent-color); position: relative;">
+            <button onclick="closeViewOverlay(null, true)"
+                style="position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.2); border: none; width: 35px; height: 35px; border-radius: 50%; color: white; cursor: pointer;">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <!-- Contenido del Expediente -->
+        <div style="padding: 0 30px 30px 30px; margin-top: -50px; text-align: center;">
+            <div id="viewImage"
+                style="width: 100px; height: 100px; border-radius: 25px; margin: 0 auto 15px; border: 4px solid white; box-shadow: 0 10px 25px rgba(0,0,0,0.1); background: white; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 40px; color: var(--accent-color); font-weight: 800;">
+            </div>
+
+            <h2 id="viewNombre" style="margin: 0; font-weight: 800; color: var(--text-primary); font-size: 22px;"></h2>
+            <div id="viewBadge" style="margin-top: 8px;"></div>
+
+            <div style="margin-top: 30px; display: grid; grid-template-columns: 1fr; gap: 20px; text-align: left;">
+                <div style="background: #f8fafc; padding: 15px; border-radius: 18px; border: 1px solid #e2e8f0;">
+                    <label
+                        style="display: block; font-size: 10px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">RFC
+                        Legal</label>
+                    <span id="viewRFC"
+                        style="font-family: monospace; font-weight: 700; color: var(--text-primary); font-size: 15px;"></span>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div style="background: #f8fafc; padding: 15px; border-radius: 18px; border: 1px solid #e2e8f0;">
+                        <label
+                            style="display: block; font-size: 10px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">Teléfono</label>
+                        <span id="viewTelefono" style="font-weight: 700; color: var(--text-primary);"></span>
+                    </div>
+                    <div style="background: #f8fafc; padding: 15px; border-radius: 18px; border: 1px solid #e2e8f0;">
+                        <label
+                            style="display: block; font-size: 10px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">Email</label>
+                        <span id="viewEmail"
+                            style="font-weight: 700; color: var(--text-primary); font-size: 12px; overflow: hidden; text-overflow: ellipsis; display: block;"></span>
+                    </div>
+                </div>
+
+                <div style="background: #f8fafc; padding: 15px; border-radius: 18px; border: 1px solid #e2e8f0;">
+                    <label
+                        style="display: block; font-size: 10px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">Dirección
+                        Registrada</label>
+                    <span id="viewDireccion"
+                        style="font-weight: 600; color: var(--text-primary); line-height: 1.5; font-size: 13px;"></span>
+                </div>
+            </div>
+
+            <button onclick="closeViewOverlay(null, true)" class="btn btn-primary"
+                style="width: 100%; margin-top: 30px; height: 50px; border-radius: 15px; font-weight: 800;">
+                Cerrar Expediente
+            </button>
+        </div>
     </div>
 </div>
 
@@ -380,7 +442,52 @@
         }
     }
 
-    function viewTercero(id) {
-        alert('Cargando expediente del tercero #' + id + '...');
+    function viewTercero(t) {
+        const overlay = document.getElementById('viewOverlay');
+        const imgContainer = document.getElementById('viewImage');
+        const nameText = document.getElementById('viewNombre');
+        const badgeContainer = document.getElementById('viewBadge');
+        const rfcText = document.getElementById('viewRFC');
+        const phoneText = document.getElementById('viewTelefono');
+        const emailText = document.getElementById('viewEmail');
+        const addressText = document.getElementById('viewDireccion');
+        const header = document.getElementById('viewHeader');
+
+        // Reset info
+        nameText.innerText = t.nombre_razon_social;
+        rfcText.innerText = t.rfc;
+        phoneText.innerText = t.telefono || 'No registrado';
+        emailText.innerText = t.email || 'No registrado';
+        addressText.innerText = t.direccion || 'Sin dirección registrada';
+
+        // Estilo según tipo
+        const typeColors = {
+            'Cliente': { bg: 'rgba(16, 185, 129, 0.1)', text: '#10b981', head: '#10b981' },
+            'Proveedor': { bg: 'rgba(245, 158, 11, 0.1)', text: '#f59e0b', head: '#f59e0b' },
+            'Ambos': { bg: 'rgba(59, 130, 246, 0.1)', text: '#3b82f6', head: '#3b82f6' }
+        };
+        const config = typeColors[t.tipo] || typeColors['Cliente'];
+
+        header.style.background = config.head;
+        badgeContainer.innerHTML = `<span style="padding: 4px 12px; border-radius: 8px; font-size: 11px; font-weight: 800; text-transform: uppercase; background: ${config.bg}; color: ${config.text};">${t.tipo}</span>`;
+
+        // Imagen o Inicial
+        if (t.imagen_url) {
+            imgContainer.innerHTML = `<img src="${t.imagen_url}" style="width: 100%; height: 100%; object-fit: cover;">`;
+        } else {
+            imgContainer.innerHTML = t.nombre_razon_social.charAt(0).toUpperCase();
+            imgContainer.style.color = config.text;
+        }
+
+        document.body.appendChild(overlay);
+        overlay.classList.add('active');
+        document.body.classList.add('no-scroll');
+    }
+
+    function closeViewOverlay(e, force = false) {
+        if (force || (e && e.target.id === 'viewOverlay')) {
+            document.getElementById('viewOverlay').classList.remove('active');
+            document.body.classList.remove('no-scroll');
+        }
     }
 </script>
