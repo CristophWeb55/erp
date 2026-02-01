@@ -1,4 +1,34 @@
 <div style="display: flex; flex-direction: column; gap: 25px;">
+    <!-- 🔔 NOTIFICACIONES -->
+    <?php if (isset($_GET['msg']) && $_GET['msg'] == 'surtido_ok'): ?>
+        <div
+            style="background: rgba(16, 185, 129, 0.1); border: 1px solid #10b981; color: #10b981; padding: 15px 25px; border-radius: 16px; display: flex; align-items: center; gap: 15px; animation: slideDown 0.5s ease-out;">
+            <i class="fas fa-check-circle" style="font-size: 20px;"></i>
+            <span style="font-weight: 700;">¡Pedido surtido con éxito!</span>
+        </div>
+    <?php endif; ?>
+    <?php if (isset($_GET['error'])): ?>
+        <div
+            style="background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #ef4444; padding: 15px 25px; border-radius: 16px; display: flex; align-items: center; gap: 15px; animation: slideDown 0.5s ease-out;">
+            <i class="fas fa-exclamation-triangle" style="font-size: 20px;"></i>
+            <span style="font-weight: 700;">Error: <?= htmlspecialchars($_GET['error']) ?></span>
+        </div>
+    <?php endif; ?>
+
+    <style>
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+
     <!-- 🔝 CABECERA Y ACCIONES -->
     <div style="display: flex; justify-content: space-between; align-items: center;">
         <div>
@@ -23,7 +53,7 @@
                 style="background: white; border: 1px solid #e2e8f0; color: var(--text-primary); cursor: pointer; display: flex; align-items: center; gap: 8px; border-radius: 12px; padding: 10px 20px;">
                 <i class="fas fa-print" style="color: var(--text-secondary);"></i> Imprimir
             </button>
-            <?php if ($pedido['estatus'] == 'Pendiente'): ?>
+            <?php if (in_array($pedido['estatus'], ['Pendiente', 'En Proceso'])): ?>
                 <button onclick="confirmFulfillment(<?= $pedido['id'] ?>, '<?= $pedido['folio'] ?>')"
                     class="btn btn-primary"
                     style="background: #10b981; border: none; border-radius: 12px; padding: 10px 25px; display: flex; align-items: center; gap: 8px;">

@@ -46,10 +46,12 @@ class PedidosController extends Controller
             $id = $_GET['id'];
             $pedidosModel = new Pedidos();
 
-            if ($pedidosModel->fulfillOrder($id)) {
-                header('Location: index.php?controller=Pedidos&action=index&msg=fulfilled');
+            $result = $pedidosModel->fulfillOrder($id);
+            if ($result['success']) {
+                header("Location: index.php?controller=Pedidos&action=detalle&id=$id&msg=surtido_ok");
             } else {
-                header('Location: index.php?controller=Pedidos&action=index&error=stock_error');
+                $error = urlencode($result['message']);
+                header("Location: index.php?controller=Pedidos&action=detalle&id=$id&error=$error");
             }
             exit;
         }

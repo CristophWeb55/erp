@@ -139,13 +139,15 @@ class Pedidos
 
     public function fulfillOrder($id)
     {
-        // Lógica FIFO para surtir inventario
         try {
             $this->db->beginTransaction();
 
             $pedido = $this->getById($id);
+            if (!$pedido)
+                throw new Exception("Pedido no encontrado.");
+
             if ($pedido['estatus'] !== 'Pendiente' && $pedido['estatus'] !== 'En Proceso') {
-                throw new Exception("El pedido no está en un estatus válido para surtir.");
+                throw new Exception("El pedido ya ha sido surtido o cancelado.");
             }
 
             foreach ($pedido['items'] as $item) {
@@ -159,10 +161,10 @@ class Pedidos
                 $totalAvailable = $stockMeta['total'] ?? 0;
 
                 if ($totalAvailable < $qtyNeeded) {
-                    throw new Exception("Stock insuficiente para el producto SKU: " . $item['sku']);
+                    throw new Exception("Stock insuficiente para: " . $item['sku'] . " (Solicitado: $qtyNeeded, Disponible: $totalAvailable)");
                 }
 
-                // Descontar usando FIFO (Lotes más antiguos primero con cantidad > 0)
+                // Descontar usando FIFO
                 $stmtLots = $this->db->prepare("
                     SELECT id, cantidad_actual 
                     FROM inventario_lotes 
@@ -193,13 +195,11 @@ class Pedidos
             $stmtUpdate->execute([$id]);
 
             $this->db->commit();
-            return true;
+            return ['success' => true];
 
         } catch (Exception $e) {
             $this->db->rollBack();
-            // Retornar mensaje de error si es posible, por ahora false
-            error_log($e->getMessage());
-            return false;
+            return ['success' => false, 'message' => $e->getMessage()];
         }
     }
 }

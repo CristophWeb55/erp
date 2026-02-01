@@ -1,3 +1,33 @@
+<!-- 🔔 NOTIFICACIONES -->
+<?php if (isset($_GET['msg']) && $_GET['msg'] == 'surtido_ok'): ?>
+    <div
+        style="background: rgba(16, 185, 129, 0.1); border: 1px solid #10b981; color: #10b981; padding: 15px 25px; border-radius: 16px; display: flex; align-items: center; gap: 15px; margin-bottom: 25px; animation: slideDown 0.5s ease-out;">
+        <i class="fas fa-check-circle" style="font-size: 20px;"></i>
+        <span style="font-weight: 700;">¡Pedido surtido perfectamente!</span>
+    </div>
+<?php endif; ?>
+<?php if (isset($_GET['error'])): ?>
+    <div
+        style="background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #ef4444; padding: 15px 25px; border-radius: 16px; display: flex; align-items: center; gap: 15px; margin-bottom: 25px; animation: slideDown 0.5s ease-out;">
+        <i class="fas fa-exclamation-triangle" style="font-size: 20px;"></i>
+        <span style="font-weight: 700;">Error de Inventario: <?= htmlspecialchars($_GET['error']) ?></span>
+    </div>
+<?php endif; ?>
+
+<style>
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
 <!-- 🔝 CABECERA Y ACCIONES -->
 <div style="display: flex; flex-direction: column; gap: 20px; margin-bottom: 30px;">
     <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -164,7 +194,7 @@
                         </td>
                         <td style="padding: 20px 25px; text-align: center;">
                             <div style="display: flex; justify-content: center; gap: 10px;">
-                                <?php if ($p['estatus'] == 'Pendiente'): ?>
+                                <?php if (in_array($p['estatus'], ['Pendiente', 'En Proceso'])): ?>
                                     <button title="Surtir Pedido (Lógica FIFO)" class="btn"
                                         onclick="confirmFulfillment(<?= $p['id'] ?>, '<?= $p['folio'] ?>')"
                                         style="width: 38px; height: 38px; border-radius: 12px; background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); font-size: 15px;"
