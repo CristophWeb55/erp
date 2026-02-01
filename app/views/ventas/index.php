@@ -243,6 +243,22 @@
     </div>
 </div>
 
+<!-- ⚠️ MODAL DE CONFIRMACIÓN GLASSMORPHISM -->
+<div id="confirmCloseOverlay" class="edit-overlay" style="z-index: 2000;">
+    <div class="edit-panel" style="max-width: 400px; padding: 30px; text-align: center; border-radius: 30px;" onclick="event.stopPropagation()">
+        <div style="width: 70px; height: 70px; background: rgba(227, 81, 86, 0.1); color: var(--accent-secondary); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 30px; margin: 0 auto 20px;">
+            <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <h3 style="font-weight: 800; color: var(--text-primary); margin-bottom: 10px; font-size: 20px;">¿Cerrar sin guardar?</h3>
+        <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 25px; line-height: 1.6;">Tienes productos agregados en esta cotización. Si cierras ahora, <b>perderás todo el progreso</b> de lo que has armado.</p>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <button type="button" onclick="hideConfirmModal()" class="btn" style="background: #f1f5f9; color: var(--text-primary); border: 1px solid #e2e8f0; font-weight: 700; border-radius: 12px; height: 45px; cursor: pointer;">Seguir Editando</button>
+            <button type="button" onclick="confirmCloseQuote()" class="btn" style="background: var(--accent-secondary); color: white; border: none; font-weight: 800; border-radius: 12px; height: 45px; cursor: pointer; box-shadow: 0 8px 20px rgba(227, 81, 86, 0.2);">Sí, Salir</button>
+        </div>
+    </div>
+</div>
+
 <!-- 🎭 OVERLAY DEL CREADOR DE COTIZACIONES DINÁMICO -->
 <div id="quoteOverlay" class="edit-overlay" onclick="closeQuoteOverlay(event)">
     <div class="edit-panel" style="max-width: 1000px; padding: 25px;" onclick="event.stopPropagation()">
@@ -495,19 +511,35 @@
         const isClickOutside = e && e.target.id === 'quoteOverlay';
 
         if (force || isClickOutside) {
-            // Si hay items, preguntar para confirmar pérdida de datos
+            // Si hay items, mostrar el modal de confirmación premium
             if (quoteItems.length > 0) {
-                if (!confirm("Tiene productos agregados a esta cotización. ¿Está seguro que desea cerrar? Se perderán los cambios no guardados.")) {
-                    return;
-                }
+                showConfirmModal();
+                return;
             }
-            document.getElementById('quoteOverlay').classList.remove('active');
-            document.body.classList.remove('no-scroll');
-
-            // Limpiar al cerrar para la próxima vez
-            quoteItems = [];
-            renderItems();
+            execCloseQuote();
         }
+    }
+
+    function showConfirmModal() {
+        const overlay = document.getElementById('confirmCloseOverlay');
+        document.body.appendChild(overlay);
+        overlay.classList.add('active');
+    }
+
+    function hideConfirmModal() {
+        document.getElementById('confirmCloseOverlay').classList.remove('active');
+    }
+
+    function confirmCloseQuote() {
+        hideConfirmModal();
+        execCloseQuote();
+    }
+
+    function execCloseQuote() {
+        document.getElementById('quoteOverlay').classList.remove('active');
+        document.body.classList.remove('no-scroll');
+        quoteItems = [];
+        renderItems();
     }
 
     function updateCurrencyUI() {
