@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS terceros (
     email VARCHAR(100),
     telefono VARCHAR(20),
     tipo ENUM('Cliente', 'Proveedor', 'Ambos') DEFAULT 'Cliente',
+    imagen_url VARCHAR(255) DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

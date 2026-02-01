@@ -17,3 +17,6 @@ vendor/
 
 # Archivos de base de datos (si hubiera dumps locales)
 *.sql.gz
+
+# Uploads
+public/uploads/
