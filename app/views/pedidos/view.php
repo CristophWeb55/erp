@@ -19,10 +19,10 @@
                 productos asignados.</p>
         </div>
         <div style="display: flex; gap: 12px;">
-            <a href="index.php?controller=Pedidos&action=pdf&id=<?= $pedido['id'] ?>" target="_blank" class="btn"
-                style="background: white; border: 1px solid #e2e8f0; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; border-radius: 12px; padding: 10px 20px;">
+            <button onclick="openPDFViewer(<?= $pedido['id'] ?>)" class="btn"
+                style="background: white; border: 1px solid #e2e8f0; color: var(--text-primary); cursor: pointer; display: flex; align-items: center; gap: 8px; border-radius: 12px; padding: 10px 20px;">
                 <i class="fas fa-print" style="color: var(--text-secondary);"></i> Imprimir
-            </a>
+            </button>
             <?php if ($pedido['estatus'] == 'Pendiente'): ?>
                 <button onclick="confirmFulfillment(<?= $pedido['id'] ?>, '<?= $pedido['folio'] ?>')"
                     class="btn btn-primary"
@@ -262,32 +262,51 @@
     </div>
 </div>
 
-<!-- Modal Confirmación Surtido (Igual que en el index para mantener funcionalidad desde aquí) -->
-<div id="modalFulfill" class="edit-overlay" style="display: none; align-items: center; justify-content: center;">
-    <div class="edit-panel" style="max-width: 450px; text-align: center; padding: 40px; border-radius: 32px;">
+</div>
+</div>
+</div>
+
+<!-- Modal Visor PDF (Premium Style) -->
+<div id="modalPDF" class="edit-overlay" style="display: none; align-items: center; justify-content: center;">
+    <div class="edit-panel"
+        style="max-width: 90%; width: 1000px; height: 90vh; padding: 0; border-radius: 32px; overflow: hidden; display: flex; flex-direction: column;">
         <div
-            style="width: 80px; height: 80px; background: rgba(16, 185, 129, 0.1); color: #10b981; border-radius: 24px; display: flex; align-items: center; justify-content: center; font-size: 35px; margin: 0 auto 25px; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.1);">
-            <i class="fas fa-box-open"></i>
+            style="padding: 20px 30px; background: white; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div
+                    style="width: 40px; height: 40px; background: rgba(227, 81, 86, 0.1); color: #E35156; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                    <i class="fas fa-file-pdf"></i>
+                </div>
+                <div>
+                    <h3 style="margin: 0; font-size: 16px; font-weight: 800; color: var(--text-primary);">Vista Previa
+                        de Pedido</h3>
+                    <p style="margin: 0; font-size: 12px; color: var(--text-secondary);">Generado por URICA ERP</p>
+                </div>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button onclick="document.getElementById('pdfFrame').contentWindow.print()" class="btn"
+                    style="background: var(--primary); color: white; border-radius: 12px; padding: 8px 15px; font-size: 13px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-print"></i> Imprimir
+                </button>
+                <button onclick="closePDFViewer()" class="btn"
+                    style="background: #f1f5f9; color: var(--text-secondary); border-radius: 12px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
         </div>
-        <h2 style="margin: 0 0 12px 0; color: var(--text-primary); font-weight: 800; font-size: 24px;">¿Surtir Pedido?
-        </h2>
-        <p style="color: var(--text-secondary); font-size: 15px; line-height: 1.6; margin-bottom: 30px;">
-            Se descontarán los productos del inventario usando la lógica <strong>FIFO</strong>.
-        </p>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-            <button onclick="closeFulfillModal()" class="btn"
-                style="background: #f1f5f9; color: var(--text-secondary); font-weight: 700; height: 50px; border-radius: 16px;">Cancelar</button>
-            <a id="btnConfirmFulfill" href="#" class="btn btn-primary"
-                style="background: #10b981; color: white; text-decoration: none; display: flex; align-items: center; justify-content: center; height: 50px; border-radius: 16px;">Confirmar</a>
+        <div style="flex: 1; background: #525659;">
+            <iframe id="pdfFrame" src="" style="width: 100%; height: 100%; border: none;"></iframe>
         </div>
     </div>
 </div>
 
 <script>
-    // Mover el modal al final del body
+    // Mover modales al final del body
     document.addEventListener('DOMContentLoaded', function () {
-        const modal = document.getElementById('modalFulfill');
-        document.body.appendChild(modal);
+        const modalFulfill = document.getElementById('modalFulfill');
+        const modalPDF = document.getElementById('modalPDF');
+        document.body.appendChild(modalFulfill);
+        document.body.appendChild(modalPDF);
     });
 
     function confirmFulfillment(id, folio) {
@@ -306,4 +325,29 @@
             document.body.classList.remove('no-scroll');
         }, 300);
     }
+
+    function openPDFViewer(id) {
+        const modal = document.getElementById('modalPDF');
+        const frame = document.getElementById('pdfFrame');
+        frame.src = `index.php?controller=Pedidos&action=pdf&id=${id}`;
+        modal.style.display = 'flex';
+        setTimeout(() => modal.classList.add('active'), 10);
+        document.body.classList.add('no-scroll');
+    }
+
+    function closePDFViewer() {
+        const modal = document.getElementById('modalPDF');
+        modal.classList.remove('active');
+        setTimeout(() => {
+            modal.style.display = 'none';
+            document.getElementById('pdfFrame').src = '';
+            document.body.classList.remove('no-scroll');
+        }, 300);
+    }
+
+    // Cerrar si se hace click fuera del modal (overlay)
+    document.addEventListener('click', function (event) {
+        if (event.target.id === 'modalFulfill') closeFulfillModal();
+        if (event.target.id === 'modalPDF') closePDFViewer();
+    });
 </script>

@@ -182,13 +182,12 @@
                                     <i class="fas fa-eye"></i>
                                 </a>
 
-                                <a title="PDF / Imprimir" href="index.php?controller=Pedidos&action=pdf&id=<?= $p['id'] ?>"
-                                    target="_blank" class="btn"
-                                    style="width: 38px; height: 38px; border-radius: 12px; background: rgba(100, 116, 139, 0.1); color: #64748b; border: 1px solid rgba(100, 116, 139, 0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); font-size: 15px; text-decoration: none;"
+                                <button title="PDF / Imprimir" onclick="openPDFViewer(<?= $p['id'] ?>)" class="btn"
+                                    style="width: 38px; height: 38px; border-radius: 12px; background: rgba(100, 116, 139, 0.1); color: #64748b; border: 1px solid rgba(100, 116, 139, 0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); font-size: 15px;"
                                     onmouseover="this.style.background='#64748b'; this.style.color='white'; this.style.transform='translateY(-2px)';"
                                     onmouseout="this.style.background='rgba(100, 116, 139, 0.1)'; this.style.color='#64748b'; this.style.transform='none';">
                                     <i class="fas fa-file-pdf"></i>
-                                </a>
+                                </button>
                             </div>
                         </td>
                     </tr>
@@ -223,11 +222,47 @@
     </div>
 </div>
 
+<!-- Modal Visor PDF (Premium Style) -->
+<div id="modalPDF" class="edit-overlay" style="display: none; align-items: center; justify-content: center;">
+    <div class="edit-panel"
+        style="max-width: 90%; width: 1000px; height: 90vh; padding: 0; border-radius: 32px; overflow: hidden; display: flex; flex-direction: column;">
+        <div
+            style="padding: 20px 30px; background: white; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div
+                    style="width: 40px; height: 40px; background: rgba(227, 81, 86, 0.1); color: #E35156; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                    <i class="fas fa-file-pdf"></i>
+                </div>
+                <div>
+                    <h3 style="margin: 0; font-size: 16px; font-weight: 800; color: var(--text-primary);">Vista Previa
+                        de Pedido</h3>
+                    <p style="margin: 0; font-size: 12px; color: var(--text-secondary);">Generado por URICA ERP</p>
+                </div>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button onclick="document.getElementById('pdfFrame').contentWindow.print()" class="btn"
+                    style="background: var(--primary); color: white; border-radius: 12px; padding: 8px 15px; font-size: 13px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-print"></i> Imprimir
+                </button>
+                <button onclick="closePDFViewer()" class="btn"
+                    style="background: #f1f5f9; color: var(--text-secondary); border-radius: 12px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+        <div style="flex: 1; background: #525659;">
+            <iframe id="pdfFrame" src="" style="width: 100%; height: 100%; border: none;"></iframe>
+        </div>
+    </div>
+</div>
+
 <script>
-    // Mover el modal al final del body al cargar para evitar el blur del contenedor padre
+    // Mover modales al final del body
     document.addEventListener('DOMContentLoaded', function () {
-        const modal = document.getElementById('modalFulfill');
-        document.body.appendChild(modal);
+        const modalFulfill = document.getElementById('modalFulfill');
+        const modalPDF = document.getElementById('modalPDF');
+        document.body.appendChild(modalFulfill);
+        document.body.appendChild(modalPDF);
     });
 
     function confirmFulfillment(id, folio) {
@@ -247,10 +282,28 @@
         }, 300);
     }
 
+    function openPDFViewer(id) {
+        const modal = document.getElementById('modalPDF');
+        const frame = document.getElementById('pdfFrame');
+        frame.src = `index.php?controller=Pedidos&action=pdf&id=${id}`;
+        modal.style.display = 'flex';
+        setTimeout(() => modal.classList.add('active'), 10);
+        document.body.classList.add('no-scroll');
+    }
+
+    function closePDFViewer() {
+        const modal = document.getElementById('modalPDF');
+        modal.classList.remove('active');
+        setTimeout(() => {
+            modal.style.display = 'none';
+            document.getElementById('pdfFrame').src = '';
+            document.body.classList.remove('no-scroll');
+        }, 300);
+    }
+
     // Cerrar si se hace click fuera del modal (overlay)
-    document.getElementById('modalFulfill').addEventListener('click', function (event) {
-        if (event.target === this) {
-            closeFulfillModal();
-        }
+    document.addEventListener('click', function (event) {
+        if (event.target.id === 'modalFulfill') closeFulfillModal();
+        if (event.target.id === 'modalPDF') closePDFViewer();
     });
 </script>
