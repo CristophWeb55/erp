@@ -257,7 +257,7 @@
             form.reset();
             idInput.value = '';
         }
-
+        document.body.appendChild(modal);
         modal.classList.add('active');
         document.body.classList.add('no-scroll');
     }
@@ -273,6 +273,7 @@
         const modal = document.getElementById('modalDelete');
         const btnConfirm = document.getElementById('btnConfirmDelete');
         btnConfirm.href = `index.php?controller=Terceros&action=delete&id=${id}`;
+        document.body.appendChild(modal);
         modal.classList.add('active');
         document.body.classList.add('no-scroll');
     }
