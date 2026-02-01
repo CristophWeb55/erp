@@ -146,13 +146,25 @@
                 </tr>
             <?php else: ?>
                 <?php foreach ($cotizaciones as $c):
-                    $estatusColors = [
-                        'Borrador' => ['bg' => 'rgba(99, 102, 241, 0.1)', 'text' => '#6366f1', 'icon' => 'fa-edit'],
-                        'Aprobada' => ['bg' => 'rgba(16, 185, 129, 0.1)', 'text' => '#10b981', 'icon' => 'fa-check-circle'],
-                        'Convertida' => ['bg' => 'rgba(41, 56, 135, 0.1)', 'text' => 'var(--accent-color)', 'icon' => 'fa-rocket'],
-                        'Cancelada' => ['bg' => 'rgba(239, 68, 68, 0.1)', 'text' => '#ef4444', 'icon' => 'fa-times-circle']
+                    // Priorizamos la existencia de un pedido vinculado para el estatus visual
+                    $rawStatus = ($c['pedido_id']) ? 'Convertida' : ($c['estatus'] ?? 'Borrador');
+                    $stKey = strtolower(trim($rawStatus));
+
+                    $estatusMapping = [
+                        'borrador' => ['bg' => 'rgba(100, 116, 139, 0.1)', 'text' => '#64748b', 'label' => 'BORRADOR', 'icon' => 'fa-edit'],
+                        'enviada' => ['bg' => 'rgba(59, 130, 246, 0.1)', 'text' => '#3b82f6', 'label' => 'ENVIADA', 'icon' => 'fa-paper-plane'],
+                        'aprobada' => ['bg' => 'rgba(16, 185, 129, 0.1)', 'text' => '#10b981', 'label' => 'APROBADA', 'icon' => 'fa-check-circle'],
+                        'convertida' => ['bg' => 'rgba(139, 92, 246, 0.1)', 'text' => '#8b5cf6', 'label' => 'PEDIDO', 'icon' => 'fa-rocket'],
+                        'cancelada' => ['bg' => 'rgba(239, 68, 68, 0.1)', 'text' => '#ef4444', 'label' => 'CANCELADA', 'icon' => 'fa-times-circle']
                     ];
-                    $st = $estatusColors[$c['estatus']] ?? $estatusColors['Borrador'];
+
+                    // Fallback dinámico si no hay coincidencia exacta
+                    $st = $estatusMapping[$stKey] ?? [
+                        'bg' => 'rgba(100, 116, 139, 0.1)',
+                        'text' => '#64748b',
+                        'label' => strtoupper($rawStatus),
+                        'icon' => 'fa-info-circle'
+                    ];
                     ?>
                     <tr style="border-bottom: 1px solid rgba(0,0,0,0.03); transition: all 0.3s;"
                         onmouseover="this.style.background='rgba(41, 56, 135, 0.01)'"
@@ -182,7 +194,7 @@
                         <td style="padding: 20px 25px;">
                             <span
                                 style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 10px; font-size: 11px; font-weight: 800; background: <?= $st['bg'] ?>; color: <?= $st['text'] ?>; text-transform: uppercase;">
-                                <i class="fas <?= $st['icon'] ?>"></i> <?= $c['estatus'] ?>
+                                <i class="fas <?= $st['icon'] ?>"></i> <?= $st['label'] ?>
                             </span>
                         </td>
                         <td style="padding: 20px 25px; text-align: right;">

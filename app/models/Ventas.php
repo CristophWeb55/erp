@@ -11,8 +11,10 @@ class Ventas
 
     public function getAll()
     {
-        $stmt = $this->db->query("SELECT c.*, t.nombre_razon_social FROM cotizaciones c 
+        $stmt = $this->db->query("SELECT c.*, t.nombre_razon_social, p.id as pedido_id 
+                                 FROM cotizaciones c 
                                  JOIN terceros t ON c.cliente_id = t.id 
+                                 LEFT JOIN pedidos p ON p.cotizacion_id = c.id
                                  ORDER BY c.created_at DESC");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
