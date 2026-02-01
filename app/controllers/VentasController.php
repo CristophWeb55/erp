@@ -48,6 +48,7 @@ class VentasController extends Controller
 
             $data = [
                 'cliente_id' => $_POST['cliente_id'],
+                'moneda' => $_POST['moneda'] ?? 'MXN',
                 'fecha_emision' => $_POST['fecha_emision'] ?? date('Y-m-d'),
                 'fecha_vencimiento' => $_POST['fecha_vencimiento'] ?? date('Y-m-d', strtotime('+15 days')),
                 'descuento_porcentaje' => $_POST['descuento_porcentaje'] ?? 0,

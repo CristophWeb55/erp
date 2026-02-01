@@ -36,18 +36,20 @@ class Ventas
             $total = $subtotalConDesc + $iva;
 
             // 3. Insertar Encabezado
-            $sql = "INSERT INTO cotizaciones (folio, cliente_id, fecha_emision, fecha_vencimiento, subtotal, descuento_porcentaje, iva, total, estatus, version) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'Borrador', 1)";
+            $sql = "INSERT INTO cotizaciones (folio, cliente_id, moneda, fecha_emision, fecha_vencimiento, subtotal, descuento_porcentaje, iva, total, estatus, version) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)";
             $stmt = $this->db->prepare($sql);
             $stmt->execute([
                 $folio,
                 $data['cliente_id'],
+                $data['moneda'] ?? 'MXN',
                 $data['fecha_emision'] ?? date('Y-m-d'),
                 $data['fecha_vencimiento'] ?? date('Y-m-d', strtotime('+15 days')),
                 $subtotal,
                 $data['descuento_porcentaje'] ?? 0,
                 $iva,
-                $total
+                $total,
+                'Borrador'
             ]);
             $cotizacionId = $this->db->lastInsertId();
 
@@ -160,12 +162,13 @@ class Ventas
                 throw new Exception("Cotización no encontrada");
 
             // 2. Insertar nueva versión
-            $sql = "INSERT INTO cotizaciones (folio, cliente_id, fecha_emision, fecha_vencimiento, subtotal, descuento_porcentaje, iva, total, estatus, version) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'Borrador', ?)";
+            $sql = "INSERT INTO cotizaciones (folio, cliente_id, moneda, fecha_emision, fecha_vencimiento, subtotal, descuento_porcentaje, iva, total, estatus, version) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'Borrador', ?)";
             $stmt = $this->db->prepare($sql);
             $stmt->execute([
                 $original['folio'],
                 $original['cliente_id'],
+                $original['moneda'],
                 date('Y-m-d'),
                 date('Y-m-d', strtotime('+15 days')),
                 $original['subtotal'],
