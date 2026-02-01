@@ -44,14 +44,14 @@
 
                 <div style="display: flex; align-items: center; gap: 15px;">
                     <!-- Avatar Dinámico / Imagen -->
-                    <?php if ($t['imagen_url']): ?>
+                    <?php if (!empty($t['imagen_url'] ?? null)): ?>
                         <div
-                            style="width: 55px; height: 55px; border-radius: 15px; overflow: hidden; box-shadow: 0 8px 15px rgba(41, 56, 135, 0.2); border: 2px solid white;">
+                            style="width: 55px; height: 55px; border-radius: 15px; overflow: hidden; box-shadow: 0 8px 15px rgba(41, 56, 135, 0.2); border: 2px solid white; flex-shrink: 0;">
                             <img src="<?= $t['imagen_url'] ?>" style="width: 100%; height: 100%; object-fit: cover;">
                         </div>
                     <?php else: ?>
                         <div
-                            style="width: 55px; height: 55px; background: linear-gradient(135deg, var(--accent-color) 0%, #4a5da9 100%); border-radius: 15px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 24px; box-shadow: 0 8px 15px rgba(41, 56, 135, 0.2);">
+                            style="width: 55px; height: 55px; background: linear-gradient(135deg, var(--accent-color) 0%, #4a5da9 100%); border-radius: 15px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 24px; box-shadow: 0 8px 15px rgba(41, 56, 135, 0.2); flex-shrink: 0;">
                             <?= $initials ?>
                         </div>
                     <?php endif; ?>
@@ -293,11 +293,11 @@
     }
 
     // Preview de imagen al seleccionar
-    document.getElementById('imagenInput')?.addEventListener('change', function (e) {
+    document.getElementById('imagenInput')?.addEventListener('change', function  (e) {
         const file = e.target.files[0];
         if (file) {
             const reader = new FileReader();
-            reader.onload = function (event) {
+            reader.onload = functio n (event) {
                 document.getElementById('imagePreviewContainer').innerHTML = `<img src="${event.target.result}" style="width: 100%; height: 100%; object-fit: cover;">`;
             }
             reader.readAsDataURL(file);

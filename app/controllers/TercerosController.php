@@ -55,7 +55,7 @@ class TercerosController extends Controller
             $tercerosModel = new Terceros();
             $id = $_POST['id'];
             $terceroActual = $tercerosModel->getById($id);
-            $imagen_url = $terceroActual['imagen_url'];
+            $imagen_url = $terceroActual['imagen_url'] ?? null;
 
             if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
                 $ext = pathinfo($_FILES['imagen']['name'], PATHINFO_EXTENSION);
