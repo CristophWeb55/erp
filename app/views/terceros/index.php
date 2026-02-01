@@ -483,20 +483,21 @@
         emailText.innerText = t.email || 'No registrado';
         addressText.innerText = t.direccion || 'Sin dirección registrada';
 
-        // Estilo Corporativo con Identidad por Tipo
+        // Estilo Corporativo con Identidad por Tipo (Usando variables del sistema)
         const typeColors = {
-            'Cliente': { bg: 'rgba(16, 185, 129, 0.1)', text: '#10b981', head: 'linear-gradient(135deg, #10b981, #059669)' },
-            'Proveedor': { bg: 'rgba(245, 158, 11, 0.1)', text: '#f59e0b', head: 'linear-gradient(135deg, #f59e0b, #d97706)' },
-            'Ambos': { bg: 'rgba(59, 130, 246, 0.1)', text: '#3b82f6', head: 'linear-gradient(135deg, var(--accent-color), #4f46e5)' }
+            'Cliente': { bg: 'rgba(41, 56, 135, 0.08)', text: 'var(--accent-color)', head: 'linear-gradient(135deg, var(--accent-color), #1e293b)' },
+            'Proveedor': { bg: 'rgba(227, 81, 86, 0.08)', text: 'var(--accent-secondary)', head: 'linear-gradient(135deg, var(--accent-secondary), #c53030)' },
+            'Ambos': { bg: 'rgba(79, 70, 229, 0.08)', text: '#4f46e5', head: 'linear-gradient(135deg, #4f46e5, #3730a3)' }
         };
         const config = typeColors[t.tipo] || typeColors['Cliente'];
 
         header.style.background = config.head;
-        badgeContainer.innerHTML = `<span style="padding: 4px 12px; border-radius: 8px; font-size: 11px; font-weight: 800; text-transform: uppercase; background: ${config.bg}; color: ${config.text}; border: 1px solid ${config.text}20;">${t.tipo}</span>`;
+        badgeContainer.innerHTML = `<span style="padding: 6px 14px; border-radius: 10px; font-size: 11px; font-weight: 800; text-transform: uppercase; background: ${config.bg}; color: ${config.text}; border: 1px solid ${config.text}20;">${t.tipo}</span>`;
 
         // Imagen o Inicial
         if (t.imagen_url) {
             imgContainer.innerHTML = `<img src="${t.imagen_url}" style="width: 100%; height: 100%; object-fit: cover;">`;
+            imgContainer.style.color = 'inherit';
         } else {
             imgContainer.innerHTML = t.nombre_razon_social.charAt(0).toUpperCase();
             imgContainer.style.color = config.text;
