@@ -221,59 +221,61 @@
 
 <!-- Modal Vista Detallada (Expediente) -->
 <div id="viewOverlay" class="edit-overlay" onclick="closeViewOverlay(event)">
-    <div class="edit-panel" style="max-width: 500px; padding: 0; overflow: hidden; border-radius: 30px;"
-        onclick="event.stopPropagation()">
-        <!-- Cabecera de Color Dinámica -->
-        <div id="viewHeader" style="height: 120px; background: var(--accent-color); position: relative;">
-            <button onclick="closeViewOverlay(null, true)"
-                style="position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.2); border: none; width: 35px; height: 35px; border-radius: 50%; color: white; cursor: pointer;">
+    <div class="edit-panel" style="max-width: 550px; padding: 0; overflow: hidden; border-radius: 35px; border: 1px solid var(--glass-border); box-shadow: var(--glass-shadow);" onclick="event.stopPropagation()">
+        <!-- Cabecera Premium Dinámica -->
+        <div id="viewHeader" style="height: 150px; background: linear-gradient(135deg, var(--accent-color), #4f46e5); position: relative; display: flex; align-items: center; justify-content: center;">
+            <button onclick="closeViewOverlay(null, true)" 
+                style="position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.2); border: none; width: 40px; height: 40px; border-radius: 50%; color: white; cursor: pointer; transition: all 0.2s; backdrop-filter: blur(5px);">
                 <i class="fas fa-times"></i>
             </button>
+            
+            <!-- Imagen Flotante del Tercero -->
+            <div id="viewImage" style="width: 120px; height: 120px; border-radius: 30px; border: 6px solid white; box-shadow: 0 15px 35px rgba(0,0,0,0.15); background: white; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 50px; color: var(--accent-color); font-weight: 800; position: absolute; bottom: -60px; z-index: 10;">
+            </div>
         </div>
-
+        
         <!-- Contenido del Expediente -->
-        <div style="padding: 0 30px 30px 30px; margin-top: -50px; text-align: center;">
-            <div id="viewImage"
-                style="width: 100px; height: 100px; border-radius: 25px; margin: 0 auto 15px; border: 4px solid white; box-shadow: 0 10px 25px rgba(0,0,0,0.1); background: white; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 40px; color: var(--accent-color); font-weight: 800;">
-            </div>
-
-            <h2 id="viewNombre" style="margin: 0; font-weight: 800; color: var(--text-primary); font-size: 22px;"></h2>
-            <div id="viewBadge" style="margin-top: 8px;"></div>
-
-            <div style="margin-top: 30px; display: grid; grid-template-columns: 1fr; gap: 20px; text-align: left;">
-                <div style="background: #f8fafc; padding: 15px; border-radius: 18px; border: 1px solid #e2e8f0;">
-                    <label
-                        style="display: block; font-size: 10px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">RFC
-                        Legal</label>
-                    <span id="viewRFC"
-                        style="font-family: monospace; font-weight: 700; color: var(--text-primary); font-size: 15px;"></span>
+        <div style="padding: 85px 35px 35px 35px; text-align: center; background: white;">
+            <h2 id="viewNombre" style="margin: 0; font-weight: 800; color: var(--text-primary); font-size: 28px; letter-spacing: -1px;"></h2>
+            <div id="viewBadge" style="margin-top: 10px;"></div>
+            
+            <div style="margin-top: 40px; display: grid; grid-template-columns: 1fr; gap: 15px; text-align: left;">
+                <!-- Tarjetas de Información -->
+                <div style="background: rgba(41, 56, 135, 0.02); padding: 18px 22px; border-radius: 22px; border: 1px solid #f1f5f9;">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
+                        <i class="fas fa-fingerprint" style="color: var(--accent-color); font-size: 14px;"></i>
+                        <label style="font-size: 10px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">RFC Legal / Identificación</label>
+                    </div>
+                    <span id="viewRFC" style="font-family: 'Outfit', sans-serif; font-weight: 700; color: var(--text-primary); font-size: 17px;"></span>
                 </div>
-
+                
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                    <div style="background: #f8fafc; padding: 15px; border-radius: 18px; border: 1px solid #e2e8f0;">
-                        <label
-                            style="display: block; font-size: 10px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">Teléfono</label>
-                        <span id="viewTelefono" style="font-weight: 700; color: var(--text-primary);"></span>
+                    <div style="background: rgba(41, 56, 135, 0.02); padding: 18px 22px; border-radius: 22px; border: 1px solid #f1f5f9;">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
+                            <i class="fas fa-phone-alt" style="color: var(--accent-color); font-size: 14px;"></i>
+                            <label style="font-size: 10px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">Teléfono</label>
+                        </div>
+                        <span id="viewTelefono" style="font-weight: 700; color: var(--text-primary); font-size: 15px;"></span>
                     </div>
-                    <div style="background: #f8fafc; padding: 15px; border-radius: 18px; border: 1px solid #e2e8f0;">
-                        <label
-                            style="display: block; font-size: 10px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">Email</label>
-                        <span id="viewEmail"
-                            style="font-weight: 700; color: var(--text-primary); font-size: 12px; overflow: hidden; text-overflow: ellipsis; display: block;"></span>
+                    <div style="background: rgba(41, 56, 135, 0.02); padding: 18px 22px; border-radius: 22px; border: 1px solid #f1f5f9;">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
+                            <i class="fas fa-envelope" style="color: var(--accent-color); font-size: 14px;"></i>
+                            <label style="font-size: 10px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">Email</label>
+                        </div>
+                        <span id="viewEmail" style="font-weight: 700; color: var(--text-primary); font-size: 14px; overflow: hidden; text-overflow: ellipsis; display: block;"></span>
                     </div>
                 </div>
-
-                <div style="background: #f8fafc; padding: 15px; border-radius: 18px; border: 1px solid #e2e8f0;">
-                    <label
-                        style="display: block; font-size: 10px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">Dirección
-                        Registrada</label>
-                    <span id="viewDireccion"
-                        style="font-weight: 600; color: var(--text-primary); line-height: 1.5; font-size: 13px;"></span>
+                
+                <div style="background: rgba(41, 56, 135, 0.02); padding: 18px 22px; border-radius: 22px; border: 1px solid #f1f5f9;">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
+                        <i class="fas fa-map-marker-alt" style="color: var(--accent-color); font-size: 14px;"></i>
+                        <label style="font-size: 10px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">Dirección Fiscal Registrada</label>
+                    </div>
+                    <span id="viewDireccion" style="font-weight: 600; color: var(--text-primary); line-height: 1.6; font-size: 14px; display: block;"></span>
                 </div>
             </div>
-
-            <button onclick="closeViewOverlay(null, true)" class="btn btn-primary"
-                style="width: 100%; margin-top: 30px; height: 50px; border-radius: 15px; font-weight: 800;">
+            
+            <button onclick="closeViewOverlay(null, true)" class="btn" style="width: 100%; margin-top: 35px; height: 55px; border-radius: 20px; font-weight: 800; font-size: 16px; background: var(--text-primary); color: white; border: none; box-shadow: 0 10px 25px rgba(0,0,0,0.1); cursor: pointer; transition: all 0.3s;">
                 Cerrar Expediente
             </button>
         </div>
