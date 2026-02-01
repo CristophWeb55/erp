@@ -224,12 +224,15 @@
         <div
             style="padding: 15px 25px; background: white; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; border-radius: 20px 20px 0 0;">
             <div style="display: flex; align-items: center; gap: 15px;">
-                <button onclick="document.getElementById('pdfFrame').contentWindow.print()" class="btn" style="background: var(--accent-secondary); color: white; border: none; padding: 8px 15px; border-radius: 10px; font-weight: 700; display: flex; align-items: center; gap: 8px; font-size: 12px; cursor: pointer;">
+                <button onclick="document.getElementById('pdfFrame').contentWindow.print()" class="btn"
+                    style="background: var(--accent-secondary); color: white; border: none; padding: 8px 15px; border-radius: 10px; font-weight: 700; display: flex; align-items: center; gap: 8px; font-size: 12px; cursor: pointer;">
                     <i class="fas fa-print"></i> IMPRIMIR / PDF
                 </button>
                 <div>
-                    <h3 style="margin: 0; font-size: 16px; font-weight: 800; color: var(--text-primary);">Vista Previa de Cotización</h3>
-                    <p style="margin: 0; font-size: 11px; color: var(--text-secondary);">Diseño Premium para Clientes</p>
+                    <h3 style="margin: 0; font-size: 16px; font-weight: 800; color: var(--text-primary);">Vista Previa
+                        de Cotización</h3>
+                    <p style="margin: 0; font-size: 11px; color: var(--text-secondary);">Diseño Premium para Clientes
+                    </p>
                 </div>
             </div>
             <button onclick="closePdfOverlay(null, true)"
@@ -489,9 +492,21 @@
     }
 
     function closeQuoteOverlay(e, force = false) {
-        if (force || (e && e.target.id === 'quoteOverlay')) {
+        const isClickOutside = e && e.target.id === 'quoteOverlay';
+
+        if (force || isClickOutside) {
+            // Si hay items, preguntar para confirmar pérdida de datos
+            if (quoteItems.length > 0) {
+                if (!confirm("Tiene productos agregados a esta cotización. ¿Está seguro que desea cerrar? Se perderán los cambios no guardados.")) {
+                    return;
+                }
+            }
             document.getElementById('quoteOverlay').classList.remove('active');
             document.body.classList.remove('no-scroll');
+
+            // Limpiar al cerrar para la próxima vez
+            quoteItems = [];
+            renderItems();
         }
     }
 
