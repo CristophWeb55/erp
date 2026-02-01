@@ -182,12 +182,13 @@
                                     <i class="fas fa-eye"></i>
                                 </a>
 
-                                <button title="PDF / Imprimir" class="btn" onclick="alert('Generación de PDF próximamente')"
-                                    style="width: 38px; height: 38px; border-radius: 12px; background: rgba(100, 116, 139, 0.1); color: #64748b; border: 1px solid rgba(100, 116, 139, 0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); font-size: 15px;"
+                                <a title="PDF / Imprimir" href="index.php?controller=Pedidos&action=pdf&id=<?= $p['id'] ?>"
+                                    target="_blank" class="btn"
+                                    style="width: 38px; height: 38px; border-radius: 12px; background: rgba(100, 116, 139, 0.1); color: #64748b; border: 1px solid rgba(100, 116, 139, 0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); font-size: 15px; text-decoration: none;"
                                     onmouseover="this.style.background='#64748b'; this.style.color='white'; this.style.transform='translateY(-2px)';"
                                     onmouseout="this.style.background='rgba(100, 116, 139, 0.1)'; this.style.color='#64748b'; this.style.transform='none';">
                                     <i class="fas fa-file-pdf"></i>
-                                </button>
+                                </a>
                             </div>
                         </td>
                     </tr>

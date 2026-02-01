@@ -37,10 +37,12 @@ class Pedidos
                 t.rfc as cliente_rfc,
                 t.direccion as cliente_direccion,
                 t.email as cliente_email,
-                u.nombre as vendedor_nombre
+                u.nombre as vendedor_nombre,
+                cot.moneda
             FROM pedidos p
             LEFT JOIN terceros t ON p.cliente_id = t.id
             LEFT JOIN usuarios u ON p.vendedor_id = u.id
+            LEFT JOIN cotizaciones cot ON p.cotizacion_id = cot.id
             WHERE p.id = ?
         ");
         $stmt->execute([$id]);

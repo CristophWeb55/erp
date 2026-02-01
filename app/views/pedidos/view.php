@@ -19,10 +19,10 @@
                 productos asignados.</p>
         </div>
         <div style="display: flex; gap: 12px;">
-            <button onclick="window.print()" class="btn"
-                style="background: white; border: 1px solid #e2e8f0; color: var(--text-primary); display: flex; align-items: center; gap: 8px; border-radius: 12px; padding: 10px 20px;">
+            <a href="index.php?controller=Pedidos&action=pdf&id=<?= $pedido['id'] ?>" target="_blank" class="btn"
+                style="background: white; border: 1px solid #e2e8f0; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; border-radius: 12px; padding: 10px 20px;">
                 <i class="fas fa-print" style="color: var(--text-secondary);"></i> Imprimir
-            </button>
+            </a>
             <?php if ($pedido['estatus'] == 'Pendiente'): ?>
                 <button onclick="confirmFulfillment(<?= $pedido['id'] ?>, '<?= $pedido['folio'] ?>')"
                     class="btn btn-primary"

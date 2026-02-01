@@ -78,4 +78,27 @@ class PedidosController extends Controller
             header('Location: index.php?controller=Pedidos&action=index');
         }
     }
+
+    public function pdf()
+    {
+        if (isset($_GET['id'])) {
+            $id = $_GET['id'];
+            $pedidosModel = new Pedidos();
+            $pedido = $pedidosModel->getById($id);
+
+            if (!$pedido) {
+                header('Location: index.php?controller=Pedidos&action=index');
+                exit;
+            }
+
+            $data = [
+                'pedido' => $pedido
+            ];
+
+            // Usamos rawView para que no cargue el layout principal (main.php) con la barra lateral
+            $this->rawView('pedidos/pdf', $data);
+        } else {
+            header('Location: index.php?controller=Pedidos&action=index');
+        }
+    }
 }
