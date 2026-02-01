@@ -202,7 +202,8 @@
                             Cliente
                         </h3>
                         <div style="margin-bottom: 12px;">
-                            <label class="form-label" style="font-size: 10px; letter-spacing: 0.5px; margin-bottom: 4px;">Seleccionar
+                            <label class="form-label"
+                                style="font-size: 10px; letter-spacing: 0.5px; margin-bottom: 4px;">Seleccionar
                                 Cliente</label>
                             <select name="cliente_id" required class="form-input"
                                 style="font-weight: 700; background: white; padding: 10px;">
@@ -214,7 +215,8 @@
                             </select>
                         </div>
                         <div>
-                            <label class="form-label" style="font-size: 10px; letter-spacing: 0.5px; margin-bottom: 4px;">Contacto</label>
+                            <label class="form-label"
+                                style="font-size: 10px; letter-spacing: 0.5px; margin-bottom: 4px;">Contacto</label>
                             <select name="contacto_id" class="form-input" style="background: white; padding: 10px;">
                                 <option value="">Seleccionar contacto...</option>
                             </select>
@@ -227,7 +229,7 @@
                             <i class="fas fa-file-contract" style="margin-right: 8px; color: var(--accent-color);"></i>
                             Términos Generales
                         </h3>
-                        <div style="display: grid; grid-template-columns: 1fr; gap: 10px;">
+                        <div style="display: grid; grid-template-columns: 1fr 0.6fr; gap: 15px;">
                             <div>
                                 <label class="form-label" style="font-size: 10px; margin-bottom: 4px;">Moneda</label>
                                 <select name="moneda" id="currencySelect" class="form-input"
@@ -237,20 +239,27 @@
                                     <option value="USD">USD - Dólar Estadounidense</option>
                                 </select>
                             </div>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                                <div>
-                                    <label class="form-label" style="font-size: 10px; margin-bottom: 4px;">Validez</label>
-                                    <select name="vigencia" class="form-input" style="background: white; padding: 10px;">
-                                        <option value="15">15 Días</option>
-                                        <option value="30" selected>30 Días</option>
-                                        <option value="60">60 Días</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="form-label" style="font-size: 10px; margin-bottom: 4px;">Fecha de Cotización</label>
-                                    <input type="date" name="fecha_emision" value="<?= date('Y-m-d') ?>"
-                                        class="form-input" style="background: white; padding: 10px;">
-                                </div>
+                            <div>
+                                <label class="form-label" style="font-size: 10px; margin-bottom: 4px;">T. Cambio</label>
+                                <input type="number" step="0.01" id="exchangeRate" value="20.00" class="form-input"
+                                    onchange="updateCurrencyUI()"
+                                    style="padding: 10px; font-weight: 700; text-align: center;">
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px;">
+                            <div>
+                                <label class="form-label" style="font-size: 10px; margin-bottom: 4px;">Validez</label>
+                                <select name="vigencia" class="form-input" style="background: white; padding: 10px;">
+                                    <option value="15">15 Días</option>
+                                    <option value="30" selected>30 Días</option>
+                                    <option value="60">60 Días</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="form-label" style="font-size: 10px; margin-bottom: 4px;">Fecha de
+                                    Cotización</label>
+                                <input type="date" name="fecha_emision" value="<?= date('Y-m-d') ?>" class="form-input"
+                                    style="background: white; padding: 10px;">
                             </div>
                         </div>
                     </div>
@@ -267,7 +276,8 @@
                             <i class="fas fa-search"
                                 style="position: absolute; left: 12px; top: 12px; color: #94a3b8; font-size: 12px;"></i>
                             <input type="text" id="productSearch" placeholder="Buscar producto por SKU o nombre..."
-                                class="form-input" style="padding-left: 35px; background: #f8fafc; height: 35px; font-size: 12px;">
+                                class="form-input"
+                                style="padding-left: 35px; background: #f8fafc; height: 35px; font-size: 12px;">
                         </div>
                     </div>
 
@@ -304,9 +314,12 @@
                     <div
                         style="display: grid; grid-template-columns: 2fr 0.8fr 1fr 0.5fr; gap: 12px; margin-top: 12px; align-items: flex-end; padding-top: 12px; border-top: 1px dashed #e2e8f0;">
                         <div>
-                            <label style="font-size: 10px; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">PRODUCTO A
+                            <label
+                                style="font-size: 10px; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">PRODUCTO
+                                A
                                 AGREGAR</label>
-                            <select id="productSelect" class="form-input" onchange="updatePriceHint()" style="height: 38px; font-size: 12px; padding: 0 10px;">
+                            <select id="productSelect" class="form-input" onchange="updatePriceHint()"
+                                style="height: 38px; font-size: 12px; padding: 0 10px;">
                                 <option value="">Selecciona un item...</option>
                                 <?php foreach ($productos as $prod): ?>
                                     <option value="<?= $prod['id'] ?>" data-price="<?= $prod['precio_venta'] ?>"
@@ -319,12 +332,16 @@
                         <div>
                             <label
                                 style="font-size: 10px; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">CANT.</label>
-                            <input type="number" id="itemQty" value="1" min="1" class="form-input" style="height: 38px; font-size: 12px;">
+                            <input type="number" id="itemQty" value="1" min="1" class="form-input"
+                                style="height: 38px; font-size: 12px;">
                         </div>
                         <div>
-                            <label style="font-size: 10px; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">PRECIO UNIT.
+                            <label
+                                style="font-size: 10px; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">PRECIO
+                                UNIT.
                                 (<span class="currency-symbol">$</span>)</label>
-                            <input type="number" id="itemPrice" step="0.01" class="form-input" style="height: 38px; font-size: 12px;">
+                            <input type="number" id="itemPrice" step="0.01" class="form-input"
+                                style="height: 38px; font-size: 12px;">
                         </div>
                         <button type="button" onclick="addItem()" class="btn btn-primary"
                             style="height: 38px; width: 100%; border-radius: 10px;"><i class="fas fa-plus"></i></button>
@@ -392,18 +409,43 @@
     }
 
     function updateCurrencyUI() {
+        const prevCurrency = currentCurrency;
         currentCurrency = document.getElementById('currencySelect').value;
+        const rate = parseFloat(document.getElementById('exchangeRate').value) || 1;
+
         const symbols = document.querySelectorAll('.currency-symbol');
         const symbol = currentCurrency === 'USD' ? 'USD $' : '$';
         symbols.forEach(s => s.innerText = symbol);
+
+        // Convertir items existentes
+        if (prevCurrency !== currentCurrency) {
+            quoteItems.forEach(item => {
+                if (currentCurrency === 'USD') {
+                    item.precio_unitario = item.precio_unitario / rate;
+                } else {
+                    item.precio_unitario = item.precio_unitario * rate;
+                }
+                item.total = item.cantidad * item.precio_unitario;
+            });
+            renderItems();
+        }
+
+        updatePriceHint();
         calculateTotals();
     }
 
     function updatePriceHint() {
         const select = document.getElementById('productSelect');
         const selectedOption = select.options[select.selectedIndex];
+        const rate = parseFloat(document.getElementById('exchangeRate').value) || 1;
+
         if (selectedOption.value) {
-            document.getElementById('itemPrice').value = selectedOption.dataset.price;
+            let basePrice = parseFloat(selectedOption.dataset.price);
+            if (currentCurrency === 'USD') {
+                document.getElementById('itemPrice').value = (basePrice / rate).toFixed(2);
+            } else {
+                document.getElementById('itemPrice').value = basePrice.toFixed(2);
+            }
         }
     }
 
@@ -443,7 +485,7 @@
         const body = document.getElementById('itemsBody');
         body.innerHTML = "";
         const symbol = currentCurrency === 'USD' ? 'USD $' : '$';
-        
+
         quoteItems.forEach((item, index) => {
             const row = `
                 <tr style="border-bottom: 1px solid #f1f5f9;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
@@ -454,9 +496,9 @@
                     <td style="padding: 8px 10px; text-align: center;">
                         <input type="number" value="${item.cantidad}" onchange="updateItemQty(${index}, this.value)" style="width: 55px; padding: 4px; border: 1px solid #e2e8f0; border-radius: 6px; text-align: center; font-weight: 700; color: var(--accent-color); font-size: 12px;">
                     </td>
-                    <td style="padding: 8px 10px; text-align: right; font-weight: 600; color: var(--text-primary); font-size: 12px;">${symbol}${item.precio_unitario.toLocaleString('es-MX', {minimumFractionDigits:2})}</td>
+                    <td style="padding: 8px 10px; text-align: right; font-weight: 600; color: var(--text-primary); font-size: 12px;">${symbol}${item.precio_unitario.toLocaleString('es-MX', { minimumFractionDigits: 2 })}</td>
                     <td style="padding: 8px 10px; text-align: center;"><span style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; color: #64748b;">${item.descuento}%</span></td>
-                    <td style="padding: 8px 10px; text-align: right; font-weight: 800; color: var(--accent-secondary); font-size: 13px;">${symbol}${item.total.toLocaleString('es-MX', {minimumFractionDigits:2})}</td>
+                    <td style="padding: 8px 10px; text-align: right; font-weight: 800; color: var(--accent-secondary); font-size: 13px;">${symbol}${item.total.toLocaleString('es-MX', { minimumFractionDigits: 2 })}</td>
                     <td style="padding: 8px 10px; text-align: right;">
                         <button type="button" onclick="removeItem(${index})" style="background: #fff1f2; border: none; color: #ef4444; width: 30px; height: 30px; border-radius: 8px; cursor: pointer; transition: all 0.2s;"><i class="fas fa-trash-alt" style="font-size: 12px;"></i></button>
                     </td>
