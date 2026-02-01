@@ -137,6 +137,25 @@
     </div>
 </div>
 
+<!-- Modal Confirmar Eliminación Premium -->
+<div id="modalDelete" class="edit-overlay" onclick="closeDeleteModal(event)">
+    <div class="edit-panel" style="max-width: 400px; text-align: center;" onclick="event.stopPropagation()">
+        <div
+            style="width: 70px; height: 70px; background: rgba(239, 68, 68, 0.1); color: #ef4444; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 30px; margin: 0 auto 20px;">
+            <i class="fas fa-trash-alt"></i>
+        </div>
+        <h3 style="font-weight: 800; color: var(--text-primary); margin-bottom: 10px;">¿Eliminar Producto?</h3>
+        <p id="deleteProductName" style="color: var(--text-secondary); font-size: 14px; margin-bottom: 25px;">Esta acción borrará el producto permanentemente. ¿Estás seguro?</p>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <button onclick="closeDeleteModal()" class="btn"
+                style="background: #f1f5f9; color: var(--text-primary); border: 1px solid #e2e8f0; font-weight: 700; border-radius: 12px; height: 45px; cursor: pointer;">Cancelar</button>
+            <a id="btnConfirmDelete" href="#" class="btn"
+                style="background: #ef4444; color: white; border: none; font-weight: 800; text-decoration: none; display: flex; align-items: center; justify-content: center; border-radius: 12px; height: 45px; box-shadow: 0 8px 20px rgba(239, 68, 68, 0.2);">Sí, Eliminar</a>
+        </div>
+    </div>
+</div>
+
 <!-- Modal para nuevo producto -->
 <div id="modalProducto" class="edit-overlay" onclick="closeModal(event)">
     <div class="edit-panel" style="max-width: 850px; padding: 35px;" onclick="event.stopPropagation()">
@@ -350,8 +369,22 @@
     });
 
     function confirmDelete(id, sku) {
-        if (confirm(`¿Estás seguro de eliminar el producto ${sku}?`)) {
-            window.location.href = `index.php?controller=Productos&action=delete&id=${id}`;
+        const modal = document.getElementById('modalDelete');
+        const btnConfirm = document.getElementById('btnConfirmDelete');
+        const text = document.getElementById('deleteProductName');
+
+        text.innerHTML = `¿Estás seguro de eliminar el producto <strong>${sku}</strong>? Esta acción no se puede deshacer.`;
+        btnConfirm.href = `index.php?controller=Productos&action=delete&id=${id}`;
+
+        document.body.appendChild(modal);
+        modal.classList.add('active');
+        document.body.classList.add('no-scroll');
+    }
+
+    function closeDeleteModal(e) {
+        if (!e || e.target.id === 'modalDelete' || e.type === 'click') {
+            document.getElementById('modalDelete').classList.remove('active');
+            document.body.classList.remove('no-scroll');
         }
     }
 
