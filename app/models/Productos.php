@@ -108,9 +108,29 @@ class Productos
         $sql = "INSERT INTO productos (" . implode(', ', $fields) . ") 
                 VALUES (" . implode(', ', $placeholders) . ")";
 
-        $stmt = $this->db->prepare($sql);
-        return $stmt->execute($values);
+        $this->db->beginTransaction();
+        try {
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute($values);
+            $productoId = $this->db->lastInsertId();
+
+            // Si hay stock inicial, crear un lote de ajuste
+            if (isset($data['stock_inicial']) && $data['stock_inicial'] > 0) {
+                $stmtLote = $this->db->prepare("
+                    INSERT INTO inventario_lotes (producto_id, cantidad_inicial, cantidad_actual, numero_pedimento)
+                    VALUES (?, ?, ?, 'AJUSTE-INICIAL')
+                ");
+                $stmtLote->execute([$productoId, $data['stock_inicial'], $data['stock_inicial']]);
+            }
+
+            $this->db->commit();
+            return true;
+        } catch (Exception $e) {
+            $this->db->rollBack();
+            return false;
+        }
     }
+
 
     public function update($id, $data)
     {
@@ -142,9 +162,35 @@ class Productos
 
         $sql = "UPDATE productos SET " . implode(', ', $sets) . " WHERE id = :id";
 
-        $stmt = $this->db->prepare($sql);
-        return $stmt->execute($values);
+        $this->db->beginTransaction();
+        try {
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute($values);
+
+            // Manejar ajuste de stock manual
+            if (isset($data['stock_actual'])) {
+                $producto = $this->getById($id);
+                $stockCalculado = $producto['stock_actual'];
+                $nuevoStock = $data['stock_actual'];
+                $diferencia = $nuevoStock - $stockCalculado;
+
+                if ($diferencia != 0) {
+                    $stmtLote = $this->db->prepare("
+                        INSERT INTO inventario_lotes (producto_id, cantidad_inicial, cantidad_actual, numero_pedimento)
+                        VALUES (?, ?, ?, 'AJUSTE-MANUAL')
+                    ");
+                    $stmtLote->execute([$id, $diferencia, $diferencia]);
+                }
+            }
+
+            $this->db->commit();
+            return true;
+        } catch (Exception $e) {
+            $this->db->rollBack();
+            return false;
+        }
     }
+
 
     public function delete($id)
     {

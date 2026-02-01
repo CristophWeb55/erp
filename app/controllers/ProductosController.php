@@ -27,6 +27,7 @@ class ProductosController extends Controller
                 'descripcion' => $_POST['descripcion'],
                 'precio_venta' => $_POST['precio_venta'],
                 'stock_minimo' => $_POST['stock_minimo'] ?? 10,
+                'stock_inicial' => $_POST['stock_inicial'] ?? 0,
                 'imagen_url' => $_POST['imagen_url'] ?? null,
                 'requiere_pedimento' => isset($_POST['requiere_pedimento']) ? 1 : 0
             ];
@@ -68,6 +69,7 @@ class ProductosController extends Controller
                 'descripcion' => $_POST['descripcion'],
                 'precio_venta' => $_POST['precio_venta'],
                 'stock_minimo' => $_POST['stock_minimo'] ?? 10,
+                'stock_actual' => $_POST['stock_actual'] ?? null,
                 'imagen_url' => $_POST['imagen_url'] ?? null,
                 'requiere_pedimento' => isset($_POST['requiere_pedimento']) ? 1 : 0
             ];

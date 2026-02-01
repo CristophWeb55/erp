@@ -30,8 +30,10 @@
         <?php foreach ($productos as $p):
             $stockActual = (int) $p['stock_actual'];
             $stockMinimo = (int) $p['stock_minimo'];
-            $stockMax = $stockMinimo * 2;
-            $porcentaje = ($stockMax > 0) ? min(100, ($stockActual / $stockMax) * 100) : 0;
+            
+            // Lógica de barra mejorada: Si el mínimo es 0, usamos 100 como referencia visual
+            $referencia = ($stockMinimo > 0) ? ($stockMinimo * 2) : 100;
+            $porcentaje = min(100, ($stockActual / $referencia) * 100);
 
             if ($stockActual <= 0) {
                 $statusColor = '#ef4444'; $statusText = 'Sin Stock'; $statusBg = 'rgba(239, 68, 68, 0.1)';
@@ -63,7 +65,7 @@
                 <div class="stock-info">
                     <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 5px;">
                         <div style="font-size: 11px; color: var(--text-secondary); line-height: 1.2;">
-                            Stock: <strong><?= $stockActual ?> / <?= $stockMax ?></strong>
+                            Stock: <strong><?= $stockActual ?> / <?= ($stockMinimo > 0 ? $stockMinimo : '-') ?></strong>
                         </div>
                         <div style="font-size: 12px; font-weight: 800; color: <?= $statusColor ?>;"><?= round($porcentaje) ?>%</div>
                     </div>
@@ -118,11 +120,12 @@
                     <div><label class="form-label">Descripción</label><textarea name="descripcion" required rows="3" class="form-input"></textarea></div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                         <div><label class="form-label">Stock Mínimo</label><input type="number" name="stock_minimo" value="10" required class="form-input"></div>
-                        <div style="display: flex; align-items: flex-end;">
-                            <div style="background: #f1f5f9; padding: 12px 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; width: 100%; border: 1px dashed #cbd5e1;">
-                                <span style="font-size: 12px; font-weight: 600;">¿Pedimento?</span>
-                                <label class="switch" style="transform: scale(0.8);"><input type="checkbox" name="requiere_pedimento"><span class="slider round"></span></label>
-                            </div>
+                        <div><label class="form-label">Stock Inicial</label><input type="number" name="stock_inicial" value="0" class="form-input" style="font-weight: 700; color: var(--accent-color);"></div>
+                    </div>
+                    <div>
+                        <div style="background: #f1f5f9; padding: 12px 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; width: 100%; border: 1px dashed #cbd5e1;">
+                            <span style="font-size: 12px; font-weight: 600;">¿Maneja Pedimento Aduanal?</span>
+                            <label class="switch" style="transform: scale(0.8);"><input type="checkbox" name="requiere_pedimento"><span class="slider round"></span></label>
                         </div>
                     </div>
                 </div>
@@ -202,7 +205,7 @@
                             <div style="margin-bottom: 25px;"><label class="form-label">DESCRIPCIÓN COMERCIAL</label><textarea name="descripcion" required rows="4" class="form-input" style="line-height: 1.6;">${p.descripcion}</textarea></div>
                             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; background: #f8fafc; padding: 25px; border-radius: 25px; border: 1px solid #e2e8f0; margin-bottom: 25px;">
                                 <div><label class="form-label">STOCK MÍNIMO</label><input type="number" name="stock_minimo" value="${stockMinimo}" required class="form-input"></div>
-                                <div><label class="form-label">ESTADO ACTUAL</label><div style="font-size: 24px; font-weight: 900; color: ${status.c}">${stockActual} <span style="font-size: 12px; color: #94a3b8; font-weight: 500;">unidades</span></div></div>
+                                <div><label class="form-label">STOCK ACTUAL (AJUSTE)</label><input type="number" name="stock_actual" value="${stockActual}" class="form-input" style="font-weight: 900; color: ${status.c}; font-size: 20px;"></div>
                             </div>
 
                             <!-- Control de Pedimento Re-incorporado -->
