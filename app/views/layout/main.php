@@ -7,7 +7,7 @@
     <title>URICA ERP - Sistema de Gestión Eléctrica</title>
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="./css/style.css?v=<?= time() ?>">
 </head>
 
 <body>
@@ -38,7 +38,7 @@
                 <a href="index.php?controller=Terceros&action=index"
                     class="nav-item <?= ($controller == 'Terceros') ? 'active' : '' ?>">
                     <i class="fas fa-users"></i>
-                    <span>Los Dioses</span>
+                    <span>Terceros</span>
                 </a>
                 <a href="index.php?controller=Productos&action=index"
                     class="nav-item <?= ($controller == 'Productos') ? 'active' : '' ?>">
