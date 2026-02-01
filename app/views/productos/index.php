@@ -137,8 +137,14 @@
 </div>
 
 <script>
-    function openModal() { document.getElementById('modalProducto').style.display = 'flex'; }
-    function closeModal() { document.getElementById('modalProducto').style.display = 'none'; }
+    function openModal() { 
+        document.getElementById('modalProducto').style.display = 'flex'; 
+        document.body.classList.add('no-scroll');
+    }
+    function closeModal() { 
+        document.getElementById('modalProducto').style.display = 'none'; 
+        document.body.classList.remove('no-scroll');
+    }
 
     // Búsqueda instantánea
     document.getElementById('searchInput').addEventListener('input', function (e) {
@@ -161,6 +167,7 @@
         const overlay = document.getElementById('editOverlay');
         const content = document.getElementById('editOverlayContent');
         overlay.classList.add('active');
+        document.body.classList.add('no-scroll'); // Bloquear scroll
         content.innerHTML = '<div style="text-align: center; padding: 100px;"><i class="fas fa-circle-notch fa-spin" style="font-size: 60px; color: var(--accent-color);"></i><p style="margin-top: 20px;">Cargando producto...</p></div>';
 
         try {
@@ -217,6 +224,7 @@
     function closeEditOverlay(e, force = false) {
         if (force || e.target.id === 'editOverlay') {
             document.getElementById('editOverlay').classList.remove('active');
+            document.body.classList.remove('no-scroll'); // Restaurar scroll
         }
     }
 </script>

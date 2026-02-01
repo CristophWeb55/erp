@@ -557,6 +557,13 @@ td:last-child {
     border-radius: 10px;
 }
 
+/* Bloqueo de scroll */
+.no-scroll {
+    overflow: hidden !important;
+    height: 100vh;
+}
+
+
 @keyframes spin {
     from {
         transform: rotate(0deg);
