@@ -27,6 +27,8 @@
             padding: 0;
             line-height: 1.5;
             background: white;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
         }
 
         .pdf-container {
@@ -223,19 +225,35 @@
 
         @media print {
             body {
-                background: white;
+                background: white !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
             }
 
             .pdf-container {
-                padding: 0;
+                padding: 0 !important;
+                margin: 0 auto !important;
+                width: 100% !important;
+                max-width: none !important;
             }
 
             .no-print {
-                display: none;
+                display: none !important;
+                visibility: hidden !important;
+                opacity: 0 !important;
             }
 
             @page {
-                margin: 1cm;
+                margin: 1.5cm;
+                size: portrait;
+            }
+
+            .card,
+            .quote-id-card,
+            th,
+            .total-row {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
             }
         }
 
@@ -262,7 +280,7 @@
 <body>
 
     <button class="btn-print no-print" onclick="window.print()">
-        <i class="fas fa-file-pdf"></i> DESCARGAR PDF / IMPRIMIR
+        <i class="fas fa-file-pdf"></i> IMPRIMIR / GUARDAR PDF
     </button>
 
     <div class="pdf-container">

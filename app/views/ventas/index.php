@@ -1,3 +1,46 @@
+<style>
+    @media print {
+
+        /* Ocultar TODO el sistema ERP al imprimir cuando el modal PDF está abierto */
+        body.no-scroll>*:not(#pdfOverlay) {
+            display: none !important;
+        }
+
+        #pdfOverlay {
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: auto !important;
+            background: white !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            overflow: visible !important;
+        }
+
+        #pdfOverlay .edit-panel {
+            box-shadow: none !important;
+            border: none !important;
+            width: 100% !important;
+            max-width: none !important;
+            height: auto !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            transform: none !important;
+        }
+
+        #pdfOverlay .edit-panel>div:first-child {
+            display: none !important;
+            /* Ocultar cabecera del modal */
+        }
+
+        #pdfFrame {
+            height: 1000px !important;
+            /* Asegurar que el iframe se vea */
+        }
+    }
+</style>
+
 <!-- 📊 RESUMEN EJECUTIVO PREMIUM -->
 <div class="stats-grid"
     style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 30px;">
@@ -180,11 +223,14 @@
         onclick="event.stopPropagation()">
         <div
             style="padding: 15px 25px; background: white; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; border-radius: 20px 20px 0 0;">
-            <div>
-                <h3 style="margin: 0; font-size: 16px; font-weight: 800; color: var(--text-primary);">Vista Previa de
-                    Cotización</h3>
-                <p style="margin: 0; font-size: 11px; color: var(--text-secondary);">Recuerda usar la opción "Guardar
-                    como PDF" en el menú de impresión.</p>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <button onclick="document.getElementById('pdfFrame').contentWindow.print()" class="btn" style="background: var(--accent-secondary); color: white; border: none; padding: 8px 15px; border-radius: 10px; font-weight: 700; display: flex; align-items: center; gap: 8px; font-size: 12px; cursor: pointer;">
+                    <i class="fas fa-print"></i> IMPRIMIR / PDF
+                </button>
+                <div>
+                    <h3 style="margin: 0; font-size: 16px; font-weight: 800; color: var(--text-primary);">Vista Previa de Cotización</h3>
+                    <p style="margin: 0; font-size: 11px; color: var(--text-secondary);">Diseño Premium para Clientes</p>
+                </div>
             </div>
             <button onclick="closePdfOverlay(null, true)"
                 style="background: #f1f5f9; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer;"><i
@@ -580,6 +626,7 @@
         const rows = document.querySelectorAll('#itemsBody tr');
         rows.forEach(row => {
             const text = row.innerText.toLowerCase();
-            row.style.display = text.includes(term) ? '' : 'none';});
+            row.style.display = text.includes(term) ? '' : 'none';
+        });
     });
 </script>
