@@ -159,10 +159,9 @@
                                         style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; background: #f59e0b; color: white; border-radius: 10px; text-decoration: none; box-shadow: 0 4px 10px rgba(245, 158, 11, 0.2);"><i
                                             class="fas fa-layer-group"></i></a>
                                 <?php endif; ?>
-                                <a href="index.php?controller=Ventas&action=exportPDF&id=<?= $c['id'] ?>" target="_blank"
-                                    title="Exportar PDF / Imprimir"
-                                    style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; background: #fff1f2; color: #e35156; border-radius: 10px; text-decoration: none;"><i
-                                        class="fas fa-file-pdf"></i></a>
+                                <button onclick="openPdfOverlay(<?= $c['id'] ?>)" title="Vista Previa PDF / Imprimir"
+                                    style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; background: #fff1f2; color: #e35156; border: none; border-radius: 10px; cursor: pointer;"><i
+                                        class="fas fa-file-pdf"></i></button>
                             </div>
                         </td>
                     </tr>
@@ -172,6 +171,28 @@
     </table>
 </div>
 
+
+
+<!-- 📋 OVERLAY DE VISTA PREVIA PDF -->
+<div id="pdfOverlay" class="edit-overlay" onclick="closePdfOverlay(event)">
+    <div class="edit-panel"
+        style="max-width: 900px; padding: 0; background: #f1f5f9; height: 90vh; display: flex; flex-direction: column;"
+        onclick="event.stopPropagation()">
+        <div
+            style="padding: 15px 25px; background: white; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; border-radius: 20px 20px 0 0;">
+            <div>
+                <h3 style="margin: 0; font-size: 16px; font-weight: 800; color: var(--text-primary);">Vista Previa de
+                    Cotización</h3>
+                <p style="margin: 0; font-size: 11px; color: var(--text-secondary);">Recuerda usar la opción "Guardar
+                    como PDF" en el menú de impresión.</p>
+            </div>
+            <button onclick="closePdfOverlay(null, true)"
+                style="background: #f1f5f9; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer;"><i
+                    class="fas fa-times"></i></button>
+        </div>
+        <iframe id="pdfFrame" style="flex: 1; border: none; width: 100%; border-radius: 0 0 20px 20px;"></iframe>
+    </div>
+</div>
 
 <!-- 🎭 OVERLAY DEL CREADOR DE COTIZACIONES DINÁMICO -->
 <div id="quoteOverlay" class="edit-overlay" onclick="closeQuoteOverlay(event)">
@@ -394,6 +415,25 @@
     let quoteItems = [];
     let currentCurrency = 'MXN';
 
+    function openPdfOverlay(id) {
+        const overlay = document.getElementById('pdfOverlay');
+        const frame = document.getElementById('pdfFrame');
+        document.body.appendChild(overlay);
+        frame.src = `index.php?controller=Ventas&action=exportPDF&id=${id}`;
+        overlay.classList.add('active');
+        document.body.classList.add('no-scroll');
+    }
+
+    function closePdfOverlay(e, force = false) {
+        if (force || (e && e.target.id === 'pdfOverlay')) {
+            const overlay = document.getElementById('pdfOverlay');
+            const frame = document.getElementById('pdfFrame');
+            overlay.classList.remove('active');
+            document.body.classList.remove('no-scroll');
+            frame.src = "about:blank"; // Limpiar recursos
+        }
+    }
+
     function openQuoteOverlay() {
         const overlay = document.getElementById('quoteOverlay');
         document.body.appendChild(overlay); // Mover al body para evitar el blur del contenedor
@@ -540,7 +580,6 @@
         const rows = document.querySelectorAll('#itemsBody tr');
         rows.forEach(row => {
             const text = row.innerText.toLowerCase();
-            row.style.display = text.includes(term) ? '' : 'none';
-        });
+            row.style.display = text.includes(term) ? '' : 'none';});
     });
 </script>
