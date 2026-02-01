@@ -43,11 +43,18 @@
                 style="background: var(--glass-bg); backdrop-filter: var(--glass-blur); border: 1px solid var(--glass-border); border-radius: 24px; box-shadow: var(--glass-shadow); padding: 25px; transition: all 0.3s ease; display: flex; flex-direction: column; gap: 15px;">
 
                 <div style="display: flex; align-items: center; gap: 15px;">
-                    <!-- Avatar Dinámico -->
-                    <div
-                        style="width: 55px; height: 55px; background: linear-gradient(135deg, var(--accent-color) 0%, #4a5da9 100%); border-radius: 15px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 24px; box-shadow: 0 8px 15px rgba(41, 56, 135, 0.2);">
-                        <?= $initials ?>
-                    </div>
+                    <!-- Avatar Dinámico / Imagen -->
+                    <?php if ($t['imagen_url']): ?>
+                        <div
+                            style="width: 55px; height: 55px; border-radius: 15px; overflow: hidden; box-shadow: 0 8px 15px rgba(41, 56, 135, 0.2); border: 2px solid white;">
+                            <img src="<?= $t['imagen_url'] ?>" style="width: 100%; height: 100%; object-fit: cover;">
+                        </div>
+                    <?php else: ?>
+                        <div
+                            style="width: 55px; height: 55px; background: linear-gradient(135deg, var(--accent-color) 0%, #4a5da9 100%); border-radius: 15px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 24px; box-shadow: 0 8px 15px rgba(41, 56, 135, 0.2);">
+                            <?= $initials ?>
+                        </div>
+                    <?php endif; ?>
                     <div style="flex: 1; min-width: 0;">
                         <h4
                             style="margin: 0; font-weight: 800; color: var(--text-primary); font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
@@ -144,9 +151,22 @@
                     class="fas fa-times"></i></button>
         </div>
 
-        <form id="formTercero" action="index.php?controller=Terceros&action=create" method="POST">
+        <form id="formTercero" action="index.php?controller=Terceros&action=create" method="POST"
+            enctype="multipart/form-data">
             <input type="hidden" name="id" id="tercero_id">
             <div style="display: grid; grid-template-columns: 1fr; gap: 15px;">
+                <div style="display: flex; gap: 15px; align-items: center;">
+                    <div id="imagePreviewContainer"
+                        style="width: 80px; height: 80px; border-radius: 15px; background: #f1f5f9; border: 2px dashed #e2e8f0; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                        <i class="fas fa-camera" style="color: #94a3b8; font-size: 20px;"></i>
+                    </div>
+                    <div style="flex: 1;">
+                        <label class="form-label">Imagen de Perfil</label>
+                        <input type="file" name="imagen" id="imagenInput" accept="image/*" class="form-input"
+                            style="padding: 8px;">
+                    </div>
+                </div>
+
                 <div>
                     <label class="form-label">Razón Social o Nombre Completo</label>
                     <input type="text" name="nombre_razon_social" required placeholder="Ej. URICA Eléctrica y Control"
@@ -241,6 +261,8 @@
         const title = document.getElementById('modalTitle');
         const idInput = document.getElementById('tercero_id');
 
+        const imagePreview = document.getElementById('imagePreviewContainer');
+
         if (data) {
             title.textContent = 'Editar Tercero';
             form.action = 'index.php?controller=Terceros&action=update';
@@ -251,16 +273,36 @@
             form.email.value = data.email;
             form.telefono.value = data.telefono;
             form.tipo.value = data.tipo;
+
+            if (data.imagen_url) {
+                imagePreview.innerHTML = `<img src="${data.imagen_url}" style="width: 100%; height: 100%; object-fit: cover;">`;
+            } else {
+                imagePreview.innerHTML = `<i class="fas fa-camera" style="color: #94a3b8; font-size: 20px;"></i>`;
+            }
         } else {
             title.textContent = 'Registrar Nuevo Tercero';
             form.action = 'index.php?controller=Terceros&action=create';
             form.reset();
             idInput.value = '';
+            imagePreview.innerHTML = `<i class="fas fa-camera" style="color: #94a3b8; font-size: 20px;"></i>`;
         }
+
         document.body.appendChild(modal);
         modal.classList.add('active');
         document.body.classList.add('no-scroll');
     }
+
+    // Preview de imagen al seleccionar
+    document.getElementById('imagenInput')?.addEventListener('change', function (e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                document.getElementById('imagePreviewContainer').innerHTML = `<img src="${event.target.result}" style="width: 100%; height: 100%; object-fit: cover;">`;
+            }
+            reader.readAsDataURL(file);
+        }
+    });
 
     function closeModal(e) {
         if (!e || e.target.id === 'modalTercero' || e.type === 'click') {

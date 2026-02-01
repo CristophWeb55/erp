@@ -22,13 +22,24 @@ class TercerosController extends Controller
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $tercerosModel = new Terceros();
+            $imagen_url = null;
+            if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
+                $ext = pathinfo($_FILES['imagen']['name'], PATHINFO_EXTENSION);
+                $filename = 'tercero_' . time() . '.' . $ext;
+                $target = 'uploads/terceros/' . $filename;
+                if (move_uploaded_file($_FILES['imagen']['tmp_name'], $target)) {
+                    $imagen_url = $target;
+                }
+            }
+
             $data = [
                 'nombre_razon_social' => $_POST['nombre_razon_social'],
                 'rfc' => $_POST['rfc'],
                 'direccion' => $_POST['direccion'],
                 'email' => $_POST['email'],
                 'telefono' => $_POST['telefono'],
-                'tipo' => $_POST['tipo']
+                'tipo' => $_POST['tipo'],
+                'imagen_url' => $imagen_url
             ];
 
             if ($tercerosModel->create($data)) {
@@ -43,13 +54,26 @@ class TercerosController extends Controller
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $tercerosModel = new Terceros();
             $id = $_POST['id'];
+            $terceroActual = $tercerosModel->getById($id);
+            $imagen_url = $terceroActual['imagen_url'];
+
+            if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
+                $ext = pathinfo($_FILES['imagen']['name'], PATHINFO_EXTENSION);
+                $filename = 'tercero_' . time() . '.' . $ext;
+                $target = 'uploads/terceros/' . $filename;
+                if (move_uploaded_file($_FILES['imagen']['tmp_name'], $target)) {
+                    $imagen_url = $target;
+                }
+            }
+
             $data = [
                 'nombre_razon_social' => $_POST['nombre_razon_social'],
                 'rfc' => $_POST['rfc'],
                 'direccion' => $_POST['direccion'],
                 'email' => $_POST['email'],
                 'telefono' => $_POST['telefono'],
-                'tipo' => $_POST['tipo']
+                'tipo' => $_POST['tipo'],
+                'imagen_url' => $imagen_url
             ];
 
             if ($tercerosModel->update($id, $data)) {

@@ -17,8 +17,8 @@ class Terceros
 
     public function create($data)
     {
-        $sql = "INSERT INTO terceros (nombre_razon_social, rfc, direccion, email, telefono, tipo) 
-                VALUES (:nombre_razon_social, :rfc, :direccion, :email, :telefono, :tipo)";
+        $sql = "INSERT INTO terceros (nombre_razon_social, rfc, direccion, email, telefono, tipo, imagen_url) 
+                VALUES (:nombre_razon_social, :rfc, :direccion, :email, :telefono, :tipo, :imagen_url)";
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([
             ':nombre_razon_social' => $data['nombre_razon_social'],
@@ -26,7 +26,8 @@ class Terceros
             ':direccion' => $data['direccion'],
             ':email' => $data['email'],
             ':telefono' => $data['telefono'],
-            ':tipo' => $data['tipo']
+            ':tipo' => $data['tipo'],
+            ':imagen_url' => $data['imagen_url'] ?? null
         ]);
     }
 
@@ -40,7 +41,7 @@ class Terceros
     public function update($id, $data)
     {
         $sql = "UPDATE terceros SET nombre_razon_social = :nombre_razon_social, rfc = :rfc, 
-                direccion = :direccion, email = :email, telefono = :telefono, tipo = :tipo 
+                direccion = :direccion, email = :email, telefono = :telefono, tipo = :tipo, imagen_url = :imagen_url 
                 WHERE id = :id";
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([
@@ -50,7 +51,8 @@ class Terceros
             ':direccion' => $data['direccion'],
             ':email' => $data['email'],
             ':telefono' => $data['telefono'],
-            ':tipo' => $data['tipo']
+            ':tipo' => $data['tipo'],
+            ':imagen_url' => $data['imagen_url'] ?? null
         ]);
     }
 
