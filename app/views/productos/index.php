@@ -200,11 +200,29 @@
                                 <div><label class="form-label">PRECIO VENTA (MXN)</label><input type="number" step="0.01" name="precio_venta" value="${p.precio_venta}" required class="form-input" style="font-weight: 800; color: var(--accent-secondary);"></div>
                             </div>
                             <div style="margin-bottom: 25px;"><label class="form-label">DESCRIPCIÓN COMERCIAL</label><textarea name="descripcion" required rows="4" class="form-input" style="line-height: 1.6;">${p.descripcion}</textarea></div>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; background: #f8fafc; padding: 25px; border-radius: 25px; border: 1px solid #e2e8f0;">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; background: #f8fafc; padding: 25px; border-radius: 25px; border: 1px solid #e2e8f0; margin-bottom: 25px;">
                                 <div><label class="form-label">STOCK MÍNIMO</label><input type="number" name="stock_minimo" value="${stockMinimo}" required class="form-input"></div>
                                 <div><label class="form-label">ESTADO ACTUAL</label><div style="font-size: 24px; font-weight: 900; color: ${status.c}">${stockActual} <span style="font-size: 12px; color: #94a3b8; font-weight: 500;">unidades</span></div></div>
                             </div>
+
+                            <!-- Control de Pedimento Re-incorporado -->
+                            <div style="background: rgba(41, 56, 135, 0.05); padding: 22px; border-radius: 25px; border: 1px dashed var(--accent-color); display: flex; justify-content: space-between; align-items: center;">
+                                <div style="display: flex; align-items: center; gap: 15px;">
+                                    <div style="width: 45px; height: 45px; background: var(--accent-color); color: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                                        <i class="fas fa-shield-alt"></i>
+                                    </div>
+                                    <div>
+                                        <h4 style="margin: 0; font-size: 15px; color: var(--text-primary);">Configuración de Pedimento</h4>
+                                        <p style="margin: 0; font-size: 11px; color: var(--text-secondary);">Activar para trazabilidad aduanal obligatoria.</p>
+                                    </div>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" name="requiere_pedimento" ${p.requiere_pedimento == 1 ? 'checked' : ''}>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
                         </div>
+
                         <div style="display: flex; flex-direction: column; gap: 25px;">
                             <div style="background: white; padding: 25px; border-radius: 30px; border: 1px solid #e2e8f0;">
                                 <label class="form-label">URL DE IMAGEN</label><input type="text" name="imagen_url" value="${p.imagen_url || ''}" id="editImgUrl" class="form-input" style="margin-bottom: 15px;">
