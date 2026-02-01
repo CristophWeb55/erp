@@ -194,7 +194,7 @@
                                             class="fas fa-check"></i></a>
                                 <?php elseif ($c['estatus'] == 'Aprobada'): ?>
                                     <a title="Convertir a Pedido"
-                                        href="index.php?controller=Ventas&action=convertToPedido&id=<?= $c['id'] ?>"
+                                        href="index.php?controller=Pedidos&action=create_from_quote&quote_id=<?= $c['id'] ?>"
                                         style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; background: var(--accent-color); color: white; border-radius: 10px; text-decoration: none; box-shadow: 0 4px 10px rgba(41, 56, 135, 0.2);"><i
                                             class="fas fa-rocket"></i></a>
                                     <a title="Crear Nueva Versión"

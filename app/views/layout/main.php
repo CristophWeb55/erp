@@ -54,6 +54,11 @@
                     <i class="fas fa-file-invoice-dollar"></i>
                     <span>Cotizaciones</span>
                 </a>
+                <a href="index.php?controller=Pedidos&action=index"
+                    class="nav-item <?= ($controller == 'Pedidos') ? 'active' : '' ?>">
+                    <i class="fas fa-shipping-fast"></i>
+                    <span>Pedidos</span>
+                </a>
 
                 <p
                     style="margin: 20px 0 10px 10px; font-size: 11px; text-transform: uppercase; color: var(--text-secondary); letter-spacing: 1px;">
