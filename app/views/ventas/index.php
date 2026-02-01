@@ -199,7 +199,8 @@
                     <div>
                         <h3 style="margin: 0 0 20px 0; font-size: 18px; font-weight: 800; color: var(--text-primary);">
                             <i class="fas fa-user-tie" style="margin-right: 10px; color: var(--accent-color);"></i>
-                            Cliente</h3>
+                            Cliente
+                        </h3>
                         <div style="margin-bottom: 20px;">
                             <label class="form-label" style="font-size: 11px; letter-spacing: 0.5px;">Sleccionar
                                 Cliente</label>
@@ -224,7 +225,8 @@
                     <div style="border-left: 1px solid #e2e8f0; padding-left: 40px;">
                         <h3 style="margin: 0 0 20px 0; font-size: 18px; font-weight: 800; color: var(--text-primary);">
                             <i class="fas fa-file-contract" style="margin-right: 10px; color: var(--accent-color);"></i>
-                            Términos Generales</h3>
+                            Términos Generales
+                        </h3>
                         <div style="display: grid; grid-template-columns: 1fr; gap: 15px;">
                             <div>
                                 <label class="form-label" style="font-size: 11px;">Moneda</label>
@@ -375,7 +377,9 @@
     let currentCurrency = 'MXN';
 
     function openQuoteOverlay() {
-        document.getElementById('quoteOverlay').classList.add('active');
+        const overlay = document.getElementById('quoteOverlay');
+        document.body.appendChild(overlay); // Mover al body para evitar el blur del contenedor
+        overlay.classList.add('active');
         document.body.classList.add('no-scroll');
         updateCurrencyUI();
     }
@@ -439,7 +443,7 @@
         const body = document.getElementById('itemsBody');
         body.innerHTML = "";
         const symbol = currentCurrency === 'USD' ? 'USD $' : '$';
-        
+
         quoteItems.forEach((item, index) => {
             const row = `
                 <tr style="border-bottom: 1px solid #f1f5f9;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
@@ -450,9 +454,9 @@
                     <td style="padding: 15px; text-align: center;">
                         <input type="number" value="${item.cantidad}" onchange="updateItemQty(${index}, this.value)" style="width: 70px; padding: 8px; border: 1px solid #e2e8f0; border-radius: 8px; text-align: center; font-weight: 700; color: var(--accent-color);">
                     </td>
-                    <td style="padding: 15px; text-align: right; font-weight: 600; color: var(--text-primary);">${symbol}${item.precio_unitario.toLocaleString('es-MX', {minimumFractionDigits:2})}</td>
+                    <td style="padding: 15px; text-align: right; font-weight: 600; color: var(--text-primary);">${symbol}${item.precio_unitario.toLocaleString('es-MX', { minimumFractionDigits: 2 })}</td>
                     <td style="padding: 15px; text-align: center;"><span style="background: #f1f5f9; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; color: #64748b;">${item.descuento}%</span></td>
-                    <td style="padding: 15px; text-align: right; font-weight: 800; color: var(--accent-secondary); font-size: 15px;">${symbol}${item.total.toLocaleString('es-MX', {minimumFractionDigits:2})}</td>
+                    <td style="padding: 15px; text-align: right; font-weight: 800; color: var(--accent-secondary); font-size: 15px;">${symbol}${item.total.toLocaleString('es-MX', { minimumFractionDigits: 2 })}</td>
                     <td style="padding: 15px; text-align: right;">
                         <button type="button" onclick="removeItem(${index})" style="background: #fff1f2; border: none; color: #ef4444; width: 35px; height: 35px; border-radius: 10px; cursor: pointer; transition: all 0.2s;"><i class="fas fa-trash-alt"></i></button>
                     </td>
@@ -479,16 +483,16 @@
         let total = subtotal + iva;
         const symbol = currentCurrency === 'USD' ? 'USD $' : '$';
 
-        document.getElementById('lblSubtotal').innerText = `${symbol}${subtotal.toLocaleString('es-MX', {minimumFractionDigits:2})}`;
-        document.getElementById('lblIva').innerText = `${symbol}${iva.toLocaleString('es-MX', {minimumFractionDigits:2})}`;
-        document.getElementById('lblTotal').innerText = `${symbol}${total.toLocaleString('es-MX', {minimumFractionDigits:2})}`;
+        document.getElementById('lblSubtotal').innerText = `${symbol}${subtotal.toLocaleString('es-MX', { minimumFractionDigits: 2 })}`;
+        document.getElementById('lblIva').innerText = `${symbol}${iva.toLocaleString('es-MX', { minimumFractionDigits: 2 })}`;
+        document.getElementById('lblTotal').innerText = `${symbol}${total.toLocaleString('es-MX', { minimumFractionDigits: 2 })}`;
 
         // Guardar en el input oculto para el enviarlo al backend
         document.getElementById('itemsJsonInput').value = JSON.stringify(quoteItems);
     }
 
     // Buscador en tiempo real para la tabla de items ya agregados
-    document.getElementById('productSearch')?.addEventListener('input', function(e) {
+    document.getElementById('productSearch')?.addEventListener('input', function (e) {
         const term = e.target.value.toLowerCase();
         const rows = document.querySelectorAll('#itemsBody tr');
         rows.forEach(row => {
