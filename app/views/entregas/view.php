@@ -25,11 +25,11 @@
                     </div>
                 </div>
                 <div style="text-align: right; display: flex; align-items: center; gap: 10px;">
-                    <a href="index.php?controller=Logistica&action=print&id=<?= $entrega['id'] ?>" target="_blank"
-                        style="background: white; border: 1px solid #e2e8f0; color: var(--text-secondary); width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.05);"
+                    <button onclick="openPrintModal(<?= $entrega['id'] ?>)"
+                        style="background: white; border: 1px solid #e2e8f0; color: var(--text-secondary); width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.05);"
                         title="Imprimir Orden de Entrega">
                         <i class="fas fa-print"></i>
-                    </a>
+                    </button>
 
                     <?php
                     $stMapping = [

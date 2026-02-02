@@ -20,7 +20,8 @@
                         style="margin: 0; font-size: 10px; color: var(--text-secondary); font-weight: 700; text-transform: uppercase;">
                         Pendientes</p>
                     <p style="margin: 0; font-size: 18px; font-weight: 800; color: var(--accent-color);">
-                        <?= count($pendientes) ?></p>
+                        <?= count($pendientes) ?>
+                    </p>
                 </div>
                 <div style="width: 1px; height: 30px; background: rgba(0,0,0,0.1);"></div>
                 <div style="text-align: right;">
@@ -28,7 +29,8 @@
                         style="margin: 0; font-size: 10px; color: var(--text-secondary); font-weight: 700; text-transform: uppercase;">
                         En Ruta</p>
                     <p style="margin: 0; font-size: 18px; font-weight: 800; color: #f59e0b;">
-                        <?= count(array_filter($entregas, fn($e) => $e['estatus'] == 'En Tránsito')) ?></p>
+                        <?= count(array_filter($entregas, fn($e) => $e['estatus'] == 'En Tránsito')) ?>
+                    </p>
                 </div>
             </div>
         </div>
@@ -64,7 +66,8 @@
                                 <span
                                     style="font-size: 11px; font-weight: 700; color: var(--accent-color); text-transform: uppercase;"><?= $p['folio'] ?></span>
                                 <h4 style="margin: 5px 0 0 0; font-size: 15px; font-weight: 800; color: var(--text-primary);">
-                                    <?= $p['cliente'] ?></h4>
+                                    <?= $p['cliente'] ?>
+                                </h4>
                             </div>
                             <div
                                 style="background: rgba(16, 185, 129, 0.1); color: #10b981; padding: 4px 8px; border-radius: 8px; font-size: 10px; font-weight: 800;">
@@ -178,9 +181,11 @@
                                         onmouseout="this.style.background='rgba(41, 56, 135, 0.1)'; this.style.color='var(--accent-color)';">
                                         <i class="fas fa-eye"></i>
                                     </a>
-                                    <button title="Imprimir Nota de Entrega" class="btn-action"
-                                        style="width: 38px; height: 38px; cursor: pointer; border: none; background: rgba(0,0,0,0.05); border-radius: 12px; transition: all 0.3s;">
-                                        <i class="fas fa-print"></i>
+                                    <button onclick="openPrintModal(<?= $e['id'] ?>)" title="Imprimir Nota de Entrega"
+                                        style="width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.05); color: var(--text-secondary); border-radius: 12px; border: none; cursor: pointer; transition: all 0.3s;"
+                                        onmouseover="this.style.background='#ef4444'; this.style.color='white';"
+                                        onmouseout="this.style.background='rgba(0,0,0,0.05)'; this.style.color='var(--text-secondary)';">
+                                        <i class="fas fa-file-pdf"></i>
                                     </button>
                                 </div>
                             </td>
