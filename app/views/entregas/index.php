@@ -231,7 +231,8 @@
     }
 
     .btn-generate:hover {
-        background: var(--accent-hover) !important;
+        filter: brightness(1.2);
         transform: scale(1.05);
+        box-shadow: 0 5px 15px rgba(41, 56, 135, 0.3);
     }
 </style>
