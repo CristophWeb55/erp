@@ -149,7 +149,7 @@
 
 <!-- Modal Confirmación Recepción -->
 <div id="modalReceive"
-    style="display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 9999; align-items: center; justify-content: center; animation: fadeIn 0.3s ease-out;">
+    style="display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.45); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); z-index: 10000; align-items: center; justify-content: center; animation: fadeIn 0.3s ease-out;">
     <div
         style="background: white; width: 100%; max-width: 450px; border-radius: 20px; padding: 30px; text-align: center; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); transform: scale(0.95); animation: zoomIn 0.2s ease-out forwards;">
         <div
@@ -178,6 +178,14 @@
 </div>
 
 <script>
+    // Mover el modal al final del body para garantizar que el backdrop cubra toda la pantalla (incluyendo sidebar)
+    document.addEventListener('DOMContentLoaded', () => {
+        const modal = document.getElementById('modalReceive');
+        if (modal && modal.parentElement !== document.body) {
+            document.body.appendChild(modal);
+        }
+    });
+
     function confirmReception() {
         const modal = document.getElementById('modalReceive');
         modal.style.display = 'flex';
