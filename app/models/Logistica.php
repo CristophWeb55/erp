@@ -147,43 +147,6 @@ class Logistica
     }
 
     /**
-     * Actualiza información de logística sin finalizar la entrega
-     */
-    public function updatePartialInfo($id, $data)
-    {
-        // Si tiene guía de seguimiento, pasamos a "En Tránsito"
-        $estatus = 'Programado';
-        if (!empty($data['guia_seguimiento'])) {
-            $estatus = 'En Tránsito';
-        }
-
-        $stmt = $this->db->prepare("
-            UPDATE entregas 
-            SET transportista = ?,
-                placas_vehiculo = ?,
-                guia_seguimiento = ?,
-                persona_recibe = ?,
-                telefono_contacto = ?,
-                bultos = ?,
-                peso_total = ?,
-                estatus = ?
-            WHERE id = ?
-        ");
-
-        return $stmt->execute([
-            $data['transportista'] ?? '',
-            $data['placas_vehiculo'] ?? '',
-            $data['guia_seguimiento'] ?? '',
-            $data['persona_recibe'] ?? '',
-            $data['telefono_contacto'] ?? '',
-            $data['bultos'] ?? 1,
-            $data['peso_total'] ?? 0,
-            $estatus,
-            $id
-        ]);
-    }
-
-    /**
      * Obtiene pedidos surtidos que aún no tienen una entrega generada
      */
     public function getPendingOrders()

@@ -186,15 +186,11 @@ try {
         echo "<div class='status-msg warning'>⚠ Tabla <code>entregas</code> ya existe. Verificando campos adicionales...</div>";
         // Verificar y agregar campos nuevos si no existen
         $newFields = [
-            'transportista' => "VARCHAR(100) AFTER estatus",
             'placas_vehiculo' => "VARCHAR(20) AFTER transportista",
-            'guia_seguimiento' => "VARCHAR(100) AFTER placas_vehiculo",
             'persona_recibe' => "VARCHAR(100) AFTER guia_seguimiento",
             'telefono_contacto' => "VARCHAR(20) AFTER persona_recibe",
             'bultos' => "INT DEFAULT 1 AFTER telefono_contacto",
             'peso_total' => "DECIMAL(10,2) DEFAULT 0.00 AFTER bultos",
-            'notas_entrega' => "TEXT AFTER peso_total",
-            'evidencia_firma' => "MEDIUMTEXT AFTER notas_entrega",
             'evidencia_foto' => "MEDIUMTEXT AFTER evidencia_firma"
         ];
 
@@ -222,41 +218,6 @@ try {
     } else {
         echo "<div class='status-msg warning'>⚠ Tabla <code>entrega_detalle</code> ya existe.</div>";
     }
-    // --- CATÁLOGOS DE LOGÍSTICA ---
-    echo "<div class='module-section'>";
-    echo "<div class='module-title'>🚛 Catálogos de Logística</div>";
-
-    // Tabla de Transportistas
-    $existsTpr = $db->query("SHOW TABLES LIKE 'transportistas'")->fetch();
-    if (!$existsTpr) {
-        $db->exec("CREATE TABLE transportistas (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            nombre VARCHAR(100) NOT NULL,
-            rfc VARCHAR(15),
-            telefono VARCHAR(20),
-            correo VARCHAR(100),
-            activo TINYINT(1) DEFAULT 1,
-            fecha_alta TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )");
-        echo "<div class='status-msg success'>✓ Tabla <code>transportistas</code> creada.</div>";
-    }
-
-    // Tabla de Vehículos
-    $existsVeh = $db->query("SHOW TABLES LIKE 'vehiculos'")->fetch();
-    if (!$existsVeh) {
-        $db->exec("CREATE TABLE vehiculos (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            placas VARCHAR(20) UNIQUE NOT NULL,
-            marca_modelo VARCHAR(100),
-            tipo VARCHAR(50),
-            transportista_id INT,
-            activo TINYINT(1) DEFAULT 1,
-            FOREIGN KEY (transportista_id) REFERENCES transportistas(id) ON DELETE SET NULL
-        )");
-        echo "<div class='status-msg success'>✓ Tabla <code>vehiculos</code> creada.</div>";
-    }
-    echo "</div>";
-
     echo "</div>";
 
     echo "<div style='margin-top: 30px; display: flex; gap: 15px;'>";
