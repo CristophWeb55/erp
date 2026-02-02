@@ -60,6 +60,12 @@
                     <i class="fas fa-box-open"></i> Surtir Pedido
                 </button>
             <?php endif; ?>
+            <?php if ($pedido['estatus'] == 'Surtido'): ?>
+                <a href="index.php?controller=Logistica&action=generate&pedido_id=<?= $pedido['id'] ?>" class="btn"
+                    style="background: var(--accent-color); color: white; border: none; border-radius: 12px; padding: 10px 25px; display: flex; align-items: center; gap: 8px; text-decoration: none;">
+                    <i class="fas fa-truck"></i> Preparar Entrega
+                </a>
+            <?php endif; ?>
         </div>
     </div>
 
