@@ -134,7 +134,7 @@ class Logistica
         return $stmt->execute([
             $data['transportista'] ?? '',
             $data['placas_vehiculo'] ?? '',
-            $data['numero_guia'] ?? '',
+            $data['guia_seguimiento'] ?? '',
             $data['persona_recibe'] ?? '',
             $data['telefono_contacto'] ?? '',
             $data['bultos'] ?? 1,
@@ -142,6 +142,31 @@ class Logistica
             $data['notas_entrega'] ?? '',
             $data['evidencia_firma'] ?? '',
             $data['evidencia_foto'] ?? '',
+            $id
+        ]);
+    }
+
+    /**
+     * Actualiza datos logísticos sin finalizar la entrega
+     */
+    public function updateLogisticsData($id, $data)
+    {
+        $stmt = $this->db->prepare("
+            UPDATE entregas 
+            SET placas_vehiculo = ?,
+                guia_seguimiento = ?,
+                bultos = ?,
+                peso_total = ?,
+                estatus = ?
+            WHERE id = ?
+        ");
+
+        return $stmt->execute([
+            $data['placas_vehiculo'],
+            $data['guia_seguimiento'],
+            $data['bultos'],
+            $data['peso_total'],
+            $data['estatus'],
             $id
         ]);
     }

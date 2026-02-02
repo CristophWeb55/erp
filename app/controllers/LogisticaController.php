@@ -66,7 +66,7 @@ class LogisticaController extends Controller
             $data = [
                 'transportista' => $_POST['transportista'] ?? '',
                 'placas_vehiculo' => $_POST['placas_vehiculo'] ?? '',
-                'numero_guia' => $_POST['numero_guia'] ?? '',
+                'numero_guia' => $_POST['guia_seguimiento'] ?? '',
                 'persona_recibe' => $_POST['persona_recibe'] ?? '',
                 'telefono_contacto' => $_POST['telefono_contacto'] ?? '',
                 'bultos' => $_POST['bultos'] ?? 1,
@@ -81,6 +81,28 @@ class LogisticaController extends Controller
                 header('Location: index.php?controller=Logistica&action=detalle&id=' . $id . '&msg=delivered');
             } else {
                 header('Location: index.php?controller=Logistica&action=detalle&id=' . $id . '&error=confirm_failed');
+            }
+            exit;
+        }
+    }
+
+    public function updateLogistics()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = $_POST['id'];
+            $data = [
+                'placas_vehiculo' => $_POST['placas_vehiculo'] ?? '',
+                'guia_seguimiento' => $_POST['guia_seguimiento'] ?? '',
+                'bultos' => $_POST['bultos'] ?? 1,
+                'peso_total' => $_POST['peso_total'] ?? 0,
+                'estatus' => $_POST['estatus'] ?? 'Programado'
+            ];
+
+            $logisticaModel = new Logistica();
+            if ($logisticaModel->updateLogisticsData($id, $data)) {
+                header('Location: index.php?controller=Logistica&action=detalle&id=' . $id . '&msg=updated');
+            } else {
+                header('Location: index.php?controller=Logistica&action=detalle&id=' . $id . '&error=update_failed');
             }
             exit;
         }
