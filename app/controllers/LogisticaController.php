@@ -41,6 +41,25 @@ class LogisticaController extends Controller
         header('Location: index.php?controller=Logistica&action=index');
     }
 
+    public function print()
+    {
+        if (isset($_GET['id'])) {
+            $id = $_GET['id'];
+            $logisticaModel = new Logistica();
+            $entrega = $logisticaModel->getById($id);
+
+            if ($entrega) {
+                $data = [
+                    'pageTitle' => 'Imprimir Entrega ' . $entrega['folio'],
+                    'entrega' => $entrega
+                ];
+                $this->rawView('entregas/print', $data);
+                return;
+            }
+        }
+        header('Location: index.php?controller=Logistica&action=index');
+    }
+
     public function generate()
     {
         if (isset($_GET['pedido_id'])) {

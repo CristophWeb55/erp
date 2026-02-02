@@ -10,7 +10,8 @@
                         style="background: rgba(41, 56, 135, 0.1); color: var(--accent-color); padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 800; text-transform: uppercase;">Orden
                         de Logística</span>
                     <h2 style="font-weight: 800; font-size: 24px; color: var(--text-primary); margin: 5px 0 0 0;">
-                        <?= $entrega['folio'] ?></h2>
+                        <?= $entrega['folio'] ?>
+                    </h2>
                     <div style="margin-top: 10px; display: flex; align-items: center; gap: 12px;">
                         <span style="font-size: 12px; color: var(--text-secondary);">
                             <i class="fas fa-file-invoice" style="margin-right: 5px;"></i> Pedido:
@@ -23,7 +24,13 @@
                         </span>
                     </div>
                 </div>
-                <div style="text-align: right;">
+                <div style="text-align: right; display: flex; align-items: center; gap: 10px;">
+                    <a href="index.php?controller=Logistica&action=print&id=<?= $entrega['id'] ?>" target="_blank"
+                        style="background: white; border: 1px solid #e2e8f0; color: var(--text-secondary); width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.05);"
+                        title="Imprimir Orden de Entrega">
+                        <i class="fas fa-print"></i>
+                    </a>
+
                     <?php
                     $stMapping = [
                         'Programado' => ['bg' => 'rgba(59, 130, 246, 0.1)', 'text' => '#3b82f6', 'icon' => 'fa-clock'],
@@ -47,7 +54,8 @@
                             style="display: block; font-size: 9px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 3px;">Cliente
                             / Destinatario</label>
                         <p style="margin: 0; font-weight: 700; font-size: 14px; color: var(--text-primary);">
-                            <?= $entrega['cliente'] ?></p>
+                            <?= $entrega['cliente'] ?>
+                        </p>
                     </div>
                     <div>
                         <label
@@ -55,7 +63,8 @@
                             de Entrega</label>
                         <p
                             style="margin: 0; font-weight: 500; font-size: 13px; color: var(--text-primary); line-height: 1.3;">
-                            <?= $entrega['direccion'] ?></p>
+                            <?= $entrega['direccion'] ?>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -75,13 +84,15 @@
                         <span
                             style="display: block; font-size: 8px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase;">Placas</span>
                         <p style="margin: 0; font-size: 12px; font-weight: 600;">
-                            <?= ($entrega['placas_vehiculo'] ?? '') ?: 'Pendiente' ?></p>
+                            <?= ($entrega['placas_vehiculo'] ?? '') ?: 'Pendiente' ?>
+                        </p>
                     </div>
                     <div>
                         <span
                             style="display: block; font-size: 8px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase;">Guía</span>
                         <p style="margin: 0; font-size: 12px; font-weight: 600; color: var(--accent-color);">
-                            <?= ($entrega['guia_seguimiento'] ?? '') ?: 'N/A' ?></p>
+                            <?= ($entrega['guia_seguimiento'] ?? '') ?: 'N/A' ?>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -103,7 +114,8 @@
                             style="display: block; font-size: 8px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase;">Peso
                             KG</span>
                         <p style="margin: 0; font-size: 14px; font-weight: 800;">
-                            <?= number_format($entrega['peso_total'] ?? 0, 2) ?></p>
+                            <?= number_format($entrega['peso_total'] ?? 0, 2) ?>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -119,13 +131,15 @@
                         <span
                             style="display: block; font-size: 8px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase;">Recibe</span>
                         <p style="margin: 0; font-size: 12px; font-weight: 600;">
-                            <?= ($entrega['persona_recibe'] ?? '') ?: 'No especificado' ?></p>
+                            <?= ($entrega['persona_recibe'] ?? '') ?: 'No especificado' ?>
+                        </p>
                     </div>
                     <div>
                         <span
                             style="display: block; font-size: 8px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase;">Teléfono</span>
                         <p style="margin: 0; font-size: 12px; font-weight: 600;">
-                            <?= ($entrega['telefono_contacto'] ?? '') ?: 'N/A' ?></p>
+                            <?= ($entrega['telefono_contacto'] ?? '') ?: 'N/A' ?>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -158,18 +172,21 @@
                                         <?php else: ?>
                                             <div
                                                 style="width: 32px; height: 32px; border-radius: 6px; background: #f1f5f9; display: flex; align-items: center; justify-content: center; color: #94a3b8; font-size: 10px;">
-                                                <i class="fas fa-box"></i></div>
+                                                <i class="fas fa-box"></i>
+                                            </div>
                                         <?php endif; ?>
                                         <div>
                                             <div style="font-weight: 700; font-size: 13px;"><?= $item['sku'] ?></div>
                                             <div style="font-size: 10px; color: var(--text-secondary);">
-                                                <?= $item['descripcion'] ?></div>
+                                                <?= $item['descripcion'] ?>
+                                            </div>
                                         </div>
                                     </div>
                                 </td>
                                 <td
                                     style="padding: 10px 15px; text-align: center; font-weight: 800; font-size: 14px; color: var(--accent-color);">
-                                    <?= $item['cantidad_a_entregar'] ?></td>
+                                    <?= $item['cantidad_a_entregar'] ?>
+                                </td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
@@ -229,7 +246,8 @@
                                 <img src="<?= $entrega['evidencia_firma'] ?>"
                                     style="width: 100%; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0;">
                                 <p style="font-size: 10px; color: var(--text-secondary); margin-top: 5px;">Recibió:
-                                    <strong><?= ($entrega['persona_recibe'] ?? '') ?: 'N/A' ?></strong></p>
+                                    <strong><?= ($entrega['persona_recibe'] ?? '') ?: 'N/A' ?></strong>
+                                </p>
                             </div>
                         <?php endif; ?>
                     </div>
@@ -271,7 +289,7 @@
                                     class="fas fa-times"></i></button>
                         </div>
                         <div id="camera-area">
-                            <button type="button" onclick="document.getElementById('file-input').click()" 
+                            <button type="button" onclick="document.getElementById('file-input').click()"
                                 style="width: 100%; background: white; border: 1.5px dashed #cbd5e1; padding: 15px; border-radius: 12px; color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
                                 <i class="fas fa-camera"></i>
                                 <span style="font-size: 11px; font-weight: 600;">Evidencia Foto</span>
@@ -331,7 +349,8 @@
                 <label
                     style="display: block; font-size: 10px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 5px;">Guía
                     de Seguimiento</label>
-                <input type="text" name="guia_seguimiento" value="<?= $entrega['guia_seguimiento'] ?? '' ?>" placeholder="N/A"
+                <input type="text" name="guia_seguimiento" value="<?= $entrega['guia_seguimiento'] ?? '' ?>"
+                    placeholder="N/A"
                     style="width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #e2e8f0;">
             </div>
 
