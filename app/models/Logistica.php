@@ -124,4 +124,20 @@ class Logistica
         ");
         return $stmt->execute([$firmaBase64, $notas, $id]);
     }
+
+    /**
+     * Obtiene pedidos surtidos que aún no tienen una entrega generada
+     */
+    public function getPendingOrders()
+    {
+        $stmt = $this->db->query("
+            SELECT p.*, t.nombre_razon_social as cliente
+            FROM pedidos p
+            JOIN terceros t ON p.cliente_id = t.id
+            LEFT JOIN entregas e ON p.id = e.pedido_id
+            WHERE p.estatus = 'Surtido' AND e.id IS NULL
+            ORDER BY p.fecha_pedido DESC
+        ");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

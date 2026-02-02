@@ -13,29 +13,88 @@
         </div>
 
         <div style="display: flex; gap: 12px;">
-            <div class="search-bar" style="position: relative;">
-                <i class="fas fa-search"
-                    style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #94a3b8;"></i>
-                <input type="text" placeholder="Buscar por FFilio, Cliente..."
-                    style="padding: 12px 20px 12px 45px; border-radius: 12px; border: 1px solid rgba(0,0,0,0.05); background: white; width: 250px; font-family: inherit;">
+            <div
+                style="background: rgba(41, 56, 135, 0.05); padding: 10px 20px; border-radius: 12px; display: flex; align-items: center; gap: 10px;">
+                <div style="text-align: right;">
+                    <p
+                        style="margin: 0; font-size: 10px; color: var(--text-secondary); font-weight: 700; text-transform: uppercase;">
+                        Pendientes</p>
+                    <p style="margin: 0; font-size: 18px; font-weight: 800; color: var(--accent-color);">
+                        <?= count($pendientes) ?></p>
+                </div>
+                <div style="width: 1px; height: 30px; background: rgba(0,0,0,0.1);"></div>
+                <div style="text-align: right;">
+                    <p
+                        style="margin: 0; font-size: 10px; color: var(--text-secondary); font-weight: 700; text-transform: uppercase;">
+                        En Ruta</p>
+                    <p style="margin: 0; font-size: 18px; font-weight: 800; color: #f59e0b;">
+                        <?= count(array_filter($entregas, fn($e) => $e['estatus'] == 'En Tránsito')) ?></p>
+                </div>
             </div>
-            <button class="btn btn-secondary"
-                style="border-radius: 12px; padding: 10px 20px; border: 1px solid rgba(0,0,0,0.1); background: white; display: flex; align-items: center; gap: 8px;">
-                <i class="fas fa-filter"></i> Filtros
-            </button>
         </div>
     </div>
 
     <!-- 🔔 NOTIFICACIONES -->
-    <?php if (isset($_GET['msg']) && $_GET['msg'] == 'created'): ?>
-        <div
-            style="background: rgba(16, 185, 129, 0.1); border: 1px solid #10b981; color: #10b981; padding: 15px 25px; border-radius: 16px; display: flex; align-items: center; gap: 15px; margin-bottom: 25px; animation: slideDown 0.5s ease-out;">
-            <i class="fas fa-check-circle" style="font-size: 20px;"></i>
-            <span style="font-weight: 700;">¡Orden de entrega generada con éxito!</span>
-        </div>
+    <?php if (isset($_GET['msg'])): ?>
+        <?php if ($_GET['msg'] == 'created'): ?>
+            <div
+                style="background: rgba(16, 185, 129, 0.1); border: 1px solid #10b981; color: #10b981; padding: 15px 25px; border-radius: 16px; display: flex; align-items: center; gap: 15px; margin-bottom: 25px; animation: slideDown 0.5s ease-out;">
+                <i class="fas fa-check-circle" style="font-size: 20px;"></i>
+                <span style="font-weight: 700;">¡Orden de entrega generada con éxito!</span>
+            </div>
+        <?php endif; ?>
     <?php endif; ?>
 
-    <!-- Tabla de Entregas -->
+    <!-- 🚚 SECCIÓN: PEDIDOS POR PROGRAMAR -->
+    <?php if (!empty($pendientes)): ?>
+        <div style="margin-bottom: 40px;">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+                <h3 style="margin: 0; font-size: 18px; font-weight: 800; color: var(--text-primary);">Pedidos Listos para
+                    Entrega</h3>
+                <span
+                    style="background: var(--accent-color); color: white; padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700;"><?= count($pendientes) ?></span>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+                <?php foreach ($pendientes as $p): ?>
+                    <div class="pending-card"
+                        style="background: white; border: 1px solid rgba(41, 56, 135, 0.1); border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 15px; transition: all 0.3s ease;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <div>
+                                <span
+                                    style="font-size: 11px; font-weight: 700; color: var(--accent-color); text-transform: uppercase;"><?= $p['folio'] ?></span>
+                                <h4 style="margin: 5px 0 0 0; font-size: 15px; font-weight: 800; color: var(--text-primary);">
+                                    <?= $p['cliente'] ?></h4>
+                            </div>
+                            <div
+                                style="background: rgba(16, 185, 129, 0.1); color: #10b981; padding: 4px 8px; border-radius: 8px; font-size: 10px; font-weight: 800;">
+                                SURTIDO</div>
+                        </div>
+
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto;">
+                            <div style="font-size: 12px; color: var(--text-secondary);">
+                                <i class="far fa-calendar-alt"></i> <?= date('d/m/Y', strtotime($p['fecha_pedido'])) ?>
+                            </div>
+                            <a href="index.php?controller=Logistica&action=generate&pedido_id=<?= $p['id'] ?>"
+                                class="btn-generate"
+                                style="background: var(--accent-color); color: white; border: none; padding: 8px 15px; border-radius: 10px; font-size: 12px; font-weight: 700; text-decoration: none; display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-plus"></i> Programar
+                            </a>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <hr style="border: none; border-top: 1px solid rgba(0,0,0,0.05); margin-bottom: 40px;">
+    <?php endif; ?>
+
+    <!-- Tabla de Entregas ya Programadas -->
+    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+        <h3 style="margin: 0; font-size: 18px; font-weight: 800; color: var(--text-primary);">Historial de Entregas</h3>
+        <span
+            style="background: #64748b; color: white; padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700;"><?= count($entregas) ?></span>
+    </div>
+
     <div style="overflow-x: auto;">
         <table style="width: 100%; border-collapse: separate; border-spacing: 0;">
             <thead>
@@ -62,7 +121,7 @@
                     <tr>
                         <td colspan="5" style="padding: 50px; text-align: center; color: var(--text-secondary);">
                             <i class="fas fa-box-open" style="font-size: 40px; margin-bottom: 15px; opacity: 0.3;"></i>
-                            <p>No hay entregas registradas actualmente.</p>
+                            <p>No hay entregas programadas actualmente.</p>
                         </td>
                     </tr>
                 <?php else: ?>
@@ -163,5 +222,16 @@
         backdrop-filter: var(--glass-blur);
         border: 1px solid var(--glass-border);
         box-shadow: var(--glass-shadow);
+    }
+
+    .pending-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(41, 56, 135, 0.08);
+        border-color: var(--accent-color);
+    }
+
+    .btn-generate:hover {
+        background: var(--accent-hover) !important;
+        transform: scale(1.05);
     }
 </style>

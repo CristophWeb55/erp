@@ -9,11 +9,13 @@ class LogisticaController extends Controller
     {
         $logisticaModel = new Logistica();
         $entregas = $logisticaModel->getAll();
+        $pendientes = $logisticaModel->getPendingOrders();
 
         $data = [
             'pageTitle' => 'Logística y Seguimiento de Entregas',
             'controller' => 'Logistica',
-            'entregas' => $entregas
+            'entregas' => $entregas,
+            'pendientes' => $pendientes
         ];
 
         $this->view('entregas/index', $data);
