@@ -110,19 +110,40 @@ class Logistica
     }
 
     /**
-     * Confirma la entrega y guarda la firma
+     * Confirma la entrega y guarda toda la evidencia
      */
-    public function confirmDelivery($id, $firmaBase64, $notas = '')
+    public function confirmDelivery($id, $data)
     {
         $stmt = $this->db->prepare("
             UPDATE entregas 
             SET estatus = 'Entregado', 
                 fecha_entrega_real = NOW(), 
-                evidencia_firma = ?, 
-                notas_entrega = ? 
+                transportista = ?,
+                placas_vehiculo = ?,
+                guia_seguimiento = ?,
+                persona_recibe = ?,
+                telefono_contacto = ?,
+                bultos = ?,
+                peso_total = ?,
+                notas_entrega = ?, 
+                evidencia_firma = ?,
+                evidencia_foto = ?
             WHERE id = ?
         ");
-        return $stmt->execute([$firmaBase64, $notas, $id]);
+
+        return $stmt->execute([
+            $data['transportista'] ?? '',
+            $data['placas_vehiculo'] ?? '',
+            $data['numero_guia'] ?? '',
+            $data['persona_recibe'] ?? '',
+            $data['telefono_contacto'] ?? '',
+            $data['bultos'] ?? 1,
+            $data['peso_total'] ?? 0,
+            $data['notas_entrega'] ?? '',
+            $data['evidencia_firma'] ?? '',
+            $data['evidencia_foto'] ?? '',
+            $id
+        ]);
     }
 
     /**

@@ -170,14 +170,37 @@ try {
             fecha_entrega_real DATETIME,
             estatus ENUM('Programado', 'En Tránsito', 'Entregado', 'Incidencia') DEFAULT 'Programado',
             transportista VARCHAR(100),
+            placas_vehiculo VARCHAR(20),
             guia_seguimiento VARCHAR(100),
+            persona_recibe VARCHAR(100),
+            telefono_contacto VARCHAR(20),
+            bultos INT DEFAULT 1,
+            peso_total DECIMAL(10,2) DEFAULT 0.00,
             notas_entrega TEXT,
             evidencia_firma MEDIUMTEXT,
+            evidencia_foto MEDIUMTEXT,
             FOREIGN KEY (pedido_id) REFERENCES pedidos(id)
         )");
-        echo "<div class='status-msg success'>✓ Tabla <code>entregas</code> creada correctamente.</div>";
+        echo "<div class='status-msg success'>✓ Tabla <code>entregas</code> creada correctamente con campos profesionales.</div>";
     } else {
-        echo "<div class='status-msg warning'>⚠ Tabla <code>entregas</code> ya existe.</div>";
+        echo "<div class='status-msg warning'>⚠ Tabla <code>entregas</code> ya existe. Verificando campos adicionales...</div>";
+        // Verificar y agregar campos nuevos si no existen
+        $newFields = [
+            'placas_vehiculo' => "VARCHAR(20) AFTER transportista",
+            'persona_recibe' => "VARCHAR(100) AFTER guia_seguimiento",
+            'telefono_contacto' => "VARCHAR(20) AFTER persona_recibe",
+            'bultos' => "INT DEFAULT 1 AFTER telefono_contacto",
+            'peso_total' => "DECIMAL(10,2) DEFAULT 0.00 AFTER bultos",
+            'evidencia_foto' => "MEDIUMTEXT AFTER evidencia_firma"
+        ];
+
+        foreach ($newFields as $field => $attr) {
+            $checkField = $db->query("SHOW COLUMNS FROM entregas LIKE '$field'")->fetch();
+            if (!$checkField) {
+                $db->exec("ALTER TABLE entregas ADD COLUMN $field $attr");
+                echo "<div class='status-msg success'>✓ Campo <code>$field</code> agregado a tabla entregas.</div>";
+            }
+        }
     }
 
     // Crear tabla entrega_detalle

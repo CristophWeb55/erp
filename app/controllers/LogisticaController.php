@@ -62,11 +62,22 @@ class LogisticaController extends Controller
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $_POST['id'];
-            $firma = $_POST['signature_data'];
-            $notas = $_POST['notas_entrega'] ?? '';
+
+            $data = [
+                'transportista' => $_POST['transportista'] ?? '',
+                'placas_vehiculo' => $_POST['placas_vehiculo'] ?? '',
+                'numero_guia' => $_POST['numero_guia'] ?? '',
+                'persona_recibe' => $_POST['persona_recibe'] ?? '',
+                'telefono_contacto' => $_POST['telefono_contacto'] ?? '',
+                'bultos' => $_POST['bultos'] ?? 1,
+                'peso_total' => $_POST['peso_total'] ?? 0,
+                'notas_entrega' => $_POST['notas_entrega'] ?? '',
+                'evidencia_firma' => $_POST['signature_data'] ?? '',
+                'evidencia_foto' => $_POST['photo_data'] ?? ''
+            ];
 
             $logisticaModel = new Logistica();
-            if ($logisticaModel->confirmDelivery($id, $firma, $notas)) {
+            if ($logisticaModel->confirmDelivery($id, $data)) {
                 header('Location: index.php?controller=Logistica&action=detalle&id=' . $id . '&msg=delivered');
             } else {
                 header('Location: index.php?controller=Logistica&action=detalle&id=' . $id . '&error=confirm_failed');
