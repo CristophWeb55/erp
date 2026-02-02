@@ -186,11 +186,15 @@ try {
         echo "<div class='status-msg warning'>⚠ Tabla <code>entregas</code> ya existe. Verificando campos adicionales...</div>";
         // Verificar y agregar campos nuevos si no existen
         $newFields = [
+            'transportista' => "VARCHAR(100) AFTER estatus",
             'placas_vehiculo' => "VARCHAR(20) AFTER transportista",
+            'guia_seguimiento' => "VARCHAR(100) AFTER placas_vehiculo",
             'persona_recibe' => "VARCHAR(100) AFTER guia_seguimiento",
             'telefono_contacto' => "VARCHAR(20) AFTER persona_recibe",
             'bultos' => "INT DEFAULT 1 AFTER telefono_contacto",
             'peso_total' => "DECIMAL(10,2) DEFAULT 0.00 AFTER bultos",
+            'notas_entrega' => "TEXT AFTER peso_total",
+            'evidencia_firma' => "MEDIUMTEXT AFTER notas_entrega",
             'evidencia_foto' => "MEDIUMTEXT AFTER evidencia_firma"
         ];
 
