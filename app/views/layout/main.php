@@ -63,20 +63,18 @@
                 <p
                     style="margin: 20px 0 10px 10px; font-size: 11px; text-transform: uppercase; color: var(--text-secondary); letter-spacing: 1px;">
                     Operaciones</p>
-                <a href="index.php?controller=Compras&action=index"
-                    class="nav-item <?= ($controller == 'Compras') ? 'active' : '' ?>">
-                    <i class="fas fa-shopping-cart"></i>
-                    <span>Compras</span>
-                </a>
-                <a href="index.php?controller=Inventario&action=index"
-                    class="nav-item <?= ($controller == 'Inventario') ? 'active' : '' ?>">
-                    <i class="fas fa-warehouse"></i>
-                    <span>Inventario</span>
-                </a>
                 <a href="index.php?controller=Logistica&action=index"
                     class="nav-item <?= ($controller == 'Logistica') ? 'active' : '' ?>">
                     <i class="fas fa-truck"></i>
                     <span>Logística</span>
+                </a>
+                <a href="index.php?controller=Inventario&action=index" class="nav-item <?= ($controller == 'Inventario') ? 'active' : '' ?>">
+                    <i class=" fas fa-warehouse"></i>
+                    <span>Inventario</span>
+                </a>
+                <a href="index.php?controller=Compras&action=index" class="nav-item <?= ($controller == 'Compras') ? 'active' : '' ?>">
+                    <i class=" fas fa-shopping-cart"></i>
+                    <span>Compras</span>
                 </a>
 
                 <p
