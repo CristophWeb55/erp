@@ -1,7 +1,7 @@
 <?php
 // Validar que exista la información
-if (!$entrega) {
-    die("Error: No se encontró la información de la entrega.");
+if (!isset($entrega) || !$entrega) {
+    die("Error: No se encontró la información de la entrega. Verifique el ID.");
 }
 ?>
 <!DOCTYPE html>
@@ -262,10 +262,6 @@ if (!$entrega) {
 </head>
 
 <body>
-
-    <a href="#" class="btn-print no-print" onclick="window.print()">
-        <i class="fas fa-file-pdf"></i> IMPRIMIR / PDF
-    </a>
 
     <div class="pdf-container">
         <!-- Header -->
