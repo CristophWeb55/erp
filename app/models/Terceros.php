@@ -56,6 +56,12 @@ class Terceros
         ]);
     }
 
+    public function getProveedores()
+    {
+        $stmt = $this->db->query("SELECT * FROM terceros WHERE tipo IN ('Proveedor', 'Ambos') ORDER BY nombre_razon_social ASC");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function delete($id)
     {
         $stmt = $this->db->prepare("DELETE FROM terceros WHERE id = :id");
