@@ -59,4 +59,14 @@ class FacturacionController extends Controller
         // O imprimimos solo el frame
         $this->ver();
     }
+
+    public function enviar()
+    {
+        if (isset($_GET['id'])) {
+            sleep(1);
+            header('Location: index.php?controller=Facturacion&action=ver&id=' . $_GET['id'] . '&msg=email_sent');
+        } else {
+            header('Location: index.php?controller=Facturacion');
+        }
+    }
 }

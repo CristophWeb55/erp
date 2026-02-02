@@ -12,14 +12,14 @@
                 style="background: white; border: 1px solid #e2e8f0; padding: 10px 20px; border-radius: 8px; font-weight: 700; color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; gap: 8px;">
                 <i class="fas fa-print"></i> Imprimir
             </button>
-            <button
+            <button onclick="window.print()"
                 style="background: #ef4444; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 700; color: white; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);">
                 <i class="fas fa-file-pdf"></i> Descargar PDF
             </button>
-            <button
-                style="background: #3b82f6; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 700; color: white; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);">
+            <a href="index.php?controller=Facturacion&action=enviar&id=<?= $factura['id'] ?>"
+                style="text-decoration: none; background: #3b82f6; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 700; color: white; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);">
                 <i class="fas fa-envelope"></i> Enviar
-            </button>
+            </a>
         </div>
     </div>
 
@@ -235,3 +235,42 @@
         }
     }
 </style>
+
+
+<!-- Floating Toast Notification (Enhanced) -->
+<div id="toast"
+    style="position: fixed; top: -100px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 15px 30px; border-radius: 50px; box-shadow: 0 20px 40px rgba(16, 185, 129, 0.4); display: flex; align-items: center; gap: 15px; z-index: 10000; transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);">
+    <div
+        style="background: rgba(255,255,255,0.2); color: white; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px;">
+        <i class="fas fa-check"></i>
+    </div>
+    <div>
+        <h4 style="margin: 0; font-size: 16px; font-weight: 700; color: white; letter-spacing: 0.5px;">¡Envío Exitoso!
+        </h4>
+        <p style="margin: 2px 0 0 0; font-size: 13px; color: rgba(255,255,255,0.9);">El correo se ha enviado al cliente
+            correctamente.</p>
+    </div>
+    <button onclick="hideToast()"
+        style="background: none; border: none; color: rgba(255,255,255,0.6); cursor: pointer; margin-left: 10px; font-size: 18px;">
+        <i class="fas fa-times"></i>
+    </button>
+</div>
+
+<?php if (isset($_GET['msg']) && $_GET['msg'] == 'email_sent'): ?>
+    <script>
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.style.top = '30px';
+        }
+
+        function hideToast() {
+            const toast = document.getElementById('toast');
+            toast.style.top = '-100px';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(showToast, 500);
+            setTimeout(hideToast, 5000);
+        });
+    </script>
+<?php endif; ?>
