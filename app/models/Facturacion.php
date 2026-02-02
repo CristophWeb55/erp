@@ -11,93 +11,131 @@ class Facturacion
 
     public function getAll()
     {
-        $stmt = $this->db->query("SELECT f.*, t.nombre_razon_social FROM facturas f 
-                                 JOIN terceros t ON f.cliente_id = t.id 
-                                 ORDER BY f.fecha_emision DESC");
+        $sql = "SELECT f.*, t.nombre_razon_social as cliente, t.rfc 
+                FROM facturas f 
+                JOIN terceros t ON f.cliente_id = t.id 
+                ORDER BY f.fecha_emision DESC";
+        $stmt = $this->db->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function createFromQuote($cotizacion_id)
+    public function getById($id)
     {
-        $this->db->beginTransaction();
-        try {
-            // 1. Get Quote Header
-            $stmt = $this->db->prepare("SELECT * FROM cotizaciones WHERE id = ?");
-            $stmt->execute([$cotizacion_id]);
-            $quote = $stmt->fetch(PDO::FETCH_ASSOC);
+        // Headers
+        $stmt = $this->db->prepare("
+            SELECT f.*, 
+                   t.nombre_razon_social as cliente_nombre,
+                   t.rfc as cliente_rfc,
+                   t.direccion as cliente_direccion,
+                   t.email as cliente_email,
+                   t.telefono as cliente_telefono,
+                   p.folio as pedido_folio
+            FROM facturas f 
+            JOIN terceros t ON f.cliente_id = t.id 
+            LEFT JOIN pedidos p ON f.pedido_id = p.id
+            WHERE f.id = ?
+        ");
+        $stmt->execute([$id]);
+        $factura = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            // 2. Create Invoice Header
-            $uuid = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex(random_bytes(16)), 4));
-            $sqlF = "INSERT INTO facturas (cotizacion_id, cliente_id, folio_fiscal_uuid, total, saldo_pendiente) 
-                    VALUES (?, ?, ?, ?, ?)";
-            $stmtF = $this->db->prepare($sqlF);
-            $stmtF->execute([$cotizacion_id, $quote['cliente_id'], $uuid, $quote['total'], $quote['total']]);
+        if ($factura) {
+            // Items
+            $stmtDet = $this->db->prepare("
+                SELECT fd.*, p.sku, p.descripcion 
+                FROM factura_detalle fd 
+                JOIN productos p ON fd.producto_id = p.id 
+                WHERE fd.factura_id = ?
+            ");
+            $stmtDet->execute([$id]);
+            $factura['items'] = $stmtDet->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        return $factura;
+    }
+
+    public function getByPedidoId($pedidoId)
+    {
+        $stmt = $this->db->prepare("SELECT * FROM facturas WHERE pedido_id = ? LIMIT 1");
+        $stmt->execute([$pedidoId]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function createFromOrder($pedidoId)
+    {
+        try {
+            $this->db->beginTransaction();
+
+            // 1. Get Order Data
+            $stmtPed = $this->db->prepare("SELECT * FROM pedidos WHERE id = ?");
+            $stmtPed->execute([$pedidoId]);
+            $pedido = $stmtPed->fetch(PDO::FETCH_ASSOC);
+
+            if (!$pedido)
+                throw new Exception("Pedido no encontrado");
+            if ($pedido['estatus'] == 'Facturado')
+                throw new Exception("Este pedido ya fue facturado");
+
+            // 2. Generate Fake Fiscal Data
+            $uuid = $this->generateUUID(); // Simulation
+
+            // 3. Create Invoice Header
+            $sql = "INSERT INTO facturas (cotizacion_id, pedido_id, cliente_id, folio_fiscal_uuid, fecha_emision, total, saldo_pendiente, estatus) 
+                    VALUES (?, ?, ?, ?, NOW(), ?, ?, 'Pendiente')";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([
+                $pedido['cotizacion_id'],
+                $pedidoId,
+                $pedido['cliente_id'],
+                $uuid,
+                $pedido['total'],
+                $pedido['total'] // Initially unpaid
+            ]);
             $facturaId = $this->db->lastInsertId();
 
-            // 3. Get Quote Details
-            $stmtD = $this->db->prepare("SELECT * FROM cotizacion_detalle WHERE cotizacion_id = ?");
-            $stmtD->execute([$cotizacion_id]);
-            $details = $stmtD->fetchAll(PDO::FETCH_ASSOC);
+            // 4. Copy Details
+            $stmtItems = $this->db->prepare("SELECT * FROM pedido_detalle WHERE pedido_id = ?");
+            $stmtItems->execute([$pedidoId]);
+            $items = $stmtItems->fetchAll(PDO::FETCH_ASSOC);
 
-            foreach ($details as $d) {
-                // Check if product requires pedimento
-                $stmtP = $this->db->prepare("SELECT requiere_pedimento FROM productos WHERE id = ?");
-                $stmtP->execute([$d['producto_id']]);
-                $prod = $stmtP->fetch(PDO::FETCH_ASSOC);
+            $sqlDet = "INSERT INTO factura_detalle (factura_id, producto_id, cantidad, precio_unitario, lote_origen_id) 
+                       VALUES (?, ?, ?, ?, NULL)"; // TODO: Link lots for traceability
+            $stmtDet = $this->db->prepare($sqlDet);
 
-                $loteId = null;
-                if ($prod['requiere_pedimento']) {
-                    // Pull Pedimento using PEPS (FIFO)
-                    $stmtL = $this->db->prepare("SELECT id, cantidad_actual FROM inventario_lotes 
-                                               WHERE producto_id = ? AND cantidad_actual >= ? 
-                                               ORDER BY created_at ASC LIMIT 1");
-                    $stmtL->execute([$d['producto_id'], $d['cantidad']]);
-                    $lote = $stmtL->fetch(PDO::FETCH_ASSOC);
-
-                    if (!$lote) {
-                        throw new Exception("Sin existencias con pedimento para el producto " . $d['producto_id']);
-                    }
-                    $loteId = $lote['id'];
-
-                    // Discount from lot
-                    $stmtU = $this->db->prepare("UPDATE inventario_lotes SET cantidad_actual = cantidad_actual - ? WHERE id = ?");
-                    $stmtU->execute([$d['cantidad'], $loteId]);
-                }
-
-                // Create Invoice Detail
-                $sqlID = "INSERT INTO factura_detalle (factura_id, producto_id, cantidad, precio_unitario, lote_origen_id) 
-                         VALUES (?, ?, ?, ?, ?)";
-                $stmtID = $this->db->prepare($sqlID);
-                $stmtID->execute([$facturaId, $d['producto_id'], $d['cantidad'], $d['precio_unitario'], $loteId]);
+            foreach ($items as $item) {
+                $stmtDet->execute([
+                    $facturaId,
+                    $item['producto_id'],
+                    $item['cantidad'],
+                    $item['precio_unitario']
+                ]);
             }
 
-            // Update quote status to say it was invoiced
-            $stmtUQ = $this->db->prepare("UPDATE cotizaciones SET estatus = 'Aprobada' WHERE id = ?");
-            $stmtUQ->execute([$cotizacion_id]);
+            // 5. Update Order Status
+            $stmtUpd = $this->db->prepare("UPDATE pedidos SET estatus = 'Facturado' WHERE id = ?");
+            $stmtUpd->execute([$pedidoId]);
 
             $this->db->commit();
-            return true;
+            return $facturaId;
+
         } catch (Exception $e) {
             $this->db->rollBack();
+            error_log("Error facturando pedido $pedidoId: " . $e->getMessage());
             return false;
         }
     }
 
-    public function getDetail($id)
+    private function generateUUID()
     {
-        $stmtH = $this->db->prepare("SELECT f.*, t.nombre_razon_social, t.rfc, t.direccion FROM facturas f 
-                                    JOIN terceros t ON f.cliente_id = t.id WHERE f.id = ?");
-        $stmtH->execute([$id]);
-        $header = $stmtH->fetch(PDO::FETCH_ASSOC);
-
-        $stmtD = $this->db->prepare("SELECT fd.*, p.sku, p.descripcion, l.numero_pedimento, l.fecha_pedimento, l.nombre_aduana 
-                                    FROM factura_detalle fd 
-                                    JOIN productos p ON fd.producto_id = p.id 
-                                    LEFT JOIN inventario_lotes l ON fd.lote_origen_id = l.id 
-                                    WHERE fd.factura_id = ?");
-        $stmtD->execute([$id]);
-        $details = $stmtD->fetchAll(PDO::FETCH_ASSOC);
-
-        return ['header' => $header, 'details' => $details];
+        return sprintf(
+            '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0x0fff) | 0x4000,
+            mt_rand(0, 0x3fff) | 0x8000,
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff)
+        );
     }
 }

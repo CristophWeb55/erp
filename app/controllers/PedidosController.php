@@ -69,10 +69,16 @@ class PedidosController extends Controller
                 exit;
             }
 
+            // Verificar si tiene factura
+            require_once '../app/models/Facturacion.php';
+            $facturacionModel = new Facturacion();
+            $factura = $facturacionModel->getByPedidoId($id);
+
             $data = [
                 'pageTitle' => 'Detalle de Pedido: ' . $pedido['folio'],
                 'controller' => 'Pedidos',
-                'pedido' => $pedido
+                'pedido' => $pedido,
+                'factura' => $factura ?? null
             ];
 
             $this->view('pedidos/view', $data);

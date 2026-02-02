@@ -65,6 +65,17 @@
                     style="background: var(--accent-color); color: white; border: none; border-radius: 12px; padding: 10px 25px; display: flex; align-items: center; gap: 8px; text-decoration: none;">
                     <i class="fas fa-truck"></i> Preparar Entrega
                 </a>
+                <a href="index.php?controller=Facturacion&action=generar&pedido_id=<?= $pedido['id'] ?>" class="btn"
+                    style="background: #6366f1; color: white; border: none; border-radius: 12px; padding: 10px 25px; display: flex; align-items: center; gap: 8px; text-decoration: none; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);">
+                    <i class="fas fa-file-invoice-dollar"></i> Generar Factura
+                </a>
+            <?php endif; ?>
+
+            <?php if ($pedido['estatus'] == 'Facturado'): ?>
+                <a href="index.php?controller=Facturacion&action=ver&id=<?= $factura['id'] ?? '#' ?>" class="btn"
+                    style="background: rgba(99, 102, 241, 0.1); color: #6366f1; border: 1px solid #6366f1; border-radius: 12px; padding: 10px 25px; display: flex; align-items: center; gap: 8px; text-decoration: none;">
+                    <i class="fas fa-check-circle"></i> Ver Factura
+                </a>
             <?php endif; ?>
         </div>
     </div>
