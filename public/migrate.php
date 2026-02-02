@@ -1,6 +1,6 @@
 <?php
 /**
- * Script de migración para agregar campos stock_minimo e imagen_url
+ * Script de migración general del sistema ERP
  * Ejecutar desde: http://localhost/ERP/public/migrate.php
  */
 
@@ -11,151 +11,203 @@ echo "<!DOCTYPE html>
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-    <title>Migración de Base de Datos</title>
+    <title>Sistema de Migraciones ERP - Cristoph</title>
+    <link href='https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap' rel='stylesheet'>
     <style>
+        :root {
+            --primary: #293887;
+            --primary-light: #4c5bb1;
+            --secondary: #6c757d;
+            --success: #10b981;
+            --error: #ef4444;
+            --info: #3b82f6;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+        }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 20px;
-            background: #f5f5f5;
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg);
+            color: var(--text-main);
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
         }
         .container {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 900px;
+            width: 100%;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
         }
         h1 {
-            color: #293887;
-            border-bottom: 3px solid #293887;
-            padding-bottom: 10px;
+            color: var(--primary);
+            font-weight: 700;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 20px;
         }
-        .success {
-            background: #d4edda;
-            color: #155724;
-            padding: 15px;
-            border-radius: 5px;
-            margin: 10px 0;
-            border-left: 4px solid #28a745;
+        .module-section {
+            margin-bottom: 30px;
+            border: 1px solid #f1f5f9;
+            border-radius: 12px;
+            padding: 20px;
         }
-        .error {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 15px;
-            border-radius: 5px;
-            margin: 10px 0;
-            border-left: 4px solid #dc3545;
+        .module-title {
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: var(--primary-light);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        .info {
-            background: #d1ecf1;
-            color: #0c5460;
-            padding: 15px;
-            border-radius: 5px;
-            margin: 10px 0;
-            border-left: 4px solid #17a2b8;
+        .status-msg {
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
+        .success { background: #ecfdf5; color: #065f46; border-left: 4px solid var(--success); }
+        .error { background: #fef2f2; color: #991b1b; border-left: 4px solid var(--error); }
+        .info { background: #eff6ff; color: #1e40af; border-left: 4px solid var(--info); }
+        .warning { background: #fffbeb; color: #92400e; border-left: 4px solid #f59e0b; }
+        
         .btn {
             display: inline-block;
-            padding: 10px 20px;
-            background: #293887;
+            padding: 12px 24px;
+            background: var(--primary);
             color: white;
             text-decoration: none;
-            border-radius: 5px;
-            margin-top: 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(41, 56, 135, 0.2);
+            border: none;
+            cursor: pointer;
         }
         .btn:hover {
-            background: #1e2a5f;
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(41, 56, 135, 0.3);
         }
         code {
-            background: #f4f4f4;
+            background: #f1f5f9;
             padding: 2px 6px;
-            border-radius: 3px;
-            font-family: 'Courier New', monospace;
+            border-radius: 4px;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9em;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th {
+            background: #f8fafc;
+            text-align: left;
+            padding: 12px;
+            font-weight: 600;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #f1f5f9;
         }
     </style>
 </head>
 <body>
     <div class='container'>
-        <h1>🔧 Migración de Base de Datos - Módulo de Productos</h1>";
+        <h1>🛠️ Panel de Control de Base de Datos</h1>";
 
 try {
     $db = Database::getInstance();
+    echo "<div class='status-msg info'>✓ Conexión establecida con la base de datos <code>erp_pedimentos</code></div>";
 
-    echo "<div class='info'>✓ Conexión a base de datos establecida</div>";
+    // --- MÓDULO PRODUCTOS ---
+    echo "<div class='module-section'>";
+    echo "<div class='module-title'>📦 Módulo de Productos</div>";
 
-    // Verificar si las columnas ya existen
     $checkStockMinimo = $db->query("SHOW COLUMNS FROM productos LIKE 'stock_minimo'")->fetch();
     $checkImagenUrl = $db->query("SHOW COLUMNS FROM productos LIKE 'imagen_url'")->fetch();
 
-    $cambios = [];
-
-    // Agregar stock_minimo si no existe
     if (!$checkStockMinimo) {
         $db->exec("ALTER TABLE productos ADD COLUMN stock_minimo INT DEFAULT 10 AFTER costo_promedio");
-        $cambios[] = "✓ Campo <code>stock_minimo</code> agregado correctamente";
+        echo "<div class='status-msg success'>✓ Campo <code>stock_minimo</code> agregado a tabla productos.</div>";
     } else {
-        $cambios[] = "⚠ Campo <code>stock_minimo</code> ya existe (no se modificó)";
+        echo "<div class='status-msg warning'>⚠ Campo <code>stock_minimo</code> ya existe en productos.</div>";
     }
 
-    // Agregar imagen_url si no existe
     if (!$checkImagenUrl) {
         $db->exec("ALTER TABLE productos ADD COLUMN imagen_url VARCHAR(255) DEFAULT NULL AFTER stock_minimo");
-        $cambios[] = "✓ Campo <code>imagen_url</code> agregado correctamente";
+        echo "<div class='status-msg success'>✓ Campo <code>imagen_url</code> agregado a tabla productos.</div>";
     } else {
-        $cambios[] = "⚠ Campo <code>imagen_url</code> ya existe (no se modificó)";
+        echo "<div class='status-msg warning'>⚠ Campo <code>imagen_url</code> ya existe en productos.</div>";
     }
-
-    echo "<div class='success'>";
-    echo "<h3>✅ Migración completada exitosamente</h3>";
-    echo "<ul>";
-    foreach ($cambios as $cambio) {
-        echo "<li>$cambio</li>";
-    }
-    echo "</ul>";
     echo "</div>";
 
-    // Mostrar estructura actual de la tabla
-    echo "<div class='info'>";
-    echo "<h3>📋 Estructura actual de la tabla 'productos':</h3>";
-    echo "<table style='width: 100%; border-collapse: collapse;'>";
-    echo "<tr style='background: #293887; color: white;'>
-            <th style='padding: 10px; text-align: left;'>Campo</th>
-            <th style='padding: 10px; text-align: left;'>Tipo</th>
-            <th style='padding: 10px; text-align: left;'>Nulo</th>
-            <th style='padding: 10px; text-align: left;'>Default</th>
-          </tr>";
+    // --- MÓDULO LOGÍSTICA ---
+    echo "<div class='module-section'>";
+    echo "<div class='module-title'>🚚 Módulo de Logística y Entregas</div>";
 
-    $columns = $db->query("DESCRIBE productos")->fetchAll(PDO::FETCH_ASSOC);
-    foreach ($columns as $col) {
-        echo "<tr style='border-bottom: 1px solid #ddd;'>";
-        echo "<td style='padding: 8px;'><code>{$col['Field']}</code></td>";
-        echo "<td style='padding: 8px;'>{$col['Type']}</td>";
-        echo "<td style='padding: 8px;'>{$col['Null']}</td>";
-        echo "<td style='padding: 8px;'>{$col['Default']}</td>";
-        echo "</tr>";
+    // Crear tabla entregas
+    $existsEntregas = $db->query("SHOW TABLES LIKE 'entregas'")->fetch();
+    if (!$existsEntregas) {
+        $db->exec("CREATE TABLE entregas (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            folio VARCHAR(20) UNIQUE NOT NULL,
+            pedido_id INT NOT NULL,
+            fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            fecha_entrega_estimada DATE,
+            fecha_entrega_real DATETIME,
+            estatus ENUM('Programado', 'En Tránsito', 'Entregado', 'Incidencia') DEFAULT 'Programado',
+            transportista VARCHAR(100),
+            guia_seguimiento VARCHAR(100),
+            notas_entrega TEXT,
+            evidencia_firma MEDIUMTEXT,
+            FOREIGN KEY (pedido_id) REFERENCES pedidos(id)
+        )");
+        echo "<div class='status-msg success'>✓ Tabla <code>entregas</code> creada correctamente.</div>";
+    } else {
+        echo "<div class='status-msg warning'>⚠ Tabla <code>entregas</code> ya existe.</div>";
     }
-    echo "</table>";
+
+    // Crear tabla entrega_detalle
+    $existsEntregaDetalle = $db->query("SHOW TABLES LIKE 'entrega_detalle'")->fetch();
+    if (!$existsEntregaDetalle) {
+        $db->exec("CREATE TABLE entrega_detalle (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            entrega_id INT NOT NULL,
+            producto_id INT NOT NULL,
+            cantidad_a_entregar INT NOT NULL,
+            FOREIGN KEY (entrega_id) REFERENCES entregas(id) ON DELETE CASCADE,
+            FOREIGN KEY (producto_id) REFERENCES productos(id)
+        )");
+        echo "<div class='status-msg success'>✓ Tabla <code>entrega_detalle</code> creada correctamente.</div>";
+    } else {
+        echo "<div class='status-msg warning'>⚠ Tabla <code>entrega_detalle</code> ya existe.</div>";
+    }
     echo "</div>";
 
-    echo "<div class='info'>";
-    echo "<h3>🎯 Próximos pasos:</h3>";
-    echo "<ol>";
-    echo "<li>Ir al módulo de productos: <a href='index.php?controller=Productos&action=index'>Ver Productos</a></li>";
-    echo "<li>(Opcional) Cargar datos de ejemplo ejecutando: <code>sql/seed_productos_ejemplo.sql</code></li>";
-    echo "<li>Crear o editar productos con los nuevos campos</li>";
-    echo "</ol>";
+    echo "<div style='margin-top: 30px; display: flex; gap: 15px;'>";
+    echo "<a href='index.php' class='btn'>Ir al Panel Principal</a>";
+    echo "<a href='index.php?controller=Logistica&action=index' class='btn' style='background: var(--success)'>Ir a Logística</a>";
     echo "</div>";
 
 } catch (Exception $e) {
-    echo "<div class='error'>";
-    echo "<h3>❌ Error en la migración</h3>";
-    echo "<p><strong>Mensaje:</strong> " . $e->getMessage() . "</p>";
-    echo "<p><strong>Archivo:</strong> " . $e->getFile() . "</p>";
-    echo "<p><strong>Línea:</strong> " . $e->getLine() . "</p>";
+    echo "<div class='status-msg error'>";
+    echo "<strong>❌ Error en la migración:</strong> " . $e->getMessage();
     echo "</div>";
+    echo "<a href='index.php' class='btn'>Volver al Inicio</a>";
 }
 
-echo "<a href='index.php?controller=Productos&action=index' class='btn'>Ir al Módulo de Productos</a>";
 echo "</div></body></html>";
 ?>
