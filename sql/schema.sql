@@ -174,7 +174,28 @@ INSERT INTO usuarios (nombre, usuario, password, rol)
 VALUES ('Administrador Genesis', 'admin', '$2y$10$8.09f6vK.iX..w..x..y..z..v..w..u..t..s..r..q..p..o', 'Admin')
 ON DUPLICATE KEY UPDATE id=id;
 
--- Logística y Entregas
+-- Logística y Entregas (Catálogos)
+CREATE TABLE IF NOT EXISTS transportistas (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    rfc VARCHAR(15),
+    telefono VARCHAR(20),
+    correo VARCHAR(100),
+    activo TINYINT(1) DEFAULT 1,
+    fecha_alta TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS vehiculos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    placas VARCHAR(20) UNIQUE NOT NULL,
+    marca_modelo VARCHAR(100),
+    tipo VARCHAR(50),
+    transportista_id INT,
+    activo TINYINT(1) DEFAULT 1,
+    FOREIGN KEY (transportista_id) REFERENCES transportistas(id) ON DELETE SET NULL
+);
+
+-- Módulo de Logística y Entregas
 CREATE TABLE IF NOT EXISTS entregas (
     id INT AUTO_INCREMENT PRIMARY KEY,
     folio VARCHAR(20) UNIQUE NOT NULL,
@@ -184,9 +205,15 @@ CREATE TABLE IF NOT EXISTS entregas (
     fecha_entrega_real DATETIME,
     estatus ENUM('Programado', 'En Tránsito', 'Entregado', 'Incidencia') DEFAULT 'Programado',
     transportista VARCHAR(100),
+    placas_vehiculo VARCHAR(20),
     guia_seguimiento VARCHAR(100),
+    persona_recibe VARCHAR(100),
+    telefono_contacto VARCHAR(20),
+    bultos INT DEFAULT 1,
+    peso_total DECIMAL(10,2) DEFAULT 0.00,
     notas_entrega TEXT,
-    evidencia_firma MEDIUMTEXT, -- Para guardar la firma en Base64
+    evidencia_firma MEDIUMTEXT,
+    evidencia_foto MEDIUMTEXT,
     FOREIGN KEY (pedido_id) REFERENCES pedidos(id)
 );
 
