@@ -20,7 +20,7 @@
                         style="margin: 0; font-size: 10px; color: var(--text-secondary); font-weight: 700; text-transform: uppercase;">
                         Pendientes</p>
                     <p style="margin: 0; font-size: 18px; font-weight: 800; color: var(--accent-color);">
-                        <?= count($pendientes) ?>
+                        <?= count(array_filter($entregas, fn($e) => $e['estatus'] == 'Programado')) ?>
                     </p>
                 </div>
                 <div style="width: 1px; height: 30px; background: rgba(0,0,0,0.1);"></div>
@@ -30,6 +30,15 @@
                         En Ruta</p>
                     <p style="margin: 0; font-size: 18px; font-weight: 800; color: #f59e0b;">
                         <?= count(array_filter($entregas, fn($e) => $e['estatus'] == 'En Tránsito')) ?>
+                    </p>
+                </div>
+                <div style="width: 1px; height: 30px; background: rgba(0,0,0,0.1);"></div>
+                <div style="text-align: right;">
+                    <p
+                        style="margin: 0; font-size: 10px; color: var(--text-secondary); font-weight: 700; text-transform: uppercase;">
+                        Entregados</p>
+                    <p style="margin: 0; font-size: 18px; font-weight: 800; color: #10b981;">
+                        <?= count(array_filter($entregas, fn($e) => $e['estatus'] == 'Entregado')) ?>
                     </p>
                 </div>
             </div>
