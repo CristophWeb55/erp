@@ -1,49 +1,72 @@
 <?php
-
 require_once '../app/models/Facturacion.php';
+require_once '../app/models/Pedidos.php';
 
 class FacturacionController extends Controller
 {
     public function index()
     {
-        $facturaModel = new Facturacion();
-        $facturas = $facturaModel->getAll();
+        $model = new Facturacion();
+        $facturas = $model->getAll();
 
         $data = [
-            'pageTitle' => 'Facturación y CFDI',
+            'pageTitle' => 'Facturación Electrónica',
             'controller' => 'Facturacion',
             'facturas' => $facturas
         ];
-
         $this->view('facturacion/index', $data);
     }
 
-    public function generate()
+    public function generar()
     {
-        $cotizacion_id = $_GET['cotizacion_id'];
-        $facturaModel = new Facturacion();
+        if (isset($_GET['pedido_id'])) {
+            $model = new Facturacion();
+            $facturaId = $model->createFromOrder($_GET['pedido_id']);
 
-        if ($facturaModel->createFromQuote($cotizacion_id)) {
-            header('Location: index.php?controller=Facturacion&action=index');
-            exit;
+            if ($facturaId) {
+                header('Location: index.php?controller=Facturacion&action=ver&id=' . $facturaId . '&msg=created');
+            } else {
+                header('Location: index.php?controller=Pedidos&action=view&id=' . $_GET['pedido_id'] . '&error=failed');
+            }
         } else {
-            die("Error generating invoice. Check stock for products requiring pedimento.");
+            header('Location: index.php?controller=Pedidos');
         }
     }
 
-    public function show()
+    public function ver()
     {
-        $id = $_GET['id'];
-        $facturaModel = new Facturacion();
-        $factura = $facturaModel->getDetail($id);
+        if (isset($_GET['id'])) {
+            $model = new Facturacion();
+            $factura = $model->getById($_GET['id']);
 
-        $data = [
-            'pageTitle' => 'Detalle de Factura (Timbrado Simulado)',
-            'controller' => 'Facturacion',
-            'factura' => $factura['header'],
-            'detalles' => $factura['details']
-        ];
+            if ($factura) {
+                $data = [
+                    'pageTitle' => 'Factura ' . substr($factura['folio_fiscal_uuid'], 0, 8),
+                    'controller' => 'Facturacion',
+                    'factura' => $factura
+                ];
+                $this->view('facturacion/view', $data);
+            } else {
+                header('Location: index.php?controller=Facturacion');
+            }
+        }
+    }
 
-        $this->view('facturacion/detalle', $data);
+    // Simula imprimir
+    public function print()
+    {
+        // En este MVP reusamos la vista 'ver' pero limpiaremos el layout en el futuro si es necesario
+        // O imprimimos solo el frame
+        $this->ver();
+    }
+
+    public function enviar()
+    {
+        if (isset($_GET['id'])) {
+            sleep(1);
+            header('Location: index.php?controller=Facturacion&action=ver&id=' . $_GET['id'] . '&msg=email_sent');
+        } else {
+            header('Location: index.php?controller=Facturacion');
+        }
     }
 }

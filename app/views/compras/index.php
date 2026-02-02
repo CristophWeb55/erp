@@ -1,158 +1,85 @@
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-    <h2>Órdenes de Compra</h2>
-    <button class="btn btn-primary" onclick="openModal()">
-        <i class="fas fa-cart-plus"></i> Nueva Orden
-    </button>
-</div>
+<div class="glass-panel" style="padding: 30px; border-radius: 24px; animation: fadeIn 0.4s ease-out;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+        <div>
+            <h2
+                style="font-weight: 800; font-size: 28px; color: var(--text-primary); margin: 0; display: flex; align-items: center; gap: 12px;">
+                <i class="fas fa-shopping-cart" style="color: var(--accent-color);"></i> Gestión de Compras
+            </h2>
+            <p style="color: var(--text-secondary); margin-top: 5px; font-size: 14px;">Administra tus proveedores y
+                órdenes de abastecimiento</p>
+        </div>
+        <a href="index.php?controller=Compras&action=create" class="btn-primary"
+            style="background: var(--accent-color); color: white; padding: 12px 25px; border-radius: 12px; font-weight: 700; text-decoration: none; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(41, 56, 135, 0.2); transition: all 0.2s;">
+            <i class="fas fa-plus"></i> Nueva Orden
+        </a>
+    </div>
 
-<div class="card">
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Fecha</th>
-                <th>Proveedor</th>
-                <th>Referencia</th>
-                <th>Total</th>
-                <th>Estatus</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php if (empty($compras)): ?>
-                <tr>
-                    <td colspan="7" style="text-align: center; color: var(--text-secondary); padding: 40px;">No hay compras
-                        registradas</td>
+    <?php if (isset($_GET['msg'])): ?>
+        <div
+            style="padding: 15px; border-radius: 12px; margin-bottom: 20px; font-size: 14px; font-weight: 600; 
+            <?= $_GET['msg'] == 'created' ? 'background: rgba(16, 185, 129, 0.1); color: #10b981;' : 'background: rgba(59, 130, 246, 0.1); color: #3b82f6;' ?>">
+            <?= $_GET['msg'] == 'created' ? '✓ Orden de compra creada exitosamente.' : '✓ Recepción de mercancía registrada.' ?>
+        </div>
+    <?php endif; ?>
+
+    <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: separate; border-spacing: 0;">
+            <thead>
+                <tr style="text-align: left; background: rgba(0,0,0,0.02);">
+                    <th
+                        style="padding: 15px; font-weight: 700; color: var(--text-secondary); font-size: 11px; text-transform: uppercase;">
+                        ID</th>
+                    <th
+                        style="padding: 15px; font-weight: 700; color: var(--text-secondary); font-size: 11px; text-transform: uppercase;">
+                        Proveedor</th>
+                    <th
+                        style="padding: 15px; font-weight: 700; color: var(--text-secondary); font-size: 11px; text-transform: uppercase;">
+                        Fecha Compra</th>
+                    <th
+                        style="padding: 15px; font-weight: 700; color: var(--text-secondary); font-size: 11px; text-transform: uppercase;">
+                        Total</th>
+                    <th
+                        style="padding: 15px; font-weight: 700; color: var(--text-secondary); font-size: 11px; text-transform: uppercase;">
+                        Estatus</th>
+                    <th
+                        style="padding: 15px; font-weight: 700; color: var(--text-secondary); font-size: 11px; text-transform: uppercase; text-align: right;">
+                        Acciones</th>
                 </tr>
-            <?php else: ?>
+            </thead>
+            <tbody>
                 <?php foreach ($compras as $c): ?>
-                    <tr>
-                        <td>#
-                            <?= $c['id'] ?>
+                    <tr style="border-bottom: 1px solid rgba(0,0,0,0.03); transition: background 0.2s;">
+                        <td style="padding: 15px; font-weight: 700;">#<?= $c['id'] ?></td>
+                        <td style="padding: 15px;"><?= $c['proveedor'] ?></td>
+                        <td style="padding: 15px; color: var(--text-secondary);">
+                            <?= date('d/m/Y', strtotime($c['fecha_compra'])) ?>
                         </td>
-                        <td>
-                            <?= $c['fecha_compra'] ?>
-                        </td>
-                        <td style="font-weight: 600;">
-                            <?= $c['nombre_razon_social'] ?>
-                        </td>
-                        <td>
-                            <?= $c['referencia'] ?>
-                        </td>
-                        <td style="font-weight: 700;">$
-                            <?= number_format($c['total'], 2) ?>
-                        </td>
-                        <td>
+                        <td style="padding: 15px; font-weight: 700;">$<?= number_format($c['total'], 2) ?></td>
+                        <td style="padding: 15px;">
+                            <?php
+                            $bg = $c['estatus'] == 'Recibida' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(245, 158, 11, 0.1)';
+                            $color = $c['estatus'] == 'Recibida' ? '#10b981' : '#f59e0b';
+                            ?>
                             <span
-                                style="padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; background: <?= ($c['estatus'] == 'Recibida' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(99, 102, 241, 0.1)') ?>; color: <?= ($c['estatus'] == 'Recibida' ? '#10b981' : '#6366f1') ?>;">
-                                <?= strtoupper($c['estatus']) ?>
+                                style="background: <?= $bg ?>; color: <?= $color ?>; padding: 5px 10px; border-radius: 8px; font-size: 11px; font-weight: 800; text-transform: uppercase;">
+                                <?= $c['estatus'] ?>
                             </span>
                         </td>
-                        <td>
-                            <?php if ($c['estatus'] == 'Pendiente'): ?>
-                                <a href="index.php?controller=Compras&action=receiving&id=<?= $c['id'] ?>" class="btn"
-                                    style="background: #10b981; color: white; padding: 5px 12px; font-size: 12px; text-decoration: none; border-radius: 8px;">
-                                    <i class="fas fa-download"></i> Recibir
-                                </a>
-                            <?php else: ?>
-                                <button class="btn" disabled
-                                    style="background: transparent; color: var(--text-secondary); padding: 5px;"><i
-                                        class="fas fa-check-double"></i></button>
-                            <?php endif; ?>
+                        <td style="padding: 15px; text-align: right;">
+                            <a href="index.php?controller=Compras&action=detalle&id=<?= $c['id'] ?>"
+                                style="color: var(--accent-color); background: rgba(41, 56, 135, 0.05); width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; transition: all 0.2s;">
+                                <i class="fas fa-eye"></i>
+                            </a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
-            <?php endif; ?>
-        </tbody>
-    </table>
-</div>
-
-<!-- Modal -->
-<div id="modalCompra"
-    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(5px); z-index: 1000; justify-content: center; align-items: center;">
-    <div class="card" style="width: 100%; max-width: 600px; background: white;">
-        <h3 style="margin-bottom: 20px;">Nueva Orden de Compra</h3>
-        <form action="index.php?controller=Compras&action=create" method="POST">
-            <div style="display: flex; flex-direction: column; gap: 15px;">
-                <div style="display: flex; gap: 10px;">
-                    <div style="flex: 1;">
-                        <label
-                            style="display: block; font-size: 12px; margin-bottom: 5px; color: var(--text-secondary);">Proveedor</label>
-                        <select name="proveedor_id" required
-                            style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0;">
-                            <?php foreach ($proveedores as $prov): ?>
-                                <?php if ($prov['tipo'] != 'Cliente'): ?>
-                                    <option value="<?= $prov['id'] ?>">
-                                        <?= $prov['nombre_razon_social'] ?>
-                                    </option>
-                                <?php endif; ?>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    <div style="flex: 1;">
-                        <label
-                            style="display: block; font-size: 12px; margin-bottom: 5px; color: var(--text-secondary);">Fecha</label>
-                        <input type="date" name="fecha_compra" required value="<?= date('Y-m-d') ?>"
-                            style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0;">
-                    </div>
-                </div>
-
-                <div style="background: #f8fafc; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0;">
-                    <p style="font-weight: 600; font-size: 13px; margin-bottom: 10px;">Producto a Comprar (MVP: 1 Item)
-                    </p>
-                    <div style="display: flex; gap: 10px;">
-                        <div style="flex: 2;">
-                            <label style="font-size: 11px;">Producto</label>
-                            <select name="producto_id" required
-                                style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1;">
-                                <?php foreach ($productos as $prod): ?>
-                                    <option value="<?= $prod['id'] ?>">
-                                        <?= $prod['sku'] ?> -
-                                        <?= $prod['descripcion'] ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div style="flex: 1;">
-                            <label style="font-size: 11px;">Cantidad</label>
-                            <input type="number" name="cantidad" value="1" required
-                                style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1;">
-                        </div>
-                    </div>
-                </div>
-
-                <div style="display: flex; gap: 10px;">
-                    <div style="flex: 1;">
-                        <label
-                            style="display: block; font-size: 12px; margin-bottom: 5px; color: var(--text-secondary);">Referencia
-                            / Factura Prov.</label>
-                        <input type="text" name="referencia"
-                            style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0;">
-                    </div>
-                    <div style="flex: 1;">
-                        <label
-                            style="display: block; font-size: 12px; margin-bottom: 5px; color: var(--text-secondary);">Total
-                            Compra</label>
-                        <input type="number" step="0.01" name="total" required
-                            style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0;">
-                    </div>
-                </div>
-
-                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px;">
-                    <button type="button" class="btn" style="background: #f1f5f9;"
-                        onclick="closeModal()">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Generar Orden</button>
-                </div>
+            </tbody>
+        </table>
+        <?php if (empty($compras)): ?>
+            <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
+                <i class="fas fa-inbox" style="font-size: 40px; margin-bottom: 10px; opacity: 0.3;"></i>
+                <p>No hay órdenes de compra registradas.</p>
             </div>
-        </form>
+        <?php endif; ?>
     </div>
 </div>
-
-<script>
-    function openModal() {
-        document.getElementById('modalCompra').style.display = 'flex';
-    }
-    function closeModal() {
-        document.getElementById('modalCompra').style.display = 'none';
-    }
-</script>

@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS terceros (
     email VARCHAR(100),
     telefono VARCHAR(20),
     tipo ENUM('Cliente', 'Proveedor', 'Ambos') DEFAULT 'Cliente',
+    imagen_url VARCHAR(255) DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -21,21 +22,31 @@ CREATE TABLE IF NOT EXISTS productos (
     descripcion TEXT NOT NULL,
     precio_venta DECIMAL(15,2) NOT NULL DEFAULT 0.00,
     costo_promedio DECIMAL(15,2) DEFAULT 0.00,
+    stock_minimo INT DEFAULT 10,
+    imagen_url VARCHAR(255) DEFAULT NULL,
     requiere_pedimento BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Cotizaciones / Pedidos
+-- Cotizaciones
 CREATE TABLE IF NOT EXISTS cotizaciones (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    folio VARCHAR(20) NOT NULL,
+    version INT DEFAULT 1,
     cliente_id INT NOT NULL,
+    moneda ENUM('MXN', 'USD') DEFAULT 'MXN',
+    vendedor_id INT,
     fecha_emision DATE NOT NULL,
+    fecha_vencimiento DATE NOT NULL,
     subtotal DECIMAL(15,2) NOT NULL DEFAULT 0.00,
+    descuento_porcentaje DECIMAL(5,2) DEFAULT 0.00,
+    comision_porcentaje DECIMAL(5,2) DEFAULT 0.00,
     iva DECIMAL(15,2) NOT NULL DEFAULT 0.00,
     total DECIMAL(15,2) NOT NULL DEFAULT 0.00,
-    estatus ENUM('Borrador', 'Enviada', 'Aprobada', 'Cancelada') DEFAULT 'Borrador',
+    estatus ENUM('Borrador', 'Enviada', 'Aprobada', 'Convertida', 'Cancelada') DEFAULT 'Borrador',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (cliente_id) REFERENCES terceros(id)
+    FOREIGN KEY (cliente_id) REFERENCES terceros(id),
+    FOREIGN KEY (vendedor_id) REFERENCES usuarios(id)
 );
 
 CREATE TABLE IF NOT EXISTS cotizacion_detalle (
@@ -44,8 +55,39 @@ CREATE TABLE IF NOT EXISTS cotizacion_detalle (
     producto_id INT NOT NULL,
     cantidad INT NOT NULL,
     precio_unitario DECIMAL(15,2) NOT NULL,
+    descuento_unitario DECIMAL(15,2) DEFAULT 0.00,
     subtotal DECIMAL(15,2) NOT NULL,
     FOREIGN KEY (cotizacion_id) REFERENCES cotizaciones(id) ON DELETE CASCADE,
+    FOREIGN KEY (producto_id) REFERENCES productos(id)
+);
+
+-- Pedidos (Ventas Formales)
+CREATE TABLE IF NOT EXISTS pedidos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    cotizacion_id INT,
+    folio VARCHAR(20) UNIQUE NOT NULL,
+    cliente_id INT NOT NULL,
+    vendedor_id INT,
+    fecha_pedido DATE NOT NULL,
+    fecha_entrega_estimada DATE,
+    subtotal DECIMAL(15,2) NOT NULL DEFAULT 0.00,
+    iva DECIMAL(15,2) NOT NULL DEFAULT 0.00,
+    total DECIMAL(15,2) NOT NULL DEFAULT 0.00,
+    estatus ENUM('Pendiente', 'En Proceso', 'Surtido', 'Facturado', 'Cancelado') DEFAULT 'Pendiente',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (cliente_id) REFERENCES terceros(id),
+    FOREIGN KEY (vendedor_id) REFERENCES usuarios(id),
+    FOREIGN KEY (cotizacion_id) REFERENCES cotizaciones(id)
+);
+
+CREATE TABLE IF NOT EXISTS pedido_detalle (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    pedido_id INT NOT NULL,
+    producto_id INT NOT NULL,
+    cantidad INT NOT NULL,
+    precio_unitario DECIMAL(15,2) NOT NULL,
+    subtotal DECIMAL(15,2) NOT NULL,
+    FOREIGN KEY (pedido_id) REFERENCES pedidos(id) ON DELETE CASCADE,
     FOREIGN KEY (producto_id) REFERENCES productos(id)
 );
 
@@ -86,8 +128,10 @@ CREATE TABLE IF NOT EXISTS facturas (
     total DECIMAL(15,2) NOT NULL,
     saldo_pendiente DECIMAL(15,2) NOT NULL,
     estatus ENUM('Pendiente', 'Pagada', 'Cancelada') DEFAULT 'Pendiente',
+    pedido_id INT,
     FOREIGN KEY (cliente_id) REFERENCES terceros(id),
-    FOREIGN KEY (cotizacion_id) REFERENCES cotizaciones(id)
+    FOREIGN KEY (cotizacion_id) REFERENCES cotizaciones(id),
+    FOREIGN KEY (pedido_id) REFERENCES pedidos(id)
 );
 
 CREATE TABLE IF NOT EXISTS factura_detalle (
@@ -129,4 +173,29 @@ CREATE TABLE IF NOT EXISTS usuarios (
 INSERT INTO usuarios (nombre, usuario, password, rol) 
 VALUES ('Administrador Genesis', 'admin', '$2y$10$8.09f6vK.iX..w..x..y..z..v..w..u..t..s..r..q..p..o', 'Admin')
 ON DUPLICATE KEY UPDATE id=id;
+
+-- Logística y Entregas
+CREATE TABLE IF NOT EXISTS entregas (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    folio VARCHAR(20) UNIQUE NOT NULL,
+    pedido_id INT NOT NULL,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    fecha_entrega_estimada DATE,
+    fecha_entrega_real DATETIME,
+    estatus ENUM('Programado', 'En Tránsito', 'Entregado', 'Incidencia') DEFAULT 'Programado',
+    transportista VARCHAR(100),
+    guia_seguimiento VARCHAR(100),
+    notas_entrega TEXT,
+    evidencia_firma MEDIUMTEXT, -- Para guardar la firma en Base64
+    FOREIGN KEY (pedido_id) REFERENCES pedidos(id)
+);
+
+CREATE TABLE IF NOT EXISTS entrega_detalle (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    entrega_id INT NOT NULL,
+    producto_id INT NOT NULL,
+    cantidad_a_entregar INT NOT NULL,
+    FOREIGN KEY (entrega_id) REFERENCES entregas(id) ON DELETE CASCADE,
+    FOREIGN KEY (producto_id) REFERENCES productos(id)
+);
 
