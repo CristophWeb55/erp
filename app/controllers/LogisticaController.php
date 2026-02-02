@@ -29,16 +29,39 @@ class LogisticaController extends Controller
             $entrega = $logisticaModel->getById($id);
 
             if ($entrega) {
+                // Cargar catálogos para llenar datos
+                require_once '../app/models/Transportistas.php';
+                require_once '../app/models/Vehiculos.php';
+                $tModel = new Transportistas();
+                $vModel = new Vehiculos();
+
                 $data = [
                     'pageTitle' => 'Detalle de Entrega: ' . $entrega['folio'],
                     'controller' => 'Logistica',
-                    'entrega' => $entrega
+                    'entrega' => $entrega,
+                    'transportistas' => $tModel->getActive(),
+                    'vehiculos' => $vModel->getActive()
                 ];
                 $this->view('entregas/view', $data);
                 return;
             }
         }
         header('Location: index.php?controller=Logistica&action=index');
+    }
+
+    public function actualizarInfo()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = $_POST['id'];
+            $logisticaModel = new Logistica();
+
+            if ($logisticaModel->updatePartialInfo($id, $_POST)) {
+                header('Location: index.php?controller=Logistica&action=detalle&id=' . $id . '&msg=info_updated');
+            } else {
+                header('Location: index.php?controller=Logistica&action=detalle&id=' . $id . '&error=update_failed');
+            }
+            exit;
+        }
     }
 
     public function generate()

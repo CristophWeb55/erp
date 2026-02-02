@@ -45,6 +45,16 @@
                     <i class="fas fa-box"></i>
                     <span>Productos</span>
                 </a>
+                <a href="index.php?controller=Transportistas&action=index"
+                    class="nav-item <?= ($controller == 'Transportistas') ? 'active' : '' ?>">
+                    <i class="fas fa-truck-moving"></i>
+                    <span>Transportistas</span>
+                </a>
+                <a href="index.php?controller=Vehiculos&action=index"
+                    class="nav-item <?= ($controller == 'Vehiculos') ? 'active' : '' ?>">
+                    <i class="fas fa-car-side"></i>
+                    <span>Vehículos</span>
+                </a>
 
                 <p
                     style="margin: 20px 0 10px 10px; font-size: 11px; text-transform: uppercase; color: var(--text-secondary); letter-spacing: 1px;">

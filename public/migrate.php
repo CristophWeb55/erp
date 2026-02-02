@@ -218,6 +218,41 @@ try {
     } else {
         echo "<div class='status-msg warning'>⚠ Tabla <code>entrega_detalle</code> ya existe.</div>";
     }
+    // --- CATÁLOGOS DE LOGÍSTICA ---
+    echo "<div class='module-section'>";
+    echo "<div class='module-title'>🚛 Catálogos de Logística</div>";
+
+    // Tabla de Transportistas
+    $existsTpr = $db->query("SHOW TABLES LIKE 'transportistas'")->fetch();
+    if (!$existsTpr) {
+        $db->exec("CREATE TABLE transportistas (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            nombre VARCHAR(100) NOT NULL,
+            rfc VARCHAR(15),
+            telefono VARCHAR(20),
+            correo VARCHAR(100),
+            activo TINYINT(1) DEFAULT 1,
+            fecha_alta TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )");
+        echo "<div class='status-msg success'>✓ Tabla <code>transportistas</code> creada.</div>";
+    }
+
+    // Tabla de Vehículos
+    $existsVeh = $db->query("SHOW TABLES LIKE 'vehiculos'")->fetch();
+    if (!$existsVeh) {
+        $db->exec("CREATE TABLE vehiculos (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            placas VARCHAR(20) UNIQUE NOT NULL,
+            marca_modelo VARCHAR(100),
+            tipo VARCHAR(50),
+            transportista_id INT,
+            activo TINYINT(1) DEFAULT 1,
+            FOREIGN KEY (transportista_id) REFERENCES transportistas(id) ON DELETE SET NULL
+        )");
+        echo "<div class='status-msg success'>✓ Tabla <code>vehiculos</code> creada.</div>";
+    }
+    echo "</div>";
+
     echo "</div>";
 
     echo "<div style='margin-top: 30px; display: flex; gap: 15px;'>";
