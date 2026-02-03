@@ -20,13 +20,17 @@ class FacturacionController extends Controller
     public function generar()
     {
         if (isset($_GET['pedido_id'])) {
-            $model = new Facturacion();
-            $facturaId = $model->createFromOrder($_GET['pedido_id']);
+            try {
+                $model = new Facturacion();
+                $facturaId = $model->createFromOrder($_GET['pedido_id']);
 
-            if ($facturaId) {
-                header('Location: index.php?controller=Facturacion&action=ver&id=' . $facturaId . '&msg=created');
-            } else {
-                header('Location: index.php?controller=Pedidos&action=view&id=' . $_GET['pedido_id'] . '&error=failed');
+                if ($facturaId) {
+                    header('Location: index.php?controller=Facturacion&action=ver&id=' . $facturaId . '&msg=created');
+                } else {
+                    header('Location: index.php?controller=Pedidos&action=detalle&id=' . $_GET['pedido_id'] . '&error=No se pudo generar la factura');
+                }
+            } catch (Exception $e) {
+                header('Location: index.php?controller=Pedidos&action=detalle&id=' . $_GET['pedido_id'] . '&error=' . urlencode($e->getMessage()));
             }
         } else {
             header('Location: index.php?controller=Pedidos');
@@ -52,12 +56,28 @@ class FacturacionController extends Controller
         }
     }
 
+    // Generar la representación visual de la factura (PDF)
+    public function exportPDF()
+    {
+        if (isset($_GET['id'])) {
+            $model = new Facturacion();
+            $factura = $model->getById($_GET['id']);
+
+            if ($factura) {
+                $data = [
+                    'fact' => $factura
+                ];
+                $this->rawView('facturacion/export_pdf', $data);
+                return;
+            }
+        }
+        echo "Factura no encontrada";
+    }
+
     // Simula imprimir
     public function print()
     {
-        // En este MVP reusamos la vista 'ver' pero limpiaremos el layout en el futuro si es necesario
-        // O imprimimos solo el frame
-        $this->ver();
+        $this->exportPDF();
     }
 
     public function enviar()

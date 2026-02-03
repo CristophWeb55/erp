@@ -11,7 +11,7 @@ class Terceros
 
     public function getAll()
     {
-        $stmt = $this->db->query("SELECT * FROM terceros ORDER BY created_at DESC");
+        $stmt = $this->db->query("SELECT * FROM terceros WHERE activo = 1 ORDER BY created_at DESC");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -58,13 +58,13 @@ class Terceros
 
     public function getProveedores()
     {
-        $stmt = $this->db->query("SELECT * FROM terceros WHERE tipo IN ('Proveedor', 'Ambos') ORDER BY nombre_razon_social ASC");
+        $stmt = $this->db->query("SELECT * FROM terceros WHERE tipo IN ('Proveedor', 'Ambos') AND activo = 1 ORDER BY nombre_razon_social ASC");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function delete($id)
     {
-        $stmt = $this->db->prepare("DELETE FROM terceros WHERE id = :id");
+        $stmt = $this->db->prepare("UPDATE terceros SET activo = 0 WHERE id = :id");
         return $stmt->execute([':id' => $id]);
     }
 }

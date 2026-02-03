@@ -256,16 +256,24 @@
     </button>
 </div>
 
-<?php if (isset($_GET['msg']) && $_GET['msg'] == 'email_sent'): ?>
+<?php if (isset($_GET['msg']) && ($_GET['msg'] == 'email_sent' || $_GET['msg'] == 'created')): ?>
     <script>
         function showToast() {
             const toast = document.getElementById('toast');
-            toast.style.top = '30px';
+            if (toast) {
+                const title = toast.querySelector('h4');
+                const p = toast.querySelector('p');
+                if ("<?= $_GET['msg'] ?>" === 'created') {
+                    if (title) title.textContent = '¡Facturación Exitosa!';
+                    if (p) p.textContent = 'La factura se ha generado y registrado correctamente.';
+                }
+                toast.style.top = '30px';
+            }
         }
 
         function hideToast() {
             const toast = document.getElementById('toast');
-            toast.style.top = '-100px';
+            if (toast) toast.style.top = '-100px';
         }
 
         document.addEventListener('DOMContentLoaded', () => {

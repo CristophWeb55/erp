@@ -4,13 +4,13 @@
         <div>
             <h2
                 style="margin: 0; font-weight: 800; color: var(--text-primary); font-size: 24px; letter-spacing: -0.5px;">
-                Gestión de Terceros</h2>
+                Gestión de Clientes/Proveedores</h2>
             <p style="margin: 5px 0 0 0; color: var(--text-secondary); font-size: 13px;">Administra tus clientes,
                 proveedores y contactos comerciales.</p>
         </div>
         <button class="btn btn-primary" onclick="openModal()"
             style="background: var(--accent-secondary); border: none; padding: 12px 24px; border-radius: 12px; font-weight: 800; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(227, 81, 86, 0.2);">
-            <i class="fas fa-plus"></i> Nuevo Tercero
+            <i class="fas fa-plus"></i> Nuevo Cliente/Proveedor
         </button>
     </div>
 
@@ -30,7 +30,8 @@
             style="grid-column: 1 / -1; text-align: center; padding: 60px; background: var(--glass-bg); border-radius: 24px; border: 1px dashed var(--glass-border);">
             <i class="fas fa-users"
                 style="font-size: 40px; color: var(--text-secondary); opacity: 0.3; margin-bottom: 15px;"></i>
-            <p style="color: var(--text-secondary); font-weight: 600;">No se encontraron registros de terceros.</p>
+            <p style="color: var(--text-secondary); font-weight: 600;">No se encontraron registros de clientes/proveedores.
+            </p>
         </div>
     <?php else: ?>
         <?php foreach ($terceros as $t):
@@ -143,7 +144,7 @@
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px;">
             <div>
                 <h3 id="modalTitle" style="margin: 0; font-weight: 800; color: var(--text-primary); font-size: 20px;">
-                    Registrar Tercero</h3>
+                    Registrar Cliente/Proveedor</h3>
                 <p style="margin: 5px 0 0 0; color: var(--text-secondary); font-size: 12px;">Completa la información
                     legal y de contacto.</p>
             </div>
@@ -181,7 +182,7 @@
                             style="font-family: monospace;">
                     </div>
                     <div>
-                        <label class="form-label">Tipo de Tercero</label>
+                        <label class="form-label">Tipo de Relación</label>
                         <select name="tipo" class="form-input" style="background: white;">
                             <option value="Cliente">Cliente</option>
                             <option value="Proveedor">Proveedor</option>
@@ -311,7 +312,8 @@
             <i class="fas fa-exclamation-triangle"></i>
         </div>
         <h3 style="font-weight: 800; color: var(--text-primary); margin-bottom: 10px;">¿Eliminar Registro?</h3>
-        <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 25px;">Esta acción borrará al tercero
+        <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 25px;">Esta acción borrará al
+            cliente/proveedor
             permanentemente. ¿Estás seguro?</p>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
@@ -375,7 +377,7 @@
         const imagePreview = document.getElementById('imagePreviewContainer');
 
         if (data) {
-            title.textContent = 'Editar Tercero';
+            title.textContent = 'Editar Cliente/Proveedor';
             form.action = 'index.php?controller=Terceros&action=update';
             idInput.value = data.id;
             form.nombre_razon_social.value = data.nombre_razon_social;
@@ -391,7 +393,7 @@
                 imagePreview.innerHTML = `<i class="fas fa-camera" style="color: #94a3b8; font-size: 20px;"></i>`;
             }
         } else {
-            title.textContent = 'Registrar Nuevo Tercero';
+            title.textContent = 'Registrar Nuevo Cliente/Proveedor';
             form.action = 'index.php?controller=Terceros&action=create';
             form.reset();
             idInput.value = '';

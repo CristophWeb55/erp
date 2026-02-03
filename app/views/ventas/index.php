@@ -380,13 +380,6 @@
                         style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                         <h3 style="margin: 0; font-size: 18px; font-weight: 800; color: var(--text-primary);">Productos
                         </h3>
-                        <div style="position: relative; width: 300px;">
-                            <i class="fas fa-search"
-                                style="position: absolute; left: 12px; top: 12px; color: #94a3b8; font-size: 12px;"></i>
-                            <input type="text" id="productSearch" placeholder="Buscar producto por SKU o nombre..."
-                                class="form-input"
-                                style="padding-left: 35px; background: #f8fafc; height: 35px; font-size: 12px;">
-                        </div>
                     </div>
 
                     <table style="width: 100%; border-collapse: collapse;" id="itemsTable">

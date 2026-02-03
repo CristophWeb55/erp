@@ -65,10 +65,10 @@
                     style="background: var(--accent-color); color: white; border: none; border-radius: 12px; padding: 10px 25px; display: flex; align-items: center; gap: 8px; text-decoration: none;">
                     <i class="fas fa-truck"></i> Preparar Entrega
                 </a>
-                <a href="index.php?controller=Facturacion&action=generar&pedido_id=<?= $pedido['id'] ?>" class="btn"
-                    style="background: #6366f1; color: white; border: none; border-radius: 12px; padding: 10px 25px; display: flex; align-items: center; gap: 8px; text-decoration: none; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);">
+                <button onclick="confirmInvoice(<?= $pedido['id'] ?>, '<?= $pedido['folio'] ?>')" class="btn"
+                    style="background: #6366f1; color: white; border: none; border-radius: 12px; padding: 10px 25px; display: flex; align-items: center; gap: 8px; cursor: pointer; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3); border: none;">
                     <i class="fas fa-file-invoice-dollar"></i> Generar Factura
-                </a>
+                </button>
             <?php endif; ?>
 
             <?php if ($pedido['estatus'] == 'Facturado'): ?>
@@ -291,7 +291,7 @@
                         </div>
                     </div>
                     <?php if ($pedido['cotizacion_id']): ?>
-                        <a href="index.php?controller=Ventas&action=view&id=<?= $pedido['cotizacion_id'] ?>"
+                        <a href="index.php?controller=Ventas&action=index"
                             style="text-decoration: none; display: flex; align-items: center; gap: 12px; padding: 12px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; border-left: 4px solid var(--accent-color); transition: background 0.2s;"
                             onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#f8fafc'">
                             <i class="fas fa-link" style="color: var(--accent-color);"></i>
@@ -311,6 +311,57 @@
 
 </div>
 </div>
+</div>
+
+<!-- Modal Confirmación Facturación (Premium Style) -->
+<div id="modalInvoice" class="edit-overlay" style="display: none; align-items: center; justify-content: center;">
+    <div class="edit-panel" style="max-width: 450px; text-align: center; padding: 40px; border-radius: 32px;">
+        <div
+            style="width: 80px; height: 80px; background: rgba(99, 102, 241, 0.1); color: #6366f1; border-radius: 24px; display: flex; align-items: center; justify-content: center; font-size: 35px; margin: 0 auto 25px; box-shadow: 0 10px 20px rgba(99, 102, 241, 0.1);">
+            <i class="fas fa-file-invoice-dollar"></i>
+        </div>
+        <h2
+            style="margin: 0 0 12px 0; color: var(--text-primary); font-weight: 800; font-size: 24px; letter-spacing: -0.5px;">
+            ¿Generar Factura?</h2>
+        <p style="color: var(--text-secondary); font-size: 15px; line-height: 1.6; margin-bottom: 30px;">
+            Se creará un comprobante fiscal digital (Simulado) para el pedido <strong><span
+                    id="invoiceFolio"></span></strong>.
+            Esta acción marcará el pedido como facturado y generará los registros correspondientes.
+        </p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <button onclick="closeInvoiceModal()" class="btn"
+                style="background: #f1f5f9; color: var(--text-secondary); font-weight: 700; height: 50px; border-radius: 16px; border: none; cursor: pointer;">Cancelar</button>
+            <a id="btnConfirmInvoice" href="#" class="btn btn-primary"
+                style="background: #6366f1; color: white; text-decoration: none; display: flex; align-items: center; justify-content: center; font-weight: 700; height: 50px; border-radius: 16px; box-shadow: 0 10px 20px rgba(99, 102, 241, 0.2);">
+                Confirmar y Facturar
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Confirmación Surtido (Premium Style) -->
+<div id="modalFulfill" class="edit-overlay" style="display: none; align-items: center; justify-content: center;">
+    <div class="edit-panel" style="max-width: 450px; text-align: center; padding: 40px; border-radius: 32px;">
+        <div
+            style="width: 80px; height: 80px; background: rgba(16, 185, 129, 0.1); color: #10b981; border-radius: 24px; display: flex; align-items: center; justify-content: center; font-size: 35px; margin: 0 auto 25px; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.1);">
+            <i class="fas fa-box-open"></i>
+        </div>
+        <h2
+            style="margin: 0 0 12px 0; color: var(--text-primary); font-weight: 800; font-size: 24px; letter-spacing: -0.5px;">
+            ¿Surtir Pedido?</h2>
+        <p style="color: var(--text-secondary); font-size: 15px; line-height: 1.6; margin-bottom: 30px;">
+            Se descontarán los productos del inventario usando la lógica <strong>FIFO</strong>.
+            Esta operación generará los movimientos de almacén y no puede revertirse.
+        </p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <button onclick="closeFulfillModal()" class="btn"
+                style="background: #f1f5f9; color: var(--text-secondary); font-weight: 700; height: 50px; border-radius: 16px;">Cancelar</button>
+            <a id="btnConfirmFulfill" href="#" class="btn btn-primary"
+                style="background: #10b981; color: white; text-decoration: none; display: flex; align-items: center; justify-content: center; font-weight: 700; height: 50px; border-radius: 16px; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);">
+                Confirmar Surtido
+            </a>
+        </div>
+    </div>
 </div>
 
 <!-- Modal Visor PDF (Premium Style) -->
@@ -351,10 +402,30 @@
     // Mover modales al final del body
     document.addEventListener('DOMContentLoaded', function () {
         const modalFulfill = document.getElementById('modalFulfill');
+        const modalInvoice = document.getElementById('modalInvoice');
         const modalPDF = document.getElementById('modalPDF');
-        document.body.appendChild(modalFulfill);
-        document.body.appendChild(modalPDF);
+        if (modalFulfill) document.body.appendChild(modalFulfill);
+        if (modalInvoice) document.body.appendChild(modalInvoice);
+        if (modalPDF) document.body.appendChild(modalPDF);
     });
+
+    function confirmInvoice(id, folio) {
+        document.getElementById('invoiceFolio').textContent = folio;
+        document.getElementById('btnConfirmInvoice').href = `index.php?controller=Facturacion&action=generar&pedido_id=${id}`;
+        const modal = document.getElementById('modalInvoice');
+        modal.style.display = 'flex';
+        setTimeout(() => modal.classList.add('active'), 10);
+        document.body.classList.add('no-scroll');
+    }
+
+    function closeInvoiceModal() {
+        const modal = document.getElementById('modalInvoice');
+        modal.classList.remove('active');
+        setTimeout(() => {
+            modal.style.display = 'none';
+            document.body.classList.remove('no-scroll');
+        }, 300);
+    }
 
     function confirmFulfillment(id, folio) {
         document.getElementById('btnConfirmFulfill').href = `index.php?controller=Pedidos&action=fulfill&id=${id}`;
@@ -376,7 +447,7 @@
     function openPDFViewer(id) {
         const modal = document.getElementById('modalPDF');
         const frame = document.getElementById('pdfFrame');
-        frame.src = `index.php?controller=Pedidos&action=pdf&id=${id}`;
+        if (frame) frame.src = `index.php?controller=Pedidos&action=pdf&id=${id}`;
         modal.style.display = 'flex';
         setTimeout(() => modal.classList.add('active'), 10);
         document.body.classList.add('no-scroll');
@@ -387,7 +458,8 @@
         modal.classList.remove('active');
         setTimeout(() => {
             modal.style.display = 'none';
-            document.getElementById('pdfFrame').src = '';
+            const frame = document.getElementById('pdfFrame');
+            if (frame) frame.src = '';
             document.body.classList.remove('no-scroll');
         }, 300);
     }
@@ -395,6 +467,7 @@
     // Cerrar si se hace click fuera del modal (overlay)
     document.addEventListener('click', function (event) {
         if (event.target.id === 'modalFulfill') closeFulfillModal();
+        if (event.target.id === 'modalInvoice') closeInvoiceModal();
         if (event.target.id === 'modalPDF') closePDFViewer();
     });
 </script>

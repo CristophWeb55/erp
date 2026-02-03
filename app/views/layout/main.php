@@ -8,6 +8,7 @@
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="./css/style.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="./css/ai-assistant.css?v=<?= time() ?>">
 </head>
 
 <body>
@@ -21,7 +22,7 @@
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-logo">
-                <img src="assets/logo.png" alt="URICA" style="height: 35px; width: auto;">
+                <img src="assets/logo.png" alt="URICA" style="width: 90%; max-width: 250px; height: auto;">
             </div>
 
 
@@ -38,7 +39,7 @@
                 <a href="index.php?controller=Terceros&action=index"
                     class="nav-item <?= ($controller == 'Terceros') ? 'active' : '' ?>">
                     <i class="fas fa-users"></i>
-                    <span>Terceros</span>
+                    <span>Clientes/Proveedores</span>
                 </a>
                 <a href="index.php?controller=Productos&action=index"
                     class="nav-item <?= ($controller == 'Productos') ? 'active' : '' ?>">
@@ -68,11 +69,11 @@
                     <i class="fas fa-truck"></i>
                     <span>Logística</span>
                 </a>
-                <a href="index.php?controller=Inventario&action=index"
+                <!-- <a href="index.php?controller=Inventario&action=index"
                     class="nav-item <?= ($controller == 'Inventario') ? 'active' : '' ?>">
                     <i class=" fas fa-warehouse"></i>
                     <span>Inventario</span>
-                </a>
+                </a> -->
                 <a href="index.php?controller=Compras&action=index"
                     class="nav-item <?= ($controller == 'Compras') ? 'active' : '' ?>">
                     <i class=" fas fa-shopping-cart"></i>
@@ -111,6 +112,13 @@
                 </div>
 
                 <div class="user-profile">
+                    <!-- AI Assistant Trigger -->
+                    <button id="btnAiToggle" class="btn-ai-trigger">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="margin-right: 6px;">
+                            <path d="M12 2L15.09 9.26L22 12L15.09 14.74L12 22L8.91 14.74L2 12L8.91 9.26L12 2Z" />
+                        </svg>
+                        Asistente IA
+                    </button>
                     <div style="text-align: right;">
                         <p style="font-weight: 600; font-size: 14px;"><?= $_SESSION['user_name'] ?? 'Usuario' ?></p>
                         <p style="font-size: 11px; color: var(--text-secondary);"><?= $_SESSION['user_role'] ?? 'Rol' ?>
@@ -183,6 +191,75 @@
             </div>
         </div>
     </div>
+    </div>
+
+    <!-- AI Assistant Drawer -->
+    <div id="aiAssistantDrawer" class="ai-assistant-drawer">
+        <!-- Sidebar -->
+        <div class="ai-sidebar">
+            <button class="ai-new-chat-btn">
+                <i class="fas fa-plus"></i> Nueva Consulta
+            </button>
+            <div style="margin-top: 25px; font-size: 11px; font-weight: 700; color: #9ca3af; letter-spacing: 0.5px;">
+                TEMAS RECIENTES</div>
+            <div class="ai-recent-topics-list">
+                <!-- Example Items -->
+                <div class="ai-topic-item active">
+                    <div class="ai-topic-title">Discrepancia Ventas</div>
+                    <div class="ai-topic-preview">Análisis de caída en región Norte...</div>
+                </div>
+                <div class="ai-topic-item">
+                    <div class="ai-topic-title">Reporte Fiscal Q3</div>
+                    <div class="ai-topic-preview">Generación de previo de declaración...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Chat Area -->
+        <div class="ai-main-area">
+            <header class="ai-header">
+                <div class="ai-header-title">
+                    <div class="ai-avatar-large">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div>
+                        <h3 style="margin:0; font-size: 16px; font-weight: 700;">Asistente Financiero</h3>
+                        <div style="font-size: 12px; color: #10a37f; display: flex; align-items: center; gap: 4px;">
+                            <i class="fas fa-check-circle"></i> Acceso a ERP en tiempo real
+                        </div>
+                    </div>
+                </div>
+                <button id="btnAiClose" class="ai-close-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </header>
+
+            <div id="aiChatContainer" class="ai-chat-container">
+                <!-- Welcome Message -->
+                <div class="ai-message bot">
+                    <div class="ai-message-content">
+                        Hola, <strong><?= $_SESSION['user_name'] ?? 'Usuario' ?></strong>. Soy tu asistente inteligente
+                        conectado a la base de datos de URICA.<br><br>
+                        Puedo ayudarte a consultar ventas, inventario, estatus de pedidos o métricas financieras. ¿Qué
+                        necesitas saber hoy?
+                    </div>
+                </div>
+            </div>
+
+            <div class="ai-input-area">
+                <div class="ai-input-wrapper">
+                    <textarea id="aiInput" class="ai-input-field" rows="1"
+                        placeholder="Escribe tu consulta sobre ERP, inventario o finanzas..."></textarea>
+                    <button id="btnAiSend" class="ai-send-btn">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+                <div style="text-align: center; margin-top: 10px; font-size: 10px; color: #9ca3af;">
+                    La IA puede cometer errores. Verifica la información financiera crítica.
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         function openPrintModal(id) {
@@ -202,6 +279,7 @@
         }
     </script>
     <script src="js/main.js"></script>
+    <script src="js/ai-assistant.js"></script>
 </body>
 
 </html>

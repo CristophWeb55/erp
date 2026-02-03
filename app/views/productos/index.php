@@ -34,9 +34,12 @@
             $stockActual = (int) $p['stock_actual'];
             $stockMinimo = (int) $p['stock_minimo'];
 
-            // Lógica de barra mejorada: Si el mínimo es 0, usamos 100 como referencia visual
-            $referencia = ($stockMinimo > 0) ? ($stockMinimo * 2) : 100;
-            $porcentaje = min(100, ($stockActual / $referencia) * 100);
+            // Lógica de barra dinámica: Stock Base (lotes activos) vs Mínimo
+            // Esto permite ver el consumo real (baja del 100%) incluso si estamos arriba del mínimo
+            $stockBase = (int) ($p['stock_base'] ?? 0);
+            $referencia = max($stockBase, ($stockMinimo > 0 ? $stockMinimo * 2 : 100));
+
+            $porcentaje = ($referencia > 0) ? min(100, ($stockActual / $referencia) * 100) : 0;
 
             if ($stockActual <= 0) {
                 $statusColor = '#ef4444';
@@ -145,13 +148,15 @@
             <i class="fas fa-trash-alt"></i>
         </div>
         <h3 style="font-weight: 800; color: var(--text-primary); margin-bottom: 10px;">¿Eliminar Producto?</h3>
-        <p id="deleteProductName" style="color: var(--text-secondary); font-size: 14px; margin-bottom: 25px;">Esta acción borrará el producto permanentemente. ¿Estás seguro?</p>
+        <p id="deleteProductName" style="color: var(--text-secondary); font-size: 14px; margin-bottom: 25px;">Esta
+            acción borrará el producto permanentemente. ¿Estás seguro?</p>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
             <button onclick="closeDeleteModal()" class="btn"
                 style="background: #f1f5f9; color: var(--text-primary); border: 1px solid #e2e8f0; font-weight: 700; border-radius: 12px; height: 45px; cursor: pointer;">Cancelar</button>
             <a id="btnConfirmDelete" href="#" class="btn"
-                style="background: #ef4444; color: white; border: none; font-weight: 800; text-decoration: none; display: flex; align-items: center; justify-content: center; border-radius: 12px; height: 45px; box-shadow: 0 8px 20px rgba(239, 68, 68, 0.2);">Sí, Eliminar</a>
+                style="background: #ef4444; color: white; border: none; font-weight: 800; text-decoration: none; display: flex; align-items: center; justify-content: center; border-radius: 12px; height: 45px; box-shadow: 0 8px 20px rgba(239, 68, 68, 0.2);">Sí,
+                Eliminar</a>
         </div>
     </div>
 </div>
@@ -178,7 +183,8 @@
                     class="fas fa-times"></i></button>
         </div>
 
-        <form action="index.php?controller=Productos&action=create" method="POST" id="productForm">
+        <form action="index.php?controller=Productos&action=create" method="POST" id="productForm"
+            enctype="multipart/form-data">
             <div style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 30px;">
                 <!-- Columna Izquierda: Datos Técnicos -->
                 <div style="display: flex; flex-direction: column; gap: 20px;">
@@ -207,7 +213,7 @@
                             </div>
                         </div>
                         <div>
-                            <label class="form-label" style="font-size: 11px; letter-spacing: 0.5px;">DESCRIPCIÓN DEL
+                            <label class="form-label" style="font-size: 11px; letter-spacing: 0.5px;">NOMBRE DEL
                                 PRODUCTO</label>
                             <textarea name="descripcion" required rows="3" class="form-input"
                                 placeholder="Nombre comercial y detalles..." style="resize: none;"></textarea>
@@ -263,19 +269,21 @@
                     <div
                         style="background: white; padding: 20px; border-radius: 24px; border: 1px solid #e2e8f0; height: 100%; display: flex; flex-direction: column; box-shadow: 0 10px 25px rgba(0,0,0,0.02);">
                         <label class="form-label"
-                            style="font-size: 11px; letter-spacing: 0.5px; margin-bottom: 12px;">IMAGEN REFERENCIAL
-                            (URL)</label>
-                        <input type="text" name="imagen_url" id="modalImageUrl" class="form-input"
-                            placeholder="https://ejemplo.com/imagen.jpg" style="margin-bottom: 15px;">
+                            style="font-size: 11px; letter-spacing: 0.5px; margin-bottom: 12px;">IMAGEN DEL
+                            PRODUCTO</label>
+
+                        <input type="file" name="imagen" id="modalImageInput" class="form-input" accept="image/*"
+                            style="margin-bottom: 15px; padding: 10px;">
 
                         <div
                             style="flex: 1; border-radius: 20px; border: 2px dashed #e2e8f0; background: #f8fafc; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative;">
                             <img id="modalImagePreview"
                                 style="width: 100%; height: 100%; object-fit: contain; display: none;">
                             <div id="modalPlaceholder" style="text-align: center; color: #94a3b8;">
-                                <i class="fas fa-image" style="font-size: 50px; margin-bottom: 15px; opacity: 0.2;"></i>
-                                <p style="font-size: 12px; font-weight: 600;">Vista previa de imagen</p>
-                                <p style="font-size: 10px; opacity: 0.7;">Pega una URL arriba</p>
+                                <i class="fas fa-cloud-upload-alt"
+                                    style="font-size: 50px; margin-bottom: 15px; opacity: 0.2;"></i>
+                                <p style="font-size: 12px; font-weight: 600;">Subir imagen</p>
+                                <p style="font-size: 10px; opacity: 0.7;">Formatos: JPG, PNG, WEBP</p>
                             </div>
                         </div>
                     </div>
@@ -355,14 +363,21 @@
     });
 
     // Vista previa de imagen en modal nuevo producto
-    document.getElementById('modalImageUrl')?.addEventListener('input', function (e) {
+    document.getElementById('modalImageInput')?.addEventListener('change', function (e) {
         const preview = document.getElementById('modalImagePreview');
         const placeholder = document.getElementById('modalPlaceholder');
-        if (e.target.value) {
-            preview.src = e.target.value;
-            preview.style.display = 'block';
-            placeholder.style.display = 'none';
+        const file = e.target.files[0];
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                preview.src = event.target.result;
+                preview.style.display = 'block';
+                placeholder.style.display = 'none';
+            }
+            reader.readAsDataURL(file);
         } else {
+            preview.src = '';
             preview.style.display = 'none';
             placeholder.style.display = 'block';
         }
@@ -415,7 +430,7 @@
                     </div>
                     <button onclick="closeEditOverlay()" style="background: #f1f5f9; border: none; width: 50px; height: 50px; border-radius: 50%; cursor: pointer;"><i class="fas fa-times"></i></button>
                 </div>
-                <form action="index.php?controller=Productos&action=update" method="POST">
+                <form action="index.php?controller=Productos&action=update" method="POST" enctype="multipart/form-data">
                     <input type="hidden" name="id" value="${p.id}">
                     <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 40px;">
                         <div>
@@ -423,7 +438,7 @@
                                 <div><label class="form-label">SKU / CÓDIGO INTERNO</label><input type="text" name="sku" value="${p.sku}" required class="form-input" style="font-weight: 700;"></div>
                                 <div><label class="form-label">PRECIO VENTA (MXN)</label><input type="number" step="0.01" name="precio_venta" value="${p.precio_venta}" required class="form-input" style="font-weight: 800; color: var(--accent-secondary);"></div>
                             </div>
-                            <div style="margin-bottom: 25px;"><label class="form-label">DESCRIPCIÓN COMERCIAL</label><textarea name="descripcion" required rows="4" class="form-input" style="line-height: 1.6;">${p.descripcion}</textarea></div>
+                            <div style="margin-bottom: 25px;"><label class="form-label">NOMBRE DEL PRODUCTO</label><textarea name="descripcion" required rows="4" class="form-input" style="line-height: 1.6;">${p.descripcion}</textarea></div>
                             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; background: #f8fafc; padding: 25px; border-radius: 25px; border: 1px solid #e2e8f0; margin-bottom: 25px;">
                                 <div><label class="form-label">STOCK MÍNIMO</label><input type="number" name="stock_minimo" value="${stockMinimo}" required class="form-input"></div>
                                 <div><label class="form-label">STOCK ACTUAL (AJUSTE)</label><input type="number" name="stock_actual" value="${stockActual}" class="form-input" style="font-weight: 900; color: ${status.c}; font-size: 20px;"></div>
@@ -449,8 +464,13 @@
 
                         <div style="display: flex; flex-direction: column; gap: 25px;">
                             <div style="background: white; padding: 25px; border-radius: 30px; border: 1px solid #e2e8f0;">
-                                <label class="form-label">URL DE IMAGEN</label><input type="text" name="imagen_url" value="${p.imagen_url || ''}" id="editImgUrl" class="form-input" style="margin-bottom: 15px;">
-                                <div style="width: 100%; aspect-ratio: 1; border-radius: 20px; border: 1px dashed #cbd5e1; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #f8fafc;"><img id="editImgPreview" src="${p.imagen_url || ''}" style="width: 100%; height: 100%; object-fit: contain; display: ${p.imagen_url ? 'block' : 'none'}"><i id="editImgPlaceholder" class="fas fa-image" style="font-size: 50px; opacity: 0.1; display: ${p.imagen_url ? 'none' : 'block'}"></i></div>
+                                <label class="form-label">IMAGEN DEL PRODUCTO</label>
+                                <input type="file" name="imagen" id="editImgInput" class="form-input" accept="image/*" style="margin-bottom: 15px; padding: 10px;">
+                                
+                                <div style="width: 100%; aspect-ratio: 1; border-radius: 20px; border: 1px dashed #cbd5e1; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #f8fafc;">
+                                    <img id="editImgPreview" src="${p.imagen_url || ''}" style="width: 100%; height: 100%; object-fit: contain; display: ${p.imagen_url ? 'block' : 'none'}">
+                                    <i id="editImgPlaceholder" class="fas fa-cloud-upload-alt" style="font-size: 50px; opacity: 0.1; display: ${p.imagen_url ? 'none' : 'block'}"></i>
+                                </div>
                             </div>
                             <button type="submit" class="btn btn-primary" style="width: 100%; padding: 20px; border-radius: 20px; font-weight: 800; font-size: 16px;"><i class="fas fa-save"></i> ACTUALIZAR REGISTRO</button>
                             <button type="button" onclick="closeEditOverlay(null, true)" class="btn" style="width: 100%; background: #f1f5f9; padding: 15px; border-radius: 15px; font-weight: 700;">CANCELAR</button>
@@ -459,12 +479,20 @@
                 </form>
             `;
 
-            document.getElementById('editImgUrl').addEventListener('input', e => {
+            document.getElementById('editImgInput').addEventListener('change', e => {
                 const img = document.getElementById('editImgPreview');
                 const placeholder = document.getElementById('editImgPlaceholder');
-                img.src = e.target.value;
-                img.style.display = e.target.value ? 'block' : 'none';
-                placeholder.style.display = e.target.value ? 'none' : 'block';
+                const file = e.target.files[0];
+
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (event) {
+                        img.src = event.target.result;
+                        img.style.display = 'block';
+                        placeholder.style.display = 'none';
+                    }
+                    reader.readAsDataURL(file);
+                }
             });
 
         } catch (e) { console.error(e); closeEditOverlay(null, true); }

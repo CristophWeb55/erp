@@ -190,6 +190,25 @@
                                         onmouseout="this.style.background='rgba(41, 56, 135, 0.1)'; this.style.color='var(--accent-color)';">
                                         <i class="fas fa-eye"></i>
                                     </a>
+
+                                    <?php if ($e['estatus'] == 'Entregado' && !$e['factura_id']): ?>
+                                        <a title="Generar Factura"
+                                            href="index.php?controller=Facturacion&action=generar&pedido_id=<?= $e['pedido_id'] ?>"
+                                            style="width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; background: rgba(16, 185, 129, 0.1); color: #10b981; border-radius: 12px; text-decoration: none; transition: all 0.3s;"
+                                            onmouseover="this.style.background='#10b981'; this.style.color='white';"
+                                            onmouseout="this.style.background='rgba(16, 185, 129, 0.1)'; this.style.color='#10b981';">
+                                            <i class="fas fa-file-invoice"></i>
+                                        </a>
+                                    <?php elseif ($e['factura_id']): ?>
+                                        <a title="Ver Factura"
+                                            href="index.php?controller=Facturacion&action=ver&id=<?= $e['factura_id'] ?>"
+                                            style="width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; background: rgba(139, 92, 246, 0.1); color: #8b5cf6; border-radius: 12px; text-decoration: none; transition: all 0.3s;"
+                                            onmouseover="this.style.background='#8b5cf6'; this.style.color='white';"
+                                            onmouseout="this.style.background='rgba(139, 92, 246, 0.1)'; this.style.color='#8b5cf6';">
+                                            <i class="fas fa-receipt"></i>
+                                        </a>
+                                    <?php endif; ?>
+
                                     <button onclick="openPrintModal(<?= $e['id'] ?>)" title="Imprimir Nota de Entrega"
                                         style="width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.05); color: var(--text-secondary); border-radius: 12px; border: none; cursor: pointer; transition: all 0.3s;"
                                         onmouseover="this.style.background='#ef4444'; this.style.color='white';"

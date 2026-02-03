@@ -17,7 +17,8 @@ class Pedidos
                 t.nombre_razon_social as cliente_nombre,
                 u.nombre as vendedor_nombre,
                 c.moneda,
-                (SELECT COUNT(*) FROM pedido_detalle pd WHERE pd.pedido_id = p.id) as total_items
+                (SELECT COUNT(*) FROM pedido_detalle pd WHERE pd.pedido_id = p.id) as total_items,
+                (SELECT id FROM facturas WHERE pedido_id = p.id LIMIT 1) as factura_id
             FROM pedidos p
             LEFT JOIN terceros t ON p.cliente_id = t.id
             LEFT JOIN usuarios u ON p.vendedor_id = u.id

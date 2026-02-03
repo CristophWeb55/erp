@@ -10,7 +10,7 @@ class TercerosController extends Controller
         $terceros = $tercerosModel->getAll();
 
         $data = [
-            'pageTitle' => 'Gestión de Terceros',
+            'pageTitle' => 'Gestión de Clientes/Proveedores',
             'controller' => 'Terceros',
             'terceros' => $terceros
         ];
@@ -25,8 +25,12 @@ class TercerosController extends Controller
             $imagen_url = null;
             if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
                 $ext = pathinfo($_FILES['imagen']['name'], PATHINFO_EXTENSION);
-                $filename = 'tercero_' . time() . '.' . $ext;
-                $target = 'uploads/terceros/' . $filename;
+                $filename = 'tercero_' . uniqid() . '.' . $ext;
+                $uploadDir = 'uploads/terceros/';
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0777, true);
+                }
+                $target = $uploadDir . $filename;
                 if (move_uploaded_file($_FILES['imagen']['tmp_name'], $target)) {
                     $imagen_url = $target;
                 }
@@ -59,8 +63,12 @@ class TercerosController extends Controller
 
             if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
                 $ext = pathinfo($_FILES['imagen']['name'], PATHINFO_EXTENSION);
-                $filename = 'tercero_' . time() . '.' . $ext;
-                $target = 'uploads/terceros/' . $filename;
+                $filename = 'tercero_' . uniqid() . '.' . $ext;
+                $uploadDir = 'uploads/terceros/';
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0777, true);
+                }
+                $target = $uploadDir . $filename;
                 if (move_uploaded_file($_FILES['imagen']['tmp_name'], $target)) {
                     $imagen_url = $target;
                 }

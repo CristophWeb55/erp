@@ -15,7 +15,8 @@ class Logistica
     public function getAll()
     {
         $stmt = $this->db->query("
-            SELECT e.*, p.folio as folio_pedido, t.nombre_razon_social as cliente
+            SELECT e.*, p.folio as folio_pedido, t.nombre_razon_social as cliente,
+                   (SELECT id FROM facturas WHERE pedido_id = p.id LIMIT 1) as factura_id
             FROM entregas e
             JOIN pedidos p ON e.pedido_id = p.id
             JOIN terceros t ON p.cliente_id = t.id

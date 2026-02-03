@@ -76,19 +76,22 @@ class Facturacion
                 throw new Exception("Este pedido ya fue facturado");
 
             // 2. Generate Fake Fiscal Data
-            $uuid = $this->generateUUID(); // Simulation
+            $uuid = $this->generateUUID();
+            $selloSat = base64_encode(random_bytes(128));
+            $selloCfdi = base64_encode(random_bytes(128));
+            $cadenaOriginal = "||1.1|" . $uuid . "|2025-01-07T20:18:30|MAS0810247C0|" . substr($selloCfdi, 0, 50) . "|00001000000709182898||";
 
-            // 3. Create Invoice Header
-            $sql = "INSERT INTO facturas (cotizacion_id, pedido_id, cliente_id, folio_fiscal_uuid, fecha_emision, total, saldo_pendiente, estatus) 
-                    VALUES (?, ?, ?, ?, NOW(), ?, ?, 'Pendiente')";
+            // 3. Create Invoice Header (Se marca como Pagada y saldo 0 por petición del usuario)
+            $sql = "INSERT INTO facturas 
+                    (cotizacion_id, pedido_id, cliente_id, folio_fiscal_uuid, fecha_emision, total, saldo_pendiente, estatus) 
+                    VALUES (?, ?, ?, ?, NOW(), ?, 0, 'Pagada')";
             $stmt = $this->db->prepare($sql);
             $stmt->execute([
                 $pedido['cotizacion_id'],
                 $pedidoId,
                 $pedido['cliente_id'],
                 $uuid,
-                $pedido['total'],
-                $pedido['total'] // Initially unpaid
+                $pedido['total']
             ]);
             $facturaId = $this->db->lastInsertId();
 
@@ -97,8 +100,12 @@ class Facturacion
             $stmtItems->execute([$pedidoId]);
             $items = $stmtItems->fetchAll(PDO::FETCH_ASSOC);
 
+            if (empty($items)) {
+                throw new Exception("El pedido no tiene productos listados para facturar.");
+            }
+
             $sqlDet = "INSERT INTO factura_detalle (factura_id, producto_id, cantidad, precio_unitario, lote_origen_id) 
-                       VALUES (?, ?, ?, ?, NULL)"; // TODO: Link lots for traceability
+                       VALUES (?, ?, ?, ?, NULL)";
             $stmtDet = $this->db->prepare($sqlDet);
 
             foreach ($items as $item) {
@@ -118,15 +125,17 @@ class Facturacion
             return $facturaId;
 
         } catch (Exception $e) {
-            $this->db->rollBack();
+            if ($this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
             error_log("Error facturando pedido $pedidoId: " . $e->getMessage());
-            return false;
+            throw $e;
         }
     }
 
     private function generateUUID()
     {
-        return sprintf(
+        return strtoupper(sprintf(
             '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
             mt_rand(0, 0xffff),
             mt_rand(0, 0xffff),
@@ -136,6 +145,6 @@ class Facturacion
             mt_rand(0, 0xffff),
             mt_rand(0, 0xffff),
             mt_rand(0, 0xffff)
-        );
+        ));
     }
 }

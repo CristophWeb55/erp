@@ -3,6 +3,7 @@
 session_start();
 
 require_once '../config/database.php';
+require_once '../config/ai_config.php';
 require_once '../app/core/Controller.php';
 
 // Very basic routing

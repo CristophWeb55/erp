@@ -22,13 +22,28 @@ class ProductosController extends Controller
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $productosModel = new Productos();
+
+            $imagen_url = null;
+            if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
+                $ext = pathinfo($_FILES['imagen']['name'], PATHINFO_EXTENSION);
+                $filename = 'prod_' . uniqid() . '.' . $ext;
+                $uploadDir = 'uploads/productos/';
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0777, true);
+                }
+                $target = $uploadDir . $filename;
+                if (move_uploaded_file($_FILES['imagen']['tmp_name'], $target)) {
+                    $imagen_url = $target;
+                }
+            }
+
             $data = [
                 'sku' => $_POST['sku'],
                 'descripcion' => $_POST['descripcion'],
                 'precio_venta' => $_POST['precio_venta'],
                 'stock_minimo' => $_POST['stock_minimo'] ?? 10,
                 'stock_inicial' => $_POST['stock_inicial'] ?? 0,
-                'imagen_url' => $_POST['imagen_url'] ?? null,
+                'imagen_url' => $imagen_url,
                 'requiere_pedimento' => isset($_POST['requiere_pedimento']) ? 1 : 0
             ];
 
@@ -64,13 +79,31 @@ class ProductosController extends Controller
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $_POST['id'];
             $productosModel = new Productos();
+
+            // Obtener producto actual para conservar la imagen si no se sube una nueva
+            $productoActual = $productosModel->getById($id);
+            $imagen_url = $productoActual['imagen_url'] ?? null;
+
+            if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
+                $ext = pathinfo($_FILES['imagen']['name'], PATHINFO_EXTENSION);
+                $filename = 'prod_' . uniqid() . '.' . $ext;
+                $uploadDir = 'uploads/productos/';
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0777, true);
+                }
+                $target = $uploadDir . $filename;
+                if (move_uploaded_file($_FILES['imagen']['tmp_name'], $target)) {
+                    $imagen_url = $target;
+                }
+            }
+
             $data = [
                 'sku' => $_POST['sku'],
                 'descripcion' => $_POST['descripcion'],
                 'precio_venta' => $_POST['precio_venta'],
                 'stock_minimo' => $_POST['stock_minimo'] ?? 10,
                 'stock_actual' => $_POST['stock_actual'] ?? null,
-                'imagen_url' => $_POST['imagen_url'] ?? null,
+                'imagen_url' => $imagen_url,
                 'requiere_pedimento' => isset($_POST['requiere_pedimento']) ? 1 : 0
             ];
 

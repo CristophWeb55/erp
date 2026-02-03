@@ -33,9 +33,11 @@ class Productos
         $stmt = $this->db->query("
             SELECT 
                 p.*,
-                COALESCE(SUM(il.cantidad_actual), 0) as stock_actual
+                COALESCE(SUM(il.cantidad_actual), 0) as stock_actual,
+                COALESCE(SUM(CASE WHEN il.cantidad_actual > 0 THEN il.cantidad_inicial ELSE 0 END), 0) as stock_base
             FROM productos p
             LEFT JOIN inventario_lotes il ON p.id = il.producto_id
+            WHERE p.activo = 1
             GROUP BY p.id
             ORDER BY p.sku ASC
         ");
@@ -62,7 +64,7 @@ class Productos
                 COALESCE(SUM(il.cantidad_actual), 0) as stock_actual
             FROM productos p
             LEFT JOIN inventario_lotes il ON p.id = il.producto_id
-            WHERE p.id = ?
+            WHERE p.id = ? AND p.activo = 1
             GROUP BY p.id
         ");
         $stmt->execute([$id]);
@@ -194,7 +196,7 @@ class Productos
 
     public function delete($id)
     {
-        $stmt = $this->db->prepare("DELETE FROM productos WHERE id = ?");
+        $stmt = $this->db->prepare("UPDATE productos SET activo = 0 WHERE id = ?");
         return $stmt->execute([$id]);
     }
 
@@ -206,7 +208,7 @@ class Productos
                 COALESCE(SUM(il.cantidad_actual), 0) as stock_actual
             FROM productos p
             LEFT JOIN inventario_lotes il ON p.id = il.producto_id
-            WHERE p.sku LIKE :query OR p.descripcion LIKE :query
+            WHERE (p.sku LIKE :query OR p.descripcion LIKE :query) AND p.activo = 1
             GROUP BY p.id
             ORDER BY p.sku ASC
         ");
